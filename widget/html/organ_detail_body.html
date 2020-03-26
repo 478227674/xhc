@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/swiper-3.3.1.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/comments.css"/>
+
+    <style>
+        .swiper-container .swiper-slide {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+        #organallbox{
+            overflow: hidden;
+        }
+        .classlist li{
+            margin-bottom:0px;
+        }
+        .organ-detail-all{
+            /*width: 90%;*/
+            margin: 0px 0px 10px 0px;
+            background: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .organ-detail-top{
+            width: 100%;
+            height: 150px;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .organ-detail-top>img{
+            width: 100%;
+            height: 100%;
+            /*max-height: 150px;*/
+        }
+        .organ-detail-top>p {
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        .organ-detail-detail{
+            position: absolute;
+            z-index:2;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+        }
+        .organ-detail-title > img{
+            width: 45px;height: 45px;
+            float: left;
+            border-radius: 5px;
+            margin: 15px 10px;
+        }
+        .organ-detail-title > .organ-detail-address{
+            float: left;
+            width: 75%;
+        }
+        .organ-detail-address>p{
+            font-size: 14px;color:#fff;
+            margin-top: 20px;
+        }
+        .organ-detail-address>span{
+            color:#fff;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .organ-detail-mobile>img{
+            float: left;
+            width: 30px;
+            height: 30px;
+            margin: 10px;
+        }
+        .organ-detail-mobile > div{
+            float: left;
+        }
+        .organ-detail-mobile > div > p {
+            font-size: 14px;color:#fff;
+            margin-top: 8px;
+        }
+        .organ-detail-mobile > div > span{
+            color:#fff;
+            font-size: 12px;
+        }
+        .organ-detail-longway{
+            height: 45px;line-height: 45px;
+            font-size: 14px;
+            color:#333;
+            background: #fff;
+        }
+        .address-icon1{
+            float: left;
+            height: 18px;
+            margin-left: 10px;
+            margin-top: 14px;
+        }
+        .organ-detail-longway>span{
+            float: left;
+            margin-left: 10px;
+        }
+        .address-icon2{
+            float: right;
+            height: 12px;
+            margin-top: 16px;
+            margin-right: 10px;
+        }
+        .organ-detail-tabs{
+            z-index:50;
+            background: #fff;
+            width: 100%;
+            background: #fff;
+            border-bottom: 1px solid #eeeeee;
+            position: fixed;
+            top:0px;
+            left:0px;
+        }
+        .organ-detail-tabs>p{
+            width: 16.5%;
+            float: left;
+            text-align: center;
+            line-height: 44px;
+            font-size: 14px;color:#666;
+        }
+        .organ-detail-tabs>span{
+            display: block;
+            width: 16.5%;
+            border-bottom: 2px solid #f73e3c;
+            position: absolute;bottom: -1px;left: 0;
+        }
+        .organ-detail-tab1-title{
+            padding-top: 15px;
+            font-size: 14px;color:#333;
+            margin-bottom: 10px;
+        }
+        .organ-details-tab1-item{
+            font-size: 12px;color:#666;
+            padding-bottom: 10px;
+        }
+        .organ-details-tab1-item>p{
+            /*display: inline-block;*/
+            float: left;
+            height: 100%;
+        }
+        .organ-details-tab1-item>.zasd{
+            float: left;
+            line-height: 18px;
+            width: 90%;
+            padding: 0 5%;
+            text-indent: 20px;
+        }
+        .photolist{
+            color:#f73e3c;font-size: 14px;
+            padding: 15px 10px;
+        }
+        .teacher-list{
+            padding: 0px 10px;
+            margin-top: 10px;
+        }
+        .teacher-list li {
+            padding-bottom:15px;
+            display: flex;
+        }
+        .teacher-list li .teacher-cover {
+            width: 80px;height: 80px;
+            /*float: left;*/
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .teacher-list li .teacher-cover > img{
+            width: 100%;height: 100%;
+        }
+        .teacher-detail{
+            /*float: left;*/
+            margin-left: 10px;
+            flex: 1;
+            /*width: 60%;*/
+        }
+        .teacher-detail p {
+            color:#333;
+            font-size: 14px;
+        }
+        .teacher-tag{
+            margin-top: 4px;
+        }
+        .teacher-tag span{
+            color:#666;
+            font-size: 12px;
+        }
+        .teacher-desc{
+            margin-top: 5px;
+            font-size: 12px;
+            color:#333;
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .commonts{
+            padding: 15px 10px 5px 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .commonts-top{
+            display: flex;
+            justify-content: space-between;
+        }
+        .commonts-top>div a {
+            float: left;
+            color:red;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .commonts-top>div span{
+            float: left;
+            display: inline-block;
+            padding: 2px 3px;
+            background: red;
+            border-radius: 11px 11px 11px 0px;font-size: 10px;
+            color:#fff;
+            margin-top: 2px;
+            margin-left: 5px;
+        }
+        .commonts-top p {
+            color:#666;font-size: 12px;
+            margin-top: 5px;
+        }
+        .commints-num ul li {
+            display: inline-block;
+            width: 20%;
+            line-height: 30px;font-size: 14px;
+            color:#333;
+        }
+        .commints-num ul li span{
+            color:red;
+        }
+        .commonts-listul{
+            padding-bottom: 15px;
+        }
+        .c-top{
+            padding: 20px 10px 10px 11px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .schlist{
+            width: 90%;
+            margin: 0 auto;
+            line-height: 40px;
+            color:#333;
+            font-size: 14px;
+        }
+        .schlist a{
+            margin-left: 5px;
+            color:#1bb1af;font-size: 14px;
+        }
+        .zzactive{
+            padding-bottom: 5px;
+            margin: 5px 15px;
+            background: #fff;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .zzactive-title{
+            padding: 15px 10px;
+        }
+        .zzactive-title span{
+            font-size: 14px;color:#333;
+        }
+        .zzactive-title a {
+            font-size: 12px;color:#f73e3c;
+        }
+        .active-list{
+            width: 90%;
+            padding: 0 5%;
+        }
+        .active-list li {
+            margin-bottom: 10px;
+
+        }
+        .active-head{
+            width: 40px;height: 40px;
+            border-radius: 50%;
+            float: left;
+            overflow: hidden;
+        }
+        .active-head img{
+            width: 100%;
+            height: 100%;
+        }
+        .acitve-detail{
+            float: left;
+            margin-left: 10px;
+        }
+        .acitve-detail span{
+            font-size: 14px;color:#333;
+        }
+        .acitve-detail p {
+            font-size: 12px;color:#333;
+            margin-top: 5px;
+        }
+        .active-button{
+            float: right;
+            padding: 8px 12px;
+            margin-top: 5px;
+            font-size: 12px;
+            color:#fff;
+            border-radius: 5px;
+        }
+        .c-bottom{
+            padding: 0 0 0 10px;
+            height: 60px;
+            overflow: hidden;
+            width:100%;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        .c-bottom>div{
+            white-space:nowrap; overflow-x:auto;
+            height: 100%;
+            overflow-y: hidden;
+        }
+        .c-bottom>div>div{
+            width: 140px;
+            height: 60px;
+            display: inline-block;
+            margin-right: 10px !important;
+            /*background: url("../icon/testorgan.png") no-repeat center center;*/
+            background-size:100% 100%;
+        }
+        .c-left{
+            width: 60px;height: 60px;
+            background: url("../icon/couponbg.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+            float: left;
+            line-height: 60px;
+            color:#fff;
+            font-size: 12px;
+            text-align: center;
+        }
+        .c-left>span{
+            font-size: 20px;
+        }
+        .c-right{
+            width: 80px;
+            height: 60px;
+            background: url("../icon/ccc.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+            float: right;
+            text-align: center;
+        }
+        .c-right span{
+            font-size: 14px;
+            color:#ff5100;
+            display: block;
+            text-align: center;
+            margin:5px 0;
+        }
+        .c-right p {
+            padding: 3px 6px;
+            display: inline-block;
+            font-size: 12px;
+            color:#fff;
+            text-align: center;
+            /*background: ;*/
+            background: -webkit-linear-gradient(to right,#ff7f00,#f73e3c);
+            background: -o-linear-gradient(to right,#ff7f00,#f73e3c);
+            background: -moz-linear-gradient(to right,#ff7f00,#f73e3c);
+            background: linear-gradient(to right,#ff7f00,#f73e3c);
+            border-radius: 15px;
+        }
+        .newitem1{
+            width: 90%;
+            display: block;
+            margin: 0 auto;
+        }
+        .newitem1 img{
+            width: 100%;
+        }
+        .newitem{
+            margin: 10px 15px 0 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .newitem div {
+            position: relative;
+            width: 30%;
+        }
+        .newitem div span{
+            color:#fff;
+            font-size: 14px;
+            position: absolute;
+            top: 10px;left: 10px;
+        }
+        .newitem div img{
+            width: 100%;
+        }
+        .imglll{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .imglll li {
+            width: 48%;
+            margin-bottom: 5px;
+            height: 100px;
+
+        }
+        .imglll img{
+            width: 100%;
+            height: 100%;
+        }
+        .newposition{
+            padding: 10px 15px;
+            display: flex;
+            position: relative;
+            justify-content: flex-start;
+        }
+        .neworg-logo{
+            width:45px;
+            height:45px;border: 1px solid #f73e3c;
+            overflow: hidden;
+            border-radius: 5px;
+        }
+        .neworg-logo img{
+            width:45px;
+            height:45px;
+        }
+        .neworg-name {
+            margin-left: 10px;
+        }
+        .neworg-name p{
+            font-size: 14px;
+            margin-top: 5px;
+            color:#333;
+        }
+        .neworg-name span{
+            font-size: 12px;
+            color:#666;
+        }
+        .newpositon-box{
+            position: absolute;
+            right:15px;
+            top:20px;
+            font-size: 12px;
+            color:#f73e3c;
+        }
+    </style>
+</head>
+<body >
+<div id="organallbox" v-cloak>
+    <!--<div class="newitem1" @click="openProductListByType(3)">-->
+    <!--<img style="width: 100%" src="../icon/jpk.png" alt="">-->
+    <!--</div>-->
+    <!--新增标题栏-->
+
+    <!--新增快来参加-->
+    <!--<div class="c-bottom">-->
+    <!--<div>-->
+    <!--<div v-for="(item,index) in couponList" v-if="item.isGet==0">-->
+    <!--<div class="c-left">-->
+    <!--￥<span>{{item.usedAmount}}</span>-->
+    <!--</div>-->
+    <!--<div class="c-right">-->
+    <!--<span>优惠券</span>-->
+    <!--<p @click="getCoupon(item,index)">点击领取</p>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="organ-detail-all">
+        <div style="height:45px;"></div>
+        <div class="organ-detail-tabs">
+            <span :style="lineStyle"></span>
+            <p @click="clickTab(1)">
+                首页
+            </p>
+            <p @click="clickTab(2)">
+                简介
+            </p>
+            <!--简介-->
+            <p @click="clickTab(3)">
+                课程
+            </p>
+
+            <p @click="clickTab(4)">
+                校区
+            </p>
+            <p @click="clickTab(5)">
+                评价
+            </p>
+            <p @click="clickTab(6)">
+                速记单词
+            </p>
+            <!--速记单词-->
+            <!--位置修改-->
+
+            <div style="clear: both"></div>
+        </div>
+        <!--机构首页-->
+        <div style="" v-show="tabIndex==1">
+            <div class="organ-detail-all" v-show="bannerList.length>0">
+                <div class="organ-detail-top">
+                    <div class="swiper-container swiper111"  style="width: 100%;height:150px;">
+                        <div class="swiper-wrapper" id="bannerHm">
+                            <div  class="swiper-slide " :data="item" v-for="item in bannerList" style="overflow: hidden">
+                                <img class="boxshadow" :src="item.imageUrl"alt="">
+                            </div>
+                        </div>
+                        <!-- Add Pagination -->
+                        <div class="swiper-pagination3"></div>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="organ-detail-all">-->
+            <!--<div class="organ-detail-longway">-->
+            <!--<img class="address-icon1" src="../icon/position1.png" alt="">-->
+            <!--<span v-if="orgObj.distance">距离您{{orgObj.distance}}km</span>-->
+            <!--&lt;!&ndash;<img class="address-icon2" src="../icon/right.png" alt="">&ndash;&gt;-->
+            <!--</div>-->
+            <!--</div>-->
+            <div class="newposition">
+                <div class="neworg-logo"><img :src="orgObj.logoUrl" alt=""></div>
+                <div class="neworg-name">
+                    <p>{{orgObj.orgName}}</p>
+                    <span v-if="orgObj.orgTelephone!=0">{{orgObj.orgTelephone}}</span>
+                    <span v-else>成为本机构会员可见</span>
+                </div>
+                <div class="newpositon-box">距离您{{orgObj.distance}}km</div>
+            </div>
+            <div class="newitem">
+                <div @click="openProductListByType(1)">
+                    <img src="../icon/index1.png" alt="">
+                    <span>拼团优惠</span>
+                </div>
+                <div @click="openProductListByType(2)">
+                    <img src="../icon/index2.png" alt="">
+                    <span>邀请砍价</span>
+                </div>
+                <div @click="openProductListByType(3)">
+                    <img src="../icon/index3.png" alt="">
+                    <span>精品特价</span>
+                </div>
+            </div>
+            <div class="zzactive">
+                <div class="zzactive-title">
+                    <span>快来参加</span>
+                    <a href="javascript:;">太奇品质好课</a>
+                </div>
+                <div>
+                    <div class="swiper-container1 swiper-no-swiping" style="height: 180px;overflow: hidden" >
+                        <div class="swiper-wrapper" >
+                            <div class="swiper-slide" v-if="tenList.length>1">
+                                <ul class="active-list">
+                                    <li v-for="(item,index) in tenList" v-if="index<3"  @click="openProductDetail1(item)">
+                                        <div class="active-head">
+                                            <img src="../icon/get2.png" alt="">
+                                        </div>
+                                        <div class="acitve-detail">
+                                            <span>{{item.userName}}</span>
+                                            <p v-if="item.orderType==1">正在购买课程</p>
+                                            <p v-if="item.orderType==2">正在拼团购买课程</p>
+                                            <p v-if="item.orderType==3">正在砍价购买课程</p>
+                                            <p v-if="item.orderType==4">正在拼团砍价购买课程</p>
+                                        </div>
+                                        <div class="active-button jianbian-btn" v-if="item.isCut==1&&item.isGroup==0">
+                                            去砍价
+                                        </div>
+                                        <div class="active-button jianbian-btn" v-if="(item.isCut==1&&item.isGroup==1) || (item.isGroup==1&&item.isCut==0)">
+                                            去拼团
+                                        </div>
+                                        <div class="active-button jianbian-btn" v-if="item.isCut==0&&item.isGroup==0">
+                                            去购买
+                                        </div>
+                                        <div style="clear: both"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="swiper-slide" v-if="tenList.length>3">
+                                <ul class="active-list">
+                                    <li v-for="(item,index) in tenList" v-if="index>2&&index<6" @click="openProductDetail1(item)">
+                                        <div class="active-head">
+                                            <img src="../icon/get2.png" alt="">
+                                        </div>
+                                        <div class="acitve-detail">
+                                            <span>{{item.userName}}</span>
+                                            <p v-if="item.orderType==1">正在购买课程</p>
+                                            <p v-if="item.orderType==2">正在拼团购买课程</p>
+                                            <p v-if="item.orderType==3">正在砍价购买课程</p>
+                                            <p v-if="item.orderType==4">正在拼团砍价购买课程</p>
+                                        </div>
+                                        <div class="active-button" v-if="item.isCut==1&&item.isGroup==0">
+                                            去砍价
+                                        </div>
+                                        <div class="active-button" v-if="(item.isCut==1&&item.isGroup==1) || (item.isGroup==1&&item.isCut==0)">
+                                            去拼团
+                                        </div>
+                                        <div class="active-button" v-if="item.isCut==0&&item.isGroup==0">
+                                            去购买
+                                        </div>
+                                        <div style="clear: both"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="swiper-slide" v-if="tenList.length>6">
+                                <ul class="active-list">
+                                    <li v-for="(item,index) in tenList" v-if="index>5&&index<9" @click="openProductDetail1(item)">
+                                        <div class="active-head">
+                                            <img src="../icon/get2.png" alt="">
+                                        </div>
+                                        <div class="acitve-detail">
+                                            <span>{{item.userName}}</span>
+                                            <p v-if="item.orderType==1">正在购买课程</p>
+                                            <p v-if="item.orderType==2">正在拼团购买课程</p>
+                                            <p v-if="item.orderType==3">正在砍价购买课程</p>
+                                            <p v-if="item.orderType==4">正在拼团砍价购买课程</p>
+                                        </div>
+                                        <div class="active-button" v-if="item.isCut==1&&item.isGroup==0">
+                                            去砍价
+                                        </div>
+                                        <div class="active-button" v-if="(item.isCut==1&&item.isGroup==1) || (item.isGroup==1&&item.isCut==0)">
+                                            去拼团
+                                        </div>
+                                        <div class="active-button" v-if="item.isCut==0&&item.isGroup==0">
+                                            去购买
+                                        </div>
+                                        <div style="clear: both"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div @click="clickTab(6)">
+                    <img src="../icon/wordbanner.png" style="width:100%;" alt="">
+                </div>
+            </div>
+
+            <!--新增标题栏-->
+            <!--<div class="organ-detail-tab1-title">-->
+            <!--{{orgObj.orgName}}-->
+            <!--</div>-->
+            <!--<div class="organ-details-tab1-item">-->
+            <!--<p>机构优惠：</p>-->
+            <!--<div class="zasd">最多可抵扣 <span>1000太奇币</span>,部分课程团报中 </div>-->
+            <!--<div style="clear: both"></div>-->
+            <!--</div>-->
+            <!--<div class="organ-details-tab1-item">-->
+            <!--<p>机构简介：</p>-->
+            <!--<div class="zasd" v-html="orgObj.orgDesc"></div>-->
+            <!--<div style="clear: both"></div>-->
+            <!--</div>-->
+        </div>
+        <!--机构简介-->
+        <div style="padding: 0 15px" v-show="tabIndex==2">
+            <div class="organ-details-tab1-item">
+                <div class="zasd" v-html="orgObj.orgDesc"></div>
+                <div style="clear: both"></div>
+            </div>
+        </div>
+        <!--机构课程-->
+        <div v-show="tabIndex==3">
+            <ul class="classlist">
+                <li v-for="item in classList" @click="openProductDetail(item)">
+                    <div class="class-cover" :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                        <img v-if="item.isCut==1&&item.isGroup==0" src="../icon/cuting.png" alt="">
+                        <img v-if="item.isGroup==1&&item.isCut==0" src="../icon/grouping.png" alt="">
+                        <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                    </div>
+                    <div class="class-detail">
+                        <p class="class-title">{{item.productName}}</p>
+                        <div class="class-tag">
+                            <span>{{item.productIntro}}</span>
+                        </div>
+                        <div class="activename">
+                            <span v-if="item.isCut==1">邀请砍价</span>
+                            <span v-if="item.isGroup==1">拼团优惠</span>
+                            <span v-if="item.isCommission">邀请返佣</span>
+                        </div>
+
+                        <div class="class-num">
+                            <div class="class-price">
+                                <a href="javascript:;">￥</a>
+                                <span v-if="item.productPrice">{{item.productPrice}}</span>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="class-person">
+                                报名<span>{{item.purchaseNum}}</span>人
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+            </ul>
+            <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+        </div>
+        <div v-show="tabIndex==4" style="min-height: 300px">
+            <ul>
+                <li class="schlist" v-for="(item,index) in campusList">
+                    校区{{index+1}}：{{item.schoolname}} <a href="javascript:;" @click="openAddress(item)">查看地址</a>
+                </li>
+            </ul>
+        </div>
+        <div v-show="tabIndex==5" style="min-height: 300px">
+            <div class="commonts">
+                <div class="commonts-top">
+                    <div v-show="allGrade>0">
+                        <a href="javascript:;">{{allGrade}}</a>
+                        <span v-if="allGrade > 4">满意</span>
+                        <span v-if="allGrade < 4 && allGrade > 2">一般</span>
+                        <span  v-if="allGrade < 2">很差</span>
+                    </div>
+                    <p>共{{commentsTotal}}条评价</p>
+                </div>
+                <div class="commints-num">
+                    <ul>
+                        <li>
+                            环境<span>{{envGrade}}</span>
+                        </li>
+                        <li>
+                            师资<span>{{effectGrade}}</span>
+                        </li>
+                        <li>
+                            效果<span>{{facultyGrade}}</span>
+                        </li>
+                        <li>
+                            服务<span>{{serviceGrade}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <ul class="commonts-listul">
+                <li v-for="(item,index) in commentList">
+                    <div class="c-top">
+                        <div class="cer-head">
+                            <img src="../icon/signperson.png" alt="">
+                        </div>
+                        <div class="cer-detail">
+                            <div class="cer-detail-top">
+                                <p>{{item.userName}}</p>
+                                <span>{{item.cTimeStr}}</span>
+                            </div>
+                            <div class="cer-detail-bottom">
+                                <div v-bind:data-score="item.userGrade" class="function-demo"></div>
+                                <span>学习课程：{{item.productName}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="c-center">
+                        {{item.userDesc}}
+                    </div>
+                    <div class="c-bottom">
+                        <div>
+                            <div v-for="(items,indexs) in item.images" @click="seeImgs(index,indexs)" :style="{backgroundImage: 'url(' + items + ')'}"></div>
+                        </div>
+                    </div>
+                </li>
+
+            </ul>
+            <div v-if="!commentMore" class="nomore">暂无更多数据~</div>
+
+        </div>
+        <!--机构老师 暂不需要-->
+        <div style="display: none;">
+            <ul class="teacher-list" >
+                <li v-for="item in teacherList" @click="openTeacherDetail(item.teacherId)">
+                    <div class="teacher-cover">
+                        <img :src="item.imageUrl" alt="">
+                    </div>
+                    <div class="teacher-detail">
+                        <p>{{item.teacherName}}</p>
+                        <div class="teacher-tag">
+                            <span>{{item.teacherTag}}</span>
+                        </div>
+                        <!--<div class="teacher-desc" v-html="item.teacherDesc">-->
+
+                        <!--</div>-->
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    <!--产品-->
+    <div v-show="tabIndex==1" class="organ-detail-all">
+        <div class="photolist">优惠产品</div>
+        <ul class="classlist">
+            <li v-for="(item,index) in classList" @click="openProductDetail(item)" v-if="index<4">
+                <div class="class-cover" :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                    <img v-if="item.isCut==1&&item.isGroup==0" src="../icon/cuting.png" alt="">
+                    <img v-if="item.isGroup==1&&item.isCut==0" src="../icon/grouping.png" alt="">
+                    <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">{{item.productName}}</p>
+                    <div class="class-tag">
+                        <span>{{item.productIntro}}</span>
+                    </div>
+                    <div class="class-tag">
+                        <span>{{item.teachName}}</span>
+                    </div>
+                    <div class="activename">
+                        <span v-if="item.isCut==1">邀请砍价</span>
+                        <span v-if="item.isGroup==1">拼团优惠</span>
+                        <span v-if="item.isCommission">邀请返佣</span>
+                    </div>
+
+                    <div class="class-num">
+                        <div class="class-price">
+                            <a href="javascript:;">￥</a>
+                            <span v-if="item.productPrice">{{item.productPrice}}</span>
+                            <div style="clear: both"></div>
+                        </div>
+                        <div class="class-person">
+                            报名<span>{{item.purchaseNum}}</span>人
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+        </ul>
+    </div>
+    <!--学院相册-->
+    <div v-show="tabIndex==1" class="organ-detail-all">
+        <div class="photolist">校园相册</div>
+        <div style="padding: 0px 10px 10px 10px;">
+            <ul class="imglll">
+                <li  @click="seeImg(index)" v-for="(item,index) in imgArr" >
+                    <img :src="item" alt="">
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/swiper-3.3.1.min.js"></script>
+<script type="text/javascript" src="../script/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../script/raty.js"></script>
+<script>
+    var UIPhotoViewer;
+    var swiper123;
+    var browser;
+    apiready = function () {
+        browser = api.require('webBrowser');
+        UIPhotoViewer = api.require('UIPhotoViewer');
+        app.orgId = api.pageParam.id;
+        app.getOrgClass();
+        app.getOrgDetail();
+        app.getTenList();
+//        app.getCouponList();
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.tabIndex==3 && app.pagenum != 1){
+                app.getOrgClass();
+            }
+            if(app.tabIndex == 5 && app.commentMore){
+                app.getOrgComment();
+            }
+
+        });
+
+    };
+
+
+    var app = new Vue({
+        el: '#organallbox',
+        data: {
+            abc:4,
+            tabIndex:1,
+            selectIndex:0,
+            lineStyle:{},
+            orgId:null,
+            orgObj:{
+
+            },
+            classList:[],
+            teacherList:[],
+
+            lastPage:null,
+            pageNum:1,
+            pageSize:10,
+
+            commentList:[],
+            commentsTotal:0,
+            commentMore:true,
+            cpagesize:10,
+            cpagenum:1,
+
+            campusList:[],
+
+            isMore:true,
+            lon:localStorage.getItem('lon') || null,
+            lat:localStorage.getItem('lat') || null,
+
+            classFlag:true,
+            teacherFlag:true,
+            commentFlag:true,
+            campusFlag:true,
+
+            imgArr:[],
+
+
+            envGrade:0, //环境分
+            effectGrade:0, //师资分
+            facultyGrade:0, //效果分
+            serviceGrade:0, //服务分
+            allGrade:0, //总评分
+
+
+            couponList:[],
+            tenList:[],
+
+            bannerList:[],//机构轮播图
+
+        },
+        created:function () {
+
+        },
+        mounted(){
+
+        },
+        methods:{
+            getTenList(){
+                var _this = this;
+                ajaxGetVistor(getIndexTenListUrl,{orgId:this.orgId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.tenList = ret.data;
+                        _this.$nextTick(function () {
+                            var swiper1 = new Swiper('.swiper-container1', {
+                                direction: 'vertical',
+                                autoplay:true,
+                                loop:false,
+                            });
+                        })
+                    }
+                })
+            },
+            getCoupon(data,index){
+                if(data.isGet==0){
+                    ajaxGet(getCouponUrl,{couponId:data.couponId},function (ret,err) {
+                        if(ret && ret.code == 0){
+                            toast('已领取优惠券')
+                            app.list.couponList(index,1)
+                        }
+                    })
+                }else{
+                    toast('您已领取过此优惠券')
+                }
+            },
+            getCouponList(){
+                var _this = this;
+                var obj = {
+                    orgId:this.orgId
+                }
+                if(getUserInfo()){
+                    obj.userId = getUserInfo().userId;
+                }
+                ajaxGetVistor(getCouponListByOrgUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.couponList = ret.data;
+                    }
+                })
+            },
+            openProductListByType(type){
+                if(type==3){
+                    openRegister('special_class','./special_class.html',{type:type,orgId:this.orgId})
+                }else{
+                    openRegister('threelist','./threelist.html',{type:type,orgId:this.orgId})
+                }
+            },
+            getOrgDetail(){
+                var _this = this;
+                let obj = {
+                    orgId:this.orgId,
+                    orgLongitude:this.lon,
+                    orgLatitude:this.lat
+                }
+                if(getUserInfo()){
+                    obj.userId = getUserInfo().userId
+                }
+                ajaxGetVistor(getOrganDetailUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.bannerList = ret.data.orgImageLists
+                        _this.orgObj = ret.data;
+                        al(_this.orgObj)
+                        for(var i=0;i<ret.data.imageList.length;i++){
+                            _this.imgArr.push(ret.data.imageList[i].attachment.fileUrl)
+                        }
+                        _this.$nextTick(function () {
+                            swiper123 = new Swiper('.swiper111', {
+                                spaceBetween: 30,
+                                centeredSlides: true,
+                                loop: true,
+                                pagination: {
+                                    el: '.swiper-pagination',
+                                    clickable: true,
+                                },
+                                on:{
+                                    click: function(){
+                                        var index = swiper123.realIndex;
+
+                                        var data = _this.bannerList[index];
+                                        if(data.productType == 2){
+                                            if(data.isCut == 1 && data.isGroup == 0){
+                                                openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                                            }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                                                openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                                            }else if(data.isGroup == 0 && data.isGroup == 0){
+                                                openRegister('product_detail','./product_detail.html',{id:data.productId})
+                                            }
+                                        }else if(data.productType==5){
+                                            openRegister('productspe_detail','./productspe_detail.html',{id:data.productId})
+                                        }
+                                    },
+                                },
+                            });
+                        })
+                        getCoinByBrower(1,_this.orgId);
+                    }
+                })
+            },
+            //获取课程列表
+            getOrgClass(){
+                if(!this.isMore){
+                    return;
+                }
+                var _this = this;
+                var obj = {
+                    orgId:this.orgId,pagenum:this.pageNum,pagesize:this.pageSize
+                }
+                ajaxGetVistor(getOrganClassUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(_this.pageNum >= _this.lastPage){
+                            _this.classList = [..._this.classList,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.classList = [..._this.classList,...ret.data.list]
+                            _this.pageNum++;
+                        }
+                    }
+                })
+            },
+            //获取教师
+            getOrgTeacher(){
+                var _this = this;
+                ajaxGetVistor(getOrganTeacherListUrl,{orgId:this.orgId,pagesize:100,pagenum:1},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.teacherList = ret.data.list;
+                    }
+
+                })
+            },
+            //教师详情页
+            openTeacherDetail(data){
+                openRegister('teacher_detail','./teacher_detail.html',{id:data})
+            },
+            //获取评论
+            getOrgComment(){
+                if(!this.commentMore){
+                    return;
+                }
+                var _this = this;
+                ajaxGetVistor(getOrganCommentsUrl,{orgId:this.orgId,pagesize:this.cpagesize,pagenum:this.cpagenum},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.commentsTotal = ret.data.total;
+                        if(ret.data.list.length>0){
+                            _this.envGrade = ret.data.list[0].envGrade;
+                            _this.effectGrade = ret.data.list[0].effectGrade;
+                            _this.facultyGrade = ret.data.list[0].facultyGrade;
+                            _this.serviceGrade = ret.data.list[0].serviceGrade;
+                        }
+                        _this.allGrade = ret.orgGrade || 0;
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDay(ret.data.list[i].createTime)
+                        }
+                        if(ret.data.list.length < _this.cpagesize){
+                            _this.commentList = [..._this.commentList,...ret.data.list]
+                            _this.commentMore = false;
+                        }else{
+                            _this.commentList = [..._this.commentList,...ret.data.list]
+                            _this.cpagenum++;
+                        }
+                    }
+                    _this.$nextTick(function () {
+                        $(function() {
+                            $.fn.raty.defaults.path = '../icon';
+                            $('.function-demo').raty({
+                                readOnly: true,
+                                number: 5,//多少个星星设置
+                                path: '../icon',
+                                cancelOff: 'cancel-off-big.png',
+                                cancelOn: 'cancel-on-big.png',
+                                size: 24,
+                                starHalf: 'star-half-big.png',
+                                starOff: 'star-off-big.png',
+                                starOn: 'star-on-big.png',
+                                cancel: false,
+                                targetKeep: true,
+                                score: function() {
+                                    return $(this).attr('data-score');
+                                }
+                            });
+                        });
+                    })
+
+                })
+            },
+            getOrgCampus(){
+
+            },
+            //打开课程简介
+            openProductDetail(data){
+                if(data.imageType == 2){
+                    api.sendEvent({
+                        name: 'openproductpage',
+                        extra: {
+                            id: data.productId,
+                        }
+                    });
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+
+                }else if(data.imageType==4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                    }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                        openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                    }
+                }
+            },
+            //点击轮播图事件
+            openSweiper(data){
+                if(data.imageType==1){ //机构
+
+                }else if(data.imageType==2){ //产品
+                    this.openProductDetail(data.cycleValue)
+                }else if(data.imageType==3){ //外链
+                    browser.open({
+                        url: data.cycleValue
+                    });
+                }
+            },
+            //顶部tab切换事件
+            clickTab(index){
+                this.lineStyle = {
+                    left:(index-1)*0.165*100+'%'
+                }
+                if(index == 3 && this.classFlag){
+                    this.getOrgClass();
+                    this.classFlag = false;
+                }
+                if(index == 4){
+                    this.tabIndex = index;
+                    var _this = this;
+                    ajaxGetVistor(getOrganCampusUrl,{orgId:this.orgId},function (ret,err) {
+                        if(ret && ret.code == 0){
+                            _this.campusFlag = false;
+                            _this.campusList = JSON.parse(ret.data.orgCampus);
+                        }
+                    })
+                }
+                if(index != this.tabIndex){
+                    this.tabIndex = index;
+                    this.showFlag = true;
+                }else{
+                    this.showFlag = !this.showFlag;
+                }
+
+                if(index==5 && this.commentFlag){
+                    this.getOrgComment();
+                    this.commentFlag = false;
+
+                }
+                if(index == 6){
+                    openNewWindow('word_index','./word/word_index.html',{})
+                }
+            },
+            openAddress(item){
+                openRegister('organaddress','./organaddress.html',{list:[item]})
+            },
+            //查看图片大图
+            seeImg:function(index){
+                var _this = this;
+                previewPhoto(UIPhotoViewer,_this.imgArr,index)
+            },
+            seeImgs:function(index,indexs){
+                var _this = this;
+                var arr = _this.commentList[index].images;
+                previewPhoto(UIPhotoViewer,arr,indexs)
+            },
+            //打开课程简介
+            openProductDetail1(data){
+                if(data.orderType==1){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.orderType == 2 || data.orderType==4){
+                    openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                }else if(data.orderType == 3){
+                    openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+
+                }
+            },
+        },
+    })
+
+</script>
+</html>

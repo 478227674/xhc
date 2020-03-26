@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/ailearn.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/load.css"/>
+    <style>
+        .learn-list{
+            background: none;
+            padding: 0 4%;
+        }
+        .live-list-a {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            overflow: auto !important;
+            height:auto !important;
+        }
+        .live-list-a>div{
+            margin-bottom: 10px;
+        }
+
+        #live_list {overflow: hidden;width: 100%;position: relative;background: #fff;
+            display: flex;justify-content: space-around}
+        #live_list li{box-sizing:border-box;width:33.33%;height: 20px;line-height: 20px;float: left;text-align: center;color: #333;margin: 10px 0;font-size: 14px;}
+        .activetab{
+            color:#f7260a !important;
+        }
+        .live-list-title{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <ul id="live_list">
+            <li v-show="hasClass" :class="{'activetab':activeIndex == 1}"  @click="chooseThisType(1)">购买课程</li>
+            <li v-show="hasFtof" :class="{'activetab':activeIndex == 2}"  @click="chooseThisType(2)">面授</li>
+
+            <!--<li id="line" :style="{'width':lineWidth}"></li>-->
+        </ul>
+        <div v-show="activeIndex == 1">
+            <div class="app-center leran_items">
+                <div :class="{'active-btns' : sortId == item.id}" @click="getTestListBySortId(item.id)" v-for="item in sortList">
+                    {{item.name}}
+                </div>
+            </div>
+            <div class="learn-list">
+                <div class="live-list-a">
+                    <div v-for="item in videoList" @click="openClassDetail(item)">
+                        <div class="live-list-img">
+                            <img :src="item.imageUrl" alt="">
+                        </div>
+                        <div class="live-list-title">{{item.productName}}</div>
+                    </div>
+                </div>
+                <div class="nomore" v-show="!isMore">暂无更多数据~</div>
+            </div>
+        </div>
+        <div v-show="activeIndex == 2">
+            <ul class="loadlist">
+                <li v-for="(item,index) in ftofList">
+                    <p>{{item.productName}}</p>
+                    <a href="javascript:;" @click="openClassDetail(item)">进入课程</a>
+                </li>
+            </ul>
+            <div class="nomore" v-show="!isMore1">暂无更多数据~</div>
+
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+
+    	var user = getUserInfo();
+        if(user.userPhone[0] == 9){
+	        api.confirm({
+		        title: '温馨提示',
+		        msg: '你好，你是团班学员，是否绑定手机，未绑定手机购买其他课程会不成功，本机构概无责任！！',
+		        buttons: ['去绑定', '取消']
+	        }, function(ret, err) {
+		        var index = ret.buttonIndex;
+		        if(index==1){
+		            openNewWindow('groupclassbind','../system/groupclassbind.html',{})
+                }
+	        });
+        }
+
+        app.getSortList();
+        app.getFtofList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.activeIndex==1){
+                if(app.isMore && app.pagenum!=1){
+                    app.getTestListFn();
+                }
+            }else{
+                if(app.isMore1 && app.pagenum1!=1){
+                    app.getFtofList();
+                }
+            }
+        });
+    };
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            sortList: [
+
+            ],
+            sortId:null,
+            videoList:[],
+            ftofList:[],
+            isMore:true,
+            pagenum:1,
+            isMore1:true,
+            pagenum1:1,
+            activeIndex:1,
+            hasClass:false,
+            hasFtof:false
+        },
+        methods:{
+            chooseThisType(t){
+                this.activeIndex = t;
+            },
+            //打开详情页面
+            openClassDetail(data){
+                openNewWindow('new_classlist','./new_classlist.html',{imageType:data.imageType,id:data.productId})
+            },
+            //学科按钮单击事件
+            getTestListBySortId(id){
+                this.sortId = id;
+                this.pagenum = 1;
+                this.videoList = [];
+                this.getTestListFn();
+            },
+            getFtofList(){
+                var _this = this;
+                ajaxGet(getMyFtofListUrl,{pageNum:this.pagenum1,pageSize:10},function (ret,err) {
+                    if(ret && ret.code == 0){
+
+                        if(ret.data.list.length>0){
+                            _this.hasFtof = true;
+                        }
+
+                      _this.ftofList = [..._this.ftofList,...ret.data.list];
+                        if(ret.data.list.length<10){
+                            _this.isMore1 = false;
+                        }
+                        _this.pagenum1++;
+                    }
+                })
+            },
+            //根据项目ID获取课程列表
+            getTestListFn(){
+                var _this = this;
+                ajaxGet(getMyClassBySoutIdUrl,{sortId:this.sortId,pageNum:this.pagenum,pageSize:10},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(ret.data.list.length>0){
+                            _this.hasClass = true;
+                        }
+                        _this.videoList = [..._this.videoList,...ret.data.list];
+                        if(ret.data.list.length<10){
+                            _this.isMore = false;
+                        }
+                        _this.pagenum++;
+                    }
+                })
+            },
+            //获取学科列表
+            getSortList(){
+                var _this=this;
+                ajaxGet(getSortListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.sortList = ret.data;
+                        if(ret.data.length>0){
+                            //默认获取第一个学科的试题列表
+                            _this.sortId = ret.data[0].id;
+                            _this.getTestListBySortId(_this.sortId)
+                        }
+                    }
+                })
+            },
+        },
+    })
+
+
+
+</script>
+</html>

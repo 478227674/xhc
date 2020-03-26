@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <style>
+        .changenow{
+            width: 90%;
+            height: 40px;
+            border-radius: 5px;
+            background: #f73e3c;
+            font-size: 14px;
+            color:#fff;
+            text-align: center;
+            line-height: 40px;
+            margin: 30px auto;
+        }
+        input::-webkit-input-placeholder {
+            color: #999999;
+            font-size: 12px;
+        }
+        input:-moz-placeholder {
+            color: #999999;
+            font-size: 12px;
+        }
+        input:-ms-input-placeholder {
+            color: #999999;
+            font-size: 12px;
+        }
+        body{
+            overflow: hidden;
+        }
+        .feedtop {
+            width: 90%;margin: 10px auto;
+            background: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            padding-bottom: 10px;
+        }
+        .feedtop>span{
+            display: block;
+            margin: 10px;
+            font-size: 14px;
+            color:#333;
+        }
+        .feedtop textarea {
+            border-radius: 5px;
+            background: #f9f9f9;
+            width: 90%;
+            margin: 0 auto;
+            display: block;
+            padding: 10px;
+        }
+        .contact{
+            height: 44px;
+            line-height: 44px;
+            width: 90%;margin: 0px auto;
+            background: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+
+        }
+        .contact span{
+            margin-left: 10px;
+            font-size: 14px;color:#333;
+        }
+        .contact input {
+            height:20px;
+            padding: 12px 0;
+            line-height: 20px;
+        }
+    </style>
+</head>
+<body >
+    <div class="feedback">
+        <div class="feedtop">
+            <span>意见反馈</span>
+            <textarea v-model="content" name="" id="" cols="30" rows="10" placeholder="请输入您的意见或建议"></textarea>
+        </div>
+
+        <div class="contact">
+            <span>联系方式</span>
+            <input v-model="phone" placeholder="请输入您的手机号" type="text">
+        </div>
+        <div class="changenow" @click="submitData">
+            提交
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.feedback',
+        data: {
+            content:'',
+            phone:''
+        },
+        methods:{
+            submitData(){
+                if(!this.content){
+                    toast('请输入内容后提交')
+                    return;
+                }
+                if(!this.phone || !checkPhone(this.phone)){
+                    toast('请输入正确的手机号码')
+                    return;
+                }
+                ajaxGet(sendOpinionUrl,{opinionContent:this.content,userContacts:this.phone},function (ret,err) {
+                    if(ret && ret.code == 0 ){
+                        toast('提交成功，感谢您的反馈。')
+                        setTimeout(function () {
+                            closeWin();
+                        },1000)
+                    }
+                })
+            },
+//            var changeMainUrl = serverUrl + '/app/user/queryUserInfo';//修改个人信息 userName imageId sex 1男 2女 mail
+        },
+    })
+
+
+    apiready = function () {
+
+    }
+</script>
+</html>

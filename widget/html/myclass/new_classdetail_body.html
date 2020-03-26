@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+        #videobox{
+            width:100%;
+            height:auto;
+        }
+        .videobg img{
+            width:60%;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .class-list{
+            padding:0px 20px;
+            background: #fff;
+            margin-top: 10px;
+        }
+        .class-list>div{
+            font-size: 16px;color:#333;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+        .class-list li{
+            display: flex;
+            justify-content: space-between;
+        }
+        .class-list li div{
+            font-size: 14px;color:#333;
+            width: 60%;
+            overflow: hidden;
+            line-height: 40px;
+        }
+        .class-list li span{
+            width:50px;
+            display: block;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            color:#f7260a;
+            font-size: 12px;
+            border: 1px solid #f7260a;
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+        .class-tab{
+            width:100%;
+            height: 44px;
+            background: #fff;
+            display: flex;
+            line-height: 44px;
+            justify-content: space-around;
+            font-size: 14px;color:#333;
+        }
+        .class-tab>div{
+            padding: 0 20px;
+            position: relative;
+        }
+        .class-tab>div>span{
+            width: 100%;
+            display: block;
+            position: absolute;
+            bottom:0px;
+            left: 0px;
+            border-bottom: 2px solid #f7260a;
+            display: none;
+        }
+        .calss-tab-active span{
+            display:block !important;
+        }
+        .calss-tab-active{
+            color:#f7260a !important;   
+        }
+    </style>
+</head>
+<body style="background: #f6f6f6">
+<div id="learn-box">
+    <video  poster="../../icon/ai/videotbg.png" :src="vobj.videoUrl" controls="controls" id="videobox"></video>
+    <div class="class-tab">
+        <div class="">
+            <span></span>
+            详情
+        </div>
+        <div class="calss-tab-active">
+            <span></span>
+            目录
+        </div>
+    </div>
+    <div class="class-list">
+        <ul>
+            <li>
+                <div>
+                    1.一级建造师管理学习指导
+                </div>
+                <span>
+                    可试看
+                </span>
+            </li>
+            <li>
+                <div>
+                    1.一级建造师管理学习指导
+                </div>
+            </li>
+            <li>
+                <div>
+                    1.一级建造师管理学习指导
+                </div>
+            </li>
+            <li>
+                <div>
+                    1.一级建造师管理学习指导
+                </div>
+            </li>
+            <li>
+                <div>
+                    1.一级建造师管理学习指导
+                </div>
+            </li>
+            <li>
+                <div>
+                    1.一级建造师管理学习指导
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript" src="../../script/echarts.min.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            kid:null,
+            vobj:{},
+        },
+        methods:{
+            getTeacherVideo(){
+                var _this = this;
+                ajaxGet(getTestTeacherVideoUrl,{knowledgeId:this.kid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.vobj = ret.data;
+                    }
+                })
+            },
+        },
+    })
+
+
+    apiready = function () {
+        app.kid = api.pageParam.id;
+        app.getTeacherVideo();
+    };
+
+
+</script>
+</html>

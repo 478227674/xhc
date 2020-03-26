@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/type.css"/>
+    <style>
+        .mtiwordsli{
+            height:68px;
+            padding: 0 15px;
+            background: #fff;
+            margin-bottom: 10px;
+        }
+        .mti-index{
+            display: flex;
+            justify-content: flex-start;
+
+        }
+        .mti-index span{
+            display: block;
+            width:18px;
+            height:18px;
+            color:#fff;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            background: #bbbbbb;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+        .mti-index p{
+            color:#333;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        .mtibtns{
+            display: flex;
+            position: relative;
+            justify-content: flex-end;
+        }
+        .mtibtns div{
+            padding: 5px 6px;
+            border:1px solid #bbbbbb;
+            font-size: 12px;
+            color:#666;
+            border-radius: 5px;
+            margin-left: 15px;
+            margin-top: 5px;
+        }
+        .mtibtns>p{
+            position: absolute;
+            left:0px;
+            top:5px;
+            line-height: 20px;
+            font-size: 12px;
+            color:#666;
+        }
+    </style>
+</head>
+<body >
+   <ul class="mouble-unit">
+       <li class="mtiwordsli" v-for="(item,index) in allList" @click="openWordsListByLinten(item)">
+           <div class="mti-index">
+               <span>{{item.coreIndex}}</span>
+               <p>{{item.coreName}}</p>
+           </div>
+           <div class="mtibtns">
+               <p>
+                   已熟:{{item.memoryCount}} | 未熟:{{item.noMemoryCount}} | 未记:{{item.noReadCount}}
+               </p>
+               <div @click.stop="openTestRemember(item)">确定</div>
+               <div @click.stop="openWordsListByLinten(item)">预览</div>
+               <!--<div @click.stop="openPicRemember(item)">闪形记</div>-->
+               <!--<div @click.stop="openFullRemember(item)">全脑记</div>-->
+               <!--<div @click.stop="openTestRemember(item)">同步考</div>-->
+           </div>
+       </li>
+   </ul>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.mouble-unit',
+        data: {
+            allList:[],
+            typeId:null,
+            pagenum:1,
+            isMore:true,
+        },
+        methods:{
+            openWordsListByLinten(data){
+                openNewWindow('wordslist','../unit/wordslist.html',{name:data.coreName,id:data.id})
+            },
+            openPicRemember(data){
+                localStorage.setItem('UNIT_TYPE_ID',data.coreIndex)
+                localStorage.setItem('UNIT_TYPE_NAME',data.coreName)
+                openNewWindow('picremember','../picremember/picremember.html',{name:data.coreName,id:this.typeId,type:4,pagenum:data.coreIndex})
+
+            },
+            openFullRemember(data){
+                localStorage.setItem('UNIT_TYPE_ID',data.coreIndex)
+                localStorage.setItem('UNIT_TYPE_NAME',data.coreName)
+                openNewWindow('fullr','../fullremember/fullr.html',{name:data.coreName,id:this.typeId,type:4,pagenum:data.coreIndex})
+            },
+            openTestRemember(data){
+                var _this = this;
+                //检测当前计划版本和点击的版本是否为同一个
+                ajaxGet(checkActivePlanUrl,{courseId:0,gradeId:_this.typeId},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        if(ret.data){ //是当前计划下
+                            api.confirm({
+                                title: '温馨提示',
+                                msg: '你选择了'+sName+'词汇 请用首页全脑记或闪形记进行学习',
+                                buttons: ['确定', '取消']
+                            }, function(ret, err) {
+                                var index = ret.buttonIndex;
+                                if(index == 1){
+                                    //点击确定后先记录当前点击的单元ID和计划Id 然后跳首页
+                                    ajaxGet(setLearnUnitUrl,{lessonId:data.id,planId:planId},function (ret,err) {
+                                        if(ret && ret.code == 0){
+                                            api.execScript({
+                                                name:'word_index',
+                                                frameName:'word_index_body',
+                                                script:'apiready()'
+                                            })
+                                            api.closeToWin({name:'word_index'})
+                                        }
+                                    })
+                                }else{
+
+                                }
+                            });
+                        }else{ //不是当前计划
+                            api.confirm({
+                                title: '温馨提示',
+                                msg: '是否使用以前学习计划?',
+                                buttons: ['使用计划', '取消','创建计划']
+                            }, function(ret, err) {
+                                var index = ret.buttonIndex;
+                                if(index == 1){
+//                                    //点击确定后先记录当前点击的单元ID和计划Id 然后跳首页
+                                    ajaxGet(useThisPlanUrl,{courseId:0,gradeId:_this.typeId,gradeType:2,lessonId:data.id},function (ret,err) {
+                                        if(ret && ret.code == 0){
+                                            api.execScript({
+                                                name:'word_index',
+                                                frameName:'word_index_body',
+                                                script:'apiready()'
+                                            });
+                                            api.closeToWin({name:'word_index'})
+                                        }
+                                    })
+                                }else if(index == 2){
+
+                                }else if(index == 3){
+                                    openNewWindow('createplan','../littleclass/createplan.html',{})
+
+                                }
+                            });
+                        }
+                    }
+
+                })
+            },
+            getList(){
+                var _this = this;
+                ajaxGet(getListByDanciIdUrl1,{coreId:this.typeId,pageSize:10,pageNum:this.pagenum},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret)
+                        app.allList = [...app.allList,...ret.data.list];
+                        if(ret.data.list.length<10){
+                            _this.isMore = false
+                        }
+                        _this.pagenum+=1;
+                    }
+                })
+
+            },
+
+        },
+    })
+    var sName = '',planId=null,gradeId;
+
+
+    apiready = function () {
+        planId = api.pageParam.planId;
+        gradeId = api.pageParam.gradeid;
+        if(api.pageParam.gradeid){
+            app.typeId = api.pageParam.gradeid;
+
+        }else{
+            app.typeId = api.pageParam.id;
+
+        }
+        sName = api.pageParam.name;
+        app.getList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200          //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore){
+                app.getList();
+            }
+        });
+    };
+</script>
+</html>

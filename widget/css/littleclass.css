@@ -1,0 +1,319 @@
+
+
+/*班级list*/
+.my-class-list{
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+    padding:15px 0px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.my-class-img{
+    width: 5rem;
+    height:5rem;
+    overflow: hidden;
+}
+.my-class-img img{
+    border-radius: 5px;
+    width:100%;
+    height:100%;
+}
+.my-class-detail{
+    margin-left: 10px;
+    width:50%;
+}
+.my-class-name{
+    font-size: 14px;
+    color:#333;
+    margin-bottom: 5px;
+}
+.my-class-num{
+    font-size: 12px;
+    margin-bottom: 5px;
+    color:#333;
+}
+.my-class-content{
+    font-size: 12px;
+    color:#666;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.my-class-name-guanfang{
+    background: url("../icon/guanfang.png") no-repeat right 0px;
+    background-size: 45px 14px;
+    padding-right: 50px;
+}
+.my-class-join{
+    position: absolute !important;
+    right:0px;
+    top: 15px;
+    font-size: 0.8rem;
+    width:3.6rem;
+    text-align: center;
+    line-height: 1.5rem;
+    height: 1.5rem;
+    border-radius: 30px;
+    border: 1px solid #f73e3c;
+    color:#f73e3c;
+}
+
+input:-ms-input-placeholder {
+    color: #999;
+}/* Internet Explorer 10+ */
+
+input::-webkit-input-placeholder {
+    color: #999;
+}/* WebKit browsers */
+
+input::-moz-placeholder {
+    color: #999;
+}/* Mozilla Firefox 4 to 18 */
+
+input:-moz-placeholder {
+    color: #999;
+}/* Mozilla Firefox 19+ */
+
+textarea::-webkit-input-placeholder {
+    font-size: 1rem;
+    color: #999;
+}/* WebKit browsers */
+
+textarea::-moz-placeholder {
+    font-size: 1rem;
+    color: #999;
+}/* Mozilla Firefox 4 to 18 */
+
+textarea:-moz-placeholder {
+    font-size: 1rem;
+    color: #999;
+}/* Mozilla Firefox 19+ */
+.create-class-danger{
+    display: flex;
+    justify-content: flex-start;
+}
+.create-class-danger img{
+    height:18px;
+    width:18px;
+    margin-top: 15px;
+    display: block;
+    margin-right: 10px;
+}
+.create-class-danger span{
+    font-size: 0.8rem;
+    color:#666;
+    line-height: 50px;
+}
+.create-class-head{
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+}
+.create-class-head span{
+    padding-right: 10px;
+    font-size: 1rem;
+    color:#333;
+    line-height: 5rem;
+}
+.create-class-head div{
+    width:3.125rem;
+    height:3.125rem;
+    overflow: hidden;
+    margin-top: 0.85rem;
+}
+.create-class-head div img{
+    border-radius: 5px;
+    width:100%;
+    height:100%;
+}
+.create-class-head p {
+    position: absolute;padding-right: 20px;
+    background: url("../icon/right.png") no-repeat right 2px;
+    background-size: 7px 13px;
+    right:0px;
+    font-size: 1rem;
+    color:#999;
+    top:30px;
+}
+.create-class-learn{
+    display: flex;
+    line-height: 3rem;
+    position: relative;
+}
+.create-class-learn img{
+    height:13px;
+    width:7px;
+    position: absolute;
+    right:0px;
+    top:1rem;
+}
+.create-class-learn span{
+    margin-right: 10px;
+}
+.create-class-learn textarea {
+    flex: 1;
+    padding: 16px 0;
+    outline: none;
+    font-size: 1.2rem;
+}
+.create-class-btn{
+    width:100%;
+    height:2.5rem;
+    line-height: 2.5rem;
+    font-size: 1rem;
+    color:#fff;
+    text-align: center;
+    position: fixed;
+    bottom:1px;
+}
+
+
+/*排名*/
+.class-tp-1{
+    display: flex;
+    justify-content: flex-start;
+    position: relative;
+}
+.class-tp-2{
+    width:2.5rem;
+    height:2.5rem;
+    overflow: hidden;
+}
+.class-tp-2 img{
+    width:100%;
+    height:100%;
+    border-radius: 5px;
+}
+.class-tp-3{
+    margin-left: 0.8rem;
+}
+.class-tp-3 div{
+    font-size: 1rem;
+    color:#333;
+}
+.class-tp-3 p{
+    font-size: 0.8rem;color:#333;
+    margin-top: 0.3rem;
+}
+.class-tp-4{
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    right:0px;
+}
+.class-tp-4 img{
+    width:1.875rem;
+    height:1.875rem;margin-left: 10px
+}
+.class-c-1{
+    padding: 15px;
+}
+.class-c-2{
+    display: flex;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e5e5e5;
+    justify-content: space-around;
+}
+.class-c-2>div{
+    text-align: left;
+    font-size: 0.875rem;
+    color:#666;
+}
+.class-c-today{
+    width:50%;
+    display: flex;
+    justify-content: flex-start;
+}
+.class-c-num{
+    width:25%;
+    text-align: center !important;
+}
+.class-c-time{
+    width:25%;
+    text-align: right !important;
+}
+.class-list-paiwei{
+    display: flex;
+    padding: 15px 0;
+    justify-content: space-around;
+}
+.class-c-today img{
+    width:2.1875rem;
+    height:2.1875rem;
+    border-radius: 50%;
+}
+.class-list-paiwei .class-c-num,.class-list-paiwei .class-c-time{
+    line-height: 2.1875rem;
+}
+.class-list-paiwei .class-c-today span{
+    line-height: 2.1875rem;
+    margin-left: 10px;
+}
+.my-level-class{
+    border-bottom: 1px solid #e5e5e5;
+    color:#f73e3c !important;
+}
+.class-c-bottom{
+    width:94%;
+    height:3.125rem;
+    padding: 0.625rem 3%;
+    background: #f6f6f6;
+    position: fixed;
+    bottom:0px;
+    left:0px;
+    display: flex;
+    justify-content: space-between;
+}
+.class-c-bottom div{
+    width:38%;
+    padding-left: 10%;
+    height:3.125rem;
+    line-height:3.125rem;
+    text-align: center;
+    border-radius: 5px;
+    background:#fff url("../icon/paimingicon.png") no-repeat 15px 7px;
+    background-size:2.9375rem 2.3125rem;
+}
+.class-c-getzzb{
+    background:#fff url("../icon/paimingzzbicon.png") no-repeat 15px 7px !important;
+    background-size:2.9375rem 2.3125rem !important;
+}
+.mask>div{
+    position: absolute;
+    width:70%;
+    min-height:14rem;
+    background: #fff;
+    border-radius: 5px;
+    left: 50%;
+    margin-left: -35%;
+    top:5rem
+}
+.gg-title{
+    font-size: 1.2rem;
+    line-height: 4rem;
+    color:#333;
+    text-align: center;
+}
+.gg-content .shownotice{
+    width:90%;
+    display: block;
+    margin: 0 auto;
+    height:6rem;
+    padding: 10px 0;
+    line-height: 1rem;
+    outline:none;
+    font-size: 0.825rem;
+}
+.submitgg{
+    width:50%;
+    height:40px;
+    font-size: 14px;color:#fff;
+    border-radius: 5px;
+    background: #f73e3c;
+    text-align: center;
+    line-height: 40px;
+    margin: 10px auto;
+}

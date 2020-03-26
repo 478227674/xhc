@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/test.css"/>
+    <style>
+    </style>
+</head>
+<body >
+    <div class="pic-remember-box">
+        <div class="full-box-top">
+            <p>
+                <span>{{stepIndex+1}}</span>
+                {{steptextList[stepIndex]}}({{gradeNameAndLessonName}})
+            </p>
+            <div>({{wordsIndex}}/{{wordsCount}})</div>
+        </div>
+        <audio src="" id="audiobox"></audio>
+        <div v-show="stepIndex==0">
+            <div class="words">
+                {{activeObj.words}}
+            </div>
+            <div class="pic-soundmark">
+                <img :src="activeObj.soundmark" alt="">
+            </div>
+            <div class="full-remember-play" @click="playBtnFn">
+                <img src="../../../icon/laba-1.png" alt="">
+            </div>
+            <div class="pic-cnmean">
+                {{activeObj.cnmean}}
+            </div>
+            <div class="pic-img">
+                <img :src="activeObj.pic" alt="">
+            </div>
+        </div>
+        <div v-show="stepIndex==1">
+            <div class="words">
+                {{activeObj.words}}
+            </div>
+            <div class="pic-soundmark">
+                <img :src="activeObj.soundmark" alt="">
+            </div>
+            <div class="full-remember-play" @click="playBtnFn">
+                <img src="../../../icon/laba-1.png" alt="">
+            </div>
+            <div class="pic-cnmean">
+                {{activeObj.cnmean}}
+            </div>
+            <div class="pic-img">
+                <img :src="activeObj.pic" alt="">
+            </div>
+        </div>
+        <div v-show="stepIndex==2">
+            <div class="words">
+                {{activeObj.words}}
+            </div>
+            <div class="pic-soundmark">
+                <img :src="activeObj.soundmark" alt="">
+            </div>
+            <div class="chooselist">
+                <ul>
+                    <li v-for="(item,index) in anwser1" @click="checkAnwser(item,index,1)">
+                        <span v-show="activeAnwserIndex!=index"></span>
+                        <img v-show="activeAnwserIndex==index" src="../../../icon/wordchoosed.png" alt="">
+                        <p>{{item.cnmean}}</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="resultbox">
+                <img v-show="isRight==1" src="../../../icon/testright.png" alt="">
+                <img v-show="isRight==2" src="../../../icon/wordwrong.png" alt="">
+            </div>
+        </div>
+        <div v-show="stepIndex==3">
+            <div class="words">
+                {{activeObj.cnmean}}
+            </div>
+            <div class="chooselist">
+                <ul>
+                    <li  v-for="(item,index) in anwser1"  @click="checkAnwser(item,index,2)">
+                        <span v-show="activeAnwserIndex!=index"></span>
+                        <img v-show="activeAnwserIndex==index" src="../../../icon/wordchoosed.png" alt="">
+                        <p>{{item.words}}</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="resultbox">
+                <img v-show="isRight==1" src="../../../icon/testright.png" alt="">
+                <img v-show="isRight==2" src="../../../icon/wordwrong.png" alt="">
+            </div>
+        </div>
+        <div v-show="stepIndex==4">
+            <div class="full-remember-play" @click="playBtnFn">
+                <img src="../../../icon/laba-1.png" alt="">
+            </div>
+            <div class="chooselist">
+                <ul>
+                    <li v-for="(item,index) in anwser1" @click="checkAnwser(item,index,1)">
+                        <span v-show="activeAnwserIndex!=index"></span>
+                        <img v-show="activeAnwserIndex==index" src="../../../icon/wordchoosed.png" alt="">
+                        <p>{{item.words}}</p>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="resultbox">
+                <img v-show="isRight==1" src="../../../icon/testright.png" alt="">
+                <img v-show="isRight==2" src="../../../icon/wordwrong.png" alt="">
+            </div>
+        </div>
+        <div v-show="stepIndex==5">
+            <div class="words">
+                {{activeObj.words}}
+            </div>
+            <div class="pic-soundmark">
+                <img :src="activeObj.soundmark" alt="">
+            </div>
+            <div class="chooseimglist">
+                <ul>
+                    <li v-for="(item,index) in anwser1" @click="checkAnwser(item,index,1)">
+                        <img :src="item.pic" alt="">
+                    </li>
+                </ul>
+            </div>
+            <div class="resultbox">
+                <img v-show="isRight==1" src="../../../icon/testright.png" alt="">
+                <img v-show="isRight==2" src="../../../icon/wordwrong.png" alt="">
+            </div>
+        </div>
+        <div v-show="stepIndex==6">
+            <div class="full-remember-play" @click="playBtnFn">
+                <img src="../../../icon/laba-1.png" alt="">
+            </div>
+            <div class="words">
+                {{activeObj.cnmean}}
+            </div>
+            <div class="pic-img">
+                <img :src="activeObj.pic" alt="">
+            </div>
+            <div class="wordswrite">
+                <input v-model="writeWords" :placeholder="placetext" type="text">
+            </div>
+            <div class="resultbox" style="margin-top: 25px;">
+                <img v-show="isRight==1" src="../../../icon/testright.png" alt="">
+                <img v-show="isRight==2" src="../../../icon/wordwrong.png" alt="">
+            </div>
+        </div>
+        <div style="position: fixed;bottom:25px;left:0px;width: 100%">
+            <div class="remember-step">
+                <div v-for="(item,index) in stepList" @click="chooseWrodsStep(index)">
+                    <div :class="{'active-btn':finishIndex>=index}">{{item}}</div>
+                    <span :style="{'width':lineW}" :class="{'active-btn':finishIndex>=index}" v-if="index!=6"></span>
+                </div>
+            </div>
+            <div class="changebtns">
+                <div>
+                    <img src="../../../icon/f-left.png"  v-show="stepIndex==0" alt="">
+                    <img  @click="changeWordsStep(-1)"  v-show="stepIndex>0" src="../../../icon/f-left-1.png" alt="">
+                </div>
+                <div style="font-size: 14px;color:#666;">
+                    已熟:{{numObj.memoryCount}} | 未熟:{{numObj.noMemoryCount}} | 未记:{{numObj.noRead}}
+                </div>
+                <!--<span @click="preWord">上一词</span>-->
+                <!--<span class="active-btn">下一词</span>-->
+                <div>
+                    <img @click="changeWordsStep(1)" v-show="stepIndex<6" src="../../../icon/f-right-1.png" alt="">
+                    <img v-show="stepIndex>=6" src="../../../icon/f-right.png" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.pic-remember-box',
+        data: {
+            writeWords:'',
+            activeAnwserIndex:null,
+            placetext:'单词由5个字母组成',
+            finishIndex:0, //当前单词到的最大关数
+            stepIndex:0, //当前单词所在步数
+            stepList:[1,2,3,4,5,6,7],
+            steptextList:['朗读记','拼读记','英选中','中选英','听读选','选图记','填词记'],
+
+            allList:[{"cnmean":"尺子","mp3":"http://media.huanggao.com/Words/spellwords/ruler.mp3","soundmark":"http://media.huanggao.com/Words/soundmark/ruler.jpg","pic":"http://media.huanggao.com/Words/pic/ruler.jpg","lessonId":1358,"id":82098,"mp3Statu":"1","type":"","soundmarkStatu":"1","picStatu":"1","words":"ruler"}],
+            typeId:null,
+            activeIndex:0, //当前播放下标
+            isFnish:true, //是否播放完成
+            activeObj: {}, //当前播放的单词详情
+            playStatus:0, //0是未播放 1是播放中
+            audioDom:undefined,
+            lineW:'25px',
+            chooseList:[],
+            anwser1:[],
+            isRight:0, //1正确 2错误
+            wordsCount:0, //单词总数
+            wordsIndex:0, //当前所在单词下标
+            isCanSubmit:true,  //是否一次过 默认是 错了后为false
+            numObj:{},//已熟未熟未记
+            gradeNameAndLessonName:'',
+            lessonId:null,
+        },
+        created(){
+            //计算步数中间横线宽度
+//            this.lineW = (api.winWidth*0.9-27*7)/6 + 'px'
+        },
+        mounted(){
+            var _this = this;
+            //监听
+            this.audioDom = document.getElementById('audiobox');
+            this.audioDom.addEventListener('ended',function(){
+                app.isFnish = true;
+                app.activeIndex+=1;
+                if(app.activeIndex==app.allList.length){
+                    app.activeIndex = 0;
+                }
+                var audio = document.getElementById('audiobox');
+                if(app.stepIndex==1){
+                    audio.src = app.activeObj.mp3;
+                }else{
+                    audio.src = app.activeObj.nospell;
+                }
+                audio.play()
+            },false)
+            //初始化答案
+            _this.anwser1 = JSON.parse(JSON.stringify(_this.chooseList))
+        },
+        methods:{
+            //检查选择的答案
+            checkAnwser(data,index,type){
+                this.activeAnwserIndex = index;
+                if(data.cnmean == this.activeObj.cnmean){
+                    this.isRight = 1;
+                    playRightAndError(this.audioDom,true)
+                    if(this.finishIndex==6){
+                        //下一个单词
+                    }else{
+                        var _this = this;
+                        setTimeout(function () {
+                            _this.stepIndex+=1;
+                        },1000)
+                    }
+                }else{
+                    al(111)
+                    this.isCanSubmit = false;
+                    this.isRight = 2;
+                    playRightAndError(this.audioDom,false)
+//                    this.setWrongWords(this.activeObj.id)
+                }
+            },
+            //单击步数数字按钮事件
+            chooseWrodsStep(t){
+                //目前到4 切回去3后isRight变false 所以在此点回4到时候不去 这时候需要加判断finishIndex是不是小于选择的步数
+                if((this.finishIndex==0 && t==1) || (t==this.finishIndex+1) || (t<=this.finishIndex) ){
+                    //如果第一次点                     点的是不是当前最大关数的下一关    点的是不是小于或者是当前最大关
+                    if(this.stepIndex == (2||3||4||5)){  //如果是选择题的关数 接着判断如果是最大关需要作对题后下一关 或者是点的是没有做过的关数
+                        if(this.isRight!=1 && t > this.finishIndex ){
+                            return;
+                        }
+                    }
+                    this.stepIndex = t;
+                    this.peasuAudio();
+                }
+            },
+            //上一步和下一步步数按钮
+            changeWordsStep(t){
+                if(this.stepIndex == 2 || this.stepIndex == 3 || this.stepIndex == 4 || this.stepIndex == 5 ){
+                    if(t > 0){
+                        if(this.isRight == 1 || this.stepIndex+1 <= this.finishIndex){
+                            this.stepIndex += t;
+                        }else{
+                        }
+                    }else{
+                        if(this.stepIndex!=0){
+                            this.stepIndex += t;
+                        }
+                    }
+                }else{
+                    this.stepIndex += t;
+                }
+                this.peasuAudio();
+
+            },
+            //拼图和朗读播放事件
+            playBtnFn(){
+                if(this.playStatus==0){
+                    this.playSoundBySrc(this.activeObj.mp3)
+                    this.playStatus = 1;
+                }else{
+                    this.peasuAudio()
+                    this.playStatus = 0;
+                }
+            },
+            //播放一个音频
+            playSoundBySrc(src){
+                this.audioDom.src = src;
+                this.audioDom.play();
+                this.playStatus = 1;
+            },
+            //暂停播放 然后播放下一个 如果传音频链接 则播放 没有只暂停
+            peasuAudio(src){
+                this.playStatus = 0;
+                this.isFnish = true;
+                this.audioDom.pause();
+                if(src){
+                    this.audioDom.src = src;
+                }
+            },
+            //上一次 初始化数据
+            preWord(){
+                var _this = this;
+                _this.stepIndex = 0;
+                _this.finishIndex = 0;
+                _this.chooseList = [];
+                _this.anwser1 = [];
+                _this.writeWords = '';
+                _this.isRight = 0;
+                ajaxGet(getPreFullTestUrl,{wordId:this.activeObj.id},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.wordsCount = ret.data.count;
+                        _this.wordsIndex = ret.data.index;
+                        _this.allList = ret.data;
+                        _this.chooseList.push(ret.data.currentWord)
+                        _this.chooseList.push(ret.data.word1)
+                        _this.chooseList.push(ret.data.word2)
+                        _this.chooseList.push(ret.data.word3)
+                        _this.anwser1 = shuffle(_this.chooseList);
+                        ret.data.currentWord.nospell = ret.data.currentWord.mp3.replace('spellwords','words')
+                        _this.activeObj = ret.data.currentWord;
+                        _this.playSoundBySrc(_this.activeObj.nospell)
+                        _this.numObj = ret.data.wordLesson;
+                        _this.gradeNameAndLessonName =  '';
+                        if(ret.data.gradeName){
+                            _this.gradeNameAndLessonName += ret.data.gradeName
+                        }
+                        if(ret.data.lessonName){
+                            _this.gradeNameAndLessonName += ret.data.lessonName
+                        }
+                        _this.lessonId = ret.data.wordLesson.id;
+                    }
+                })
+            },
+            //获取当前单元下的单词列表
+            getList(obj){
+                var _this = this;
+                ajaxGet(getFullTestListUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.wordsCount = ret.data.count;
+                        _this.wordsIndex = ret.data.index;
+                        _this.allList = ret.data;
+                        _this.chooseList.push(ret.data.currentWord)
+                        _this.chooseList.push(ret.data.word1)
+                        _this.chooseList.push(ret.data.word2)
+                        _this.chooseList.push(ret.data.word3)
+                        _this.anwser1 = shuffle(_this.chooseList);
+                        ret.data.currentWord.nospell = ret.data.currentWord.mp3.replace('spellwords','words')
+                        _this.activeObj = ret.data.currentWord;
+                        _this.playSoundBySrc(_this.activeObj.nospell)
+                        _this.stepIndex = 0;
+                        _this.numObj = ret.data.wordLesson;
+                        _this.gradeNameAndLessonName =  '';
+                        if(ret.data.gradeName){
+                            _this.gradeNameAndLessonName += ret.data.gradeName
+                        }
+                        if(ret.data.lessonName){
+                            _this.gradeNameAndLessonName += ret.data.lessonName
+                        }
+                        _this.lessonId = ret.data.wordLesson.id;
+
+                    }
+                })
+            },
+            //设置完成单词记录  isM 一次过传1 有错误传0
+            setRememberWords(id,isM){
+                var _this = this;
+                al(isM)
+                ajaxGet(setRememberWordsUrl,{wordId:id,isMemory:isM,lessonId:_this.lessonId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        getCoinByTest(2,_this.activeObj.id);
+                        _this.getList({});
+                        _this.isRight = 0;
+                        _this.isCanSubmit = true;
+                    }
+                },true)
+            },
+        },
+        watch:{
+            activeIndex:function(v){
+
+            },
+            stepIndex:function(newvalue){
+                if(this.stepIndex>this.finishIndex){
+                    this.finishIndex = this.stepIndex;
+                }
+                if(this.stepIndex == 0 || this.stepIndex == 1 || this.stepIndex == 4 || this.stepIndex == 6){
+                    if(this.stepIndex == 1){
+                        this.playSoundBySrc(this.activeObj.mp3);
+                    }else{
+                        this.playSoundBySrc(this.activeObj.nospell);
+                    }
+                    this.placetext = '单词由'+ this.activeObj.words.length +'个字母组成'
+                }else{
+                    this.peasuAudio();
+                }
+                this.anwser1 = shuffle(this.chooseList);
+                this.isRight = 0;
+                this.activeAnwserIndex = null;
+            },
+            writeWords:function () {
+                var _this = this;
+                if(this.writeWords.toLocaleUpperCase() == this.activeObj.words.toLocaleUpperCase()){ //一个单词的7个步骤已完结 需要保存当前单词Id记录
+                    this.peasuAudio();
+                    playRightAndError(this.audioDom,true)
+                    setTimeout(function () {
+                        _this.isRight = 1;
+                        _this.stepIndex = null;
+                        _this.finishIndex = 0;
+                        _this.chooseList = [];
+                        _this.anwser1 = [];
+                        _this.placetext = '单词由'+ _this.activeObj.words.length +'个字母组成'
+                        _this.writeWords = '';
+                        if(_this.isCanSubmit){
+                            _this.setRememberWords(_this.activeObj.id,1);
+                        }else{
+                            _this.setRememberWords(_this.activeObj.id,0);
+                        }
+                    },1000)
+                }
+            }
+        },
+    });
+    function shuffle(arr) {
+        var len = arr.length;
+        for (var i = 0; i < len - 1; i++) {
+            var index = parseInt(Math.random() * (len - i));
+            var temp = arr[index];
+            arr[index] = arr[len - i - 1];
+            arr[len - i - 1] = temp;
+        }
+        return arr;
+    }
+    var obj = {};
+    apiready = function () {
+        app.typeId = api.pageParam.id;
+//        if(api.pageParam.type){
+//            obj = {coreId:app.typeId,pageNum:api.pageParam.pagenum}
+//        }else{
+//            obj = {lessonId:app.typeId}
+//        }
+        app.getList({});
+    };
+
+</script>
+</html>

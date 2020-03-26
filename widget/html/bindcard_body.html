@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <style>
+        html,body{
+            background: #f4f4f4;
+        }
+        .bind_title{
+            line-height: 50px;color:#999;font-size: 14px;
+        }
+        ul li{
+            height: 50px;padding: 0 5%;width: 90%;
+            background: #fff;            margin-bottom: 10px;
+
+        }
+        ul li span{
+            width: 20%;font-size: 14px;color:#333;
+            line-height: 50px;float: left;
+        }
+        ul li input {
+            width: 75%;float: right;
+            height: 50px;border: none;
+        }
+    </style>
+</head>
+<body >
+    <div class="bind_title">
+        为保护您的资金安全，请绑定账户本人的银行卡
+    </div>
+    <ul>
+        <li>
+            <span>真实姓名</span>
+            <input id="name" type="text">
+        </li>
+        <li>
+            <span>手机号码</span>
+            <input id="phone" type="text">
+        </li>
+        <li>
+            <span>开户银行</span>
+            <input id="bank" type="text">
+        </li>
+        <li>
+            <span>银行卡号</span>
+            <input id="cardnum" type="text">
+        </li>
+    </ul>
+    <div onclick="tixian()" class="btn_bottom" style="margin-top: 50px">确定</div>
+    <img src="" id="testimg" alt="" style="width: 100%">
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script>
+    var balance;
+    var UIAlbumBrowser;
+    apiready = function () {
+      UIAlbumBrowser = api.require("UIAlbumBrowser");
+//        var user = getUserInfo();
+//        balance = api.pageParam.balance;
+//        al(balance)
+    };
+    function tixian() {
+        api.actionSheet({
+            cancelTitle: '取消',
+            buttons: ['拍照','从手机相册选择']
+        },function(ret,err){
+            var index= ret.buttonIndex;
+            var sourceType;
+
+            switch(index){
+                case 1 : sourceType = 'camera';
+                    break;
+                case 2 : sourceType = 'album';
+                    break;
+                default : return;
+            }
+
+            api.getPicture({
+                sourceType: sourceType,
+                //encodingType: 'jpg',
+                mediaValue: 'pic',
+                destinationType: 'base64',
+                // allowEdit: true,
+                quality: 100,
+                saveToPhotoAlbum: true
+            }, function(ret, err){
+                document.getElementById('testimg').src = ret.base64Data;
+//                if (ret && isNotBlack(ret.base64Data)) {
+//                    api.showProgress({
+//                        title : '上传中. ..'
+//                    });
+//                    var suffix = ret.data.substring(ret.data.lastIndexOf(".")+1);
+//                    ajaxBase64(ret.base64Data,suffix,function(imgUrl){
+//                        api.hideProgress();
+//                        $api.byId(type).src = imgUrl;
+//                    },function(){
+//                        api.hideProgress();
+//                    });
+//                }
+            });
+        });
+        return;
+      UIAlbumBrowser.open({
+          max: 9,
+          styles: {
+              bg: '#fff',
+              mark: {
+                  icon: '',
+                  position: 'bottom_left',
+                  size: 20
+              },
+              nav: {
+                  bg: 'rgba(0,0,0,0.6)',
+                  titleColor: '#fff',
+                  titleSize: 18,
+                  cancelColor: '#fff',
+                  cancelSize: 16,
+                  finishColor: '#fff',
+                  finishSize: 16
+              }
+          },
+          rotation: true
+        }, function(ret) {
+          if (ret) {
+          }
+        });
+    }
+
+</script>
+</html>

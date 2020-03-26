@@ -1,0 +1,39 @@
+.typeall{
+    width: 90%;
+    margin: 10px auto;
+    /*height: 100%;*/
+}
+.item1,.item2,.item3 {
+    height: 100%;
+    float: left;
+}
+.clickactive1{
+    background: #f73e3c;
+    color:#fff;
+}
+.clickactive2{
+    background: #f88f5f;
+    color:#fff;
+}
+.clickactive3{
+    background: #f8d5c5;
+    color:#fff;
+}
+.item1{
+    width: 30%;
+    background: #e0e0e0;
+}
+.item2{
+    width: 30%;
+    background: #eee;
+
+}
+.item3{
+    width: 40%;
+    background: #f6f6f6;
+}
+.typeall li {
+    line-height: 45px;
+    font-size: 14px;
+    text-align: center;
+}

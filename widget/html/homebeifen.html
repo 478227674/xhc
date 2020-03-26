@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/swiper-3.3.1.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css"/>
+    <style>
+        .swiper3 .swiper-slide {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+        .indextopbg{
+            width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        .indextopbg > img{
+            width: 100%;
+        }
+        .indexall{
+            width: 92%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+        .searchbox {
+            width: 95%;
+            padding-left: 5%;
+            background: #fff;
+            height: 35px;
+            overflow: hidden;
+            border-radius: 30px;
+            position: relative;
+            margin:10px auto ;
+        }
+        .searchbox input{
+            width: 100%;
+            line-height: 21px;
+            height: 21px;
+            padding: 6px 0px;
+            outline: none;
+        }
+        .searchbox > img{
+            width: 22px;
+            height: 22px;
+            position: absolute;
+            right: 5%;
+            top: 6px;
+        }
+
+        .swiper-slide img{
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .zzactive{
+            background: #fff;
+            border-radius: 5px;
+            padding-bottom: 5px;
+            margin-top: 10px;
+        }
+        .indexitems{
+            background: #fff;
+            border-radius: 5px;
+            padding: 20px 0px 10px 0px;
+            margin-top: 10px;
+        }
+        .indexitems li {
+            width: 25%;
+            float: left;
+        }
+        .indexitems li img{
+            width: 45px;height: 45px;
+            display: block;margin: 0 auto;
+        }
+        .indexitems li span{
+            color:#333333;
+            font-size: 12px;
+            text-align: center;
+            display: block;
+            margin: 10px 0px;
+        }
+        .startclass img{
+            width: 100%;
+            margin: 10px 0px;
+            border-radius: 5px;
+        }
+        .itemstitle{
+            color:#333;
+            font-size: 16px;margin-bottom: 15px;
+        }
+        .hotorgan{
+            overflow: hidden;
+            width: 96%;
+            padding: 0 2% 15px 2%;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .hotorgan li{
+            font-size: 14px;color:#333;
+            width: 33.3%;
+            float: left;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+            text-align: center;
+        }
+        /*.hotorgan li:nth-child(1n+2){*/
+        /*border-right: 1px solid #999;*/
+        /*border-left: 1px solid #999;*/
+        /*box-sizing: border-box;*/
+        /*}*/
+        .hotorgan ul li:nth-of-type(even){
+            border-right: 1px solid #999;
+            border-left: 1px solid #999;
+            box-sizing: border-box;
+        }
+        .hotorgan ul {
+            margin-top: 15px;
+        }
+        .organlist{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .organlist li{
+            margin-bottom: 10px;
+            width: 30%;
+            display: inline-block;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .organlist li > div{
+            width: 100%;
+            height:105px ;
+        }
+        .organlist li > div > img{
+            width: 100%;
+            height: 100%;
+        }
+        .organlist li p {
+            line-height: 26px;
+            color:#333333;font-size: 14px;
+            text-align: center;
+            padding: 0 5px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+        }
+        .orderno{
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: 100;
+        }
+        .orderno>img{
+            width: 30px;height: 30px;
+            position: absolute;
+            top: 450px;
+            left: 50%;
+            margin-left: -15px;
+        }
+        .orderno .orderf{
+            width: 70%;
+            position: absolute;
+            height: 230px;
+            top: 200px;
+            left: 50%;
+            margin-left: -35%;
+            background: url("../icon/orderbg.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+        }
+        .orderf p{
+            color:#ff9100;
+            font-size: 17px;
+            font-weight: bold;
+            line-height: 70px;
+            text-align: center;
+        }
+        .orderf span{
+            color:#333;
+            font-size: 14px;
+            text-align: center;
+            line-height: 50px;
+            display: block;
+            margin-top: 30px;
+        }
+        .orderf div{
+            width: 90%;
+            margin: 20px auto 30px auto;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background: url("../icon/orderbtnbg.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+            color:#fff;
+            font-size: 15px;
+        }
+        .newitem{
+            display: flex;
+            margin-top: 10px;
+            justify-content: space-between;
+        }
+        .newitem div {
+            position: relative;
+            width: 30%;
+        }
+        .newitem div span{
+            color:#fff;
+            font-size: 14px;
+            position: absolute;
+            top: 10px;left: 10px;
+        }
+        .newitem div img{
+            width: 100%;
+        }
+        .zzactive-title{
+            padding: 15px 10px;
+        }
+        .zzactive-title span{
+            font-size: 14px;color:#333;
+        }
+        .zzactive-title a {
+            font-size: 12px;color:#f73e3c;
+        }
+        .active-list{
+            width: 90%;
+            padding: 0 5%;
+        }
+        .active-list li {
+            margin-bottom: 10px;
+
+        }
+        .active-head{
+            width: 40px;height: 40px;
+            border-radius: 50%;
+            float: left;
+            overflow: hidden;
+        }
+        .active-head img{
+            width: 100%;
+            height: 100%;
+        }
+        .acitve-detail{
+            float: left;
+            margin-left: 10px;
+        }
+        .acitve-detail span{
+            font-size: 15px;color:#333;
+        }
+        .acitve-detail p {
+            font-size: 12px;color:#666;
+            margin-top: 2px;
+        }
+        .active-button{
+            float: right;
+            padding: 8px 12px;
+            margin-top: 5px;
+            font-size: 12px;
+            color:#fff;
+            border-radius: 5px;
+        }
+
+
+    </style>
+</head>
+<body >
+<!-- 咨询聊天调用示例 -->
+<div class="consult" tapmode onclick="bindConsult()">
+    咨询
+</div>
+<div class="homeall" v-cloak>
+    <div class="swiperbox ">
+        <div class="swiper-container swiper1"  style="width: 100%;">
+            <div class="swiper-wrapper" id="bannerHm">
+                <!--@click="openSwiper(item)"-->
+                <div  class="swiper-slide " :data="item" v-for="item in bannerList" style="height:140px;overflow: hidden">
+                    <img class="boxshadow" :src="item.imageUrl"alt="">
+                </div>
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+    <div class="indexall">
+        <!--搜索框-->
+        <!--<div class="searchbox">-->
+            <!--<input v-model="searchKey" type="text" placeholder="输入内容进行搜索">-->
+            <!--<img @click="openSearchResult" src="../icon/search.png" alt="">-->
+        <!--</div>-->
+        <!--轮播图-->
+        <!--菜单栏-->
+        <div class="indexitems">
+            <ul>
+                <!--<li v-for="(item,index) in typeList" v-if="index<7" @click="openTypeDetail(item.id)">-->
+                    <!--<img :src="item.img" alt="">-->
+                    <!--<span>{{item.name}}</span>-->
+                <!--</li>-->
+                <li @click="openProductListByType1">
+                    <img src="../icon/index-1.png" alt="">
+                    <span>AI智能</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-2.png" alt="">
+                    <span>综合测评</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-3.png" alt="">
+                    <span>直播在线</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-4.png" alt="">
+                    <span>MBA备考</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-5.png" alt="">
+                    <span>建造工程师</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-6.png" alt="">
+                    <span>消防工程师</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-7.png" alt="">
+                    <span>资料下载</span>
+                </li>
+                <li @click="openTypeDetail">
+                    <img src="../icon/index-8.png" alt="">
+                    <span>快速记词</span>
+                </li>
+
+                <div style="clear: both"></div>
+            </ul>
+        </div>
+        <div @click="openWords()" style="margin-top: 10px;">
+            <img src="../icon/wordbanner.png" style="width: 100%" alt="">
+        </div>
+        <!--新增标题栏-->
+        <div class="newitem" style="display: none">
+            <div @click="openProductListByType(1)">
+                <img src="../icon/index1.png" alt="">
+                <span>拼团优惠</span>
+            </div>
+            <div @click="openProductListByType(2)">
+                <img src="../icon/index2.png" alt="">
+                <span>邀请砍价</span>
+            </div>
+            <div @click="openProductListByType1(3)">
+                <img src="../icon/index3.png" alt="">
+                <span>精品特价</span>
+            </div>
+        </div>
+        <!--新增快来参加-->
+        <div class="zzactive">
+            <div class="zzactive-title">
+                <span>快来参加</span>
+                <a href="javascript:;">太奇品质好课</a>
+            </div>
+            <div style="height: 180px;">
+                <div class="swiper-container swiper3 swiper-no-swiping" style="height: 180px;overflow: hidden" >
+                    <div class="swiper-wrapper" >
+                        <div class="swiper-slide" v-if="tenList.length>1">
+                            <ul class="active-list">
+                                <li v-for="(item,index) in tenList" v-if="index<3"  @click="openProductDetail1(item)">
+                                    <div class="active-head">
+                                        <img src="../icon/get2.png" alt="">
+                                    </div>
+                                    <div class="acitve-detail">
+                                        <span>{{item.userName}}</span>
+                                        <p v-if="item.orderType==1">已购买课程</p>
+                                        <p v-if="item.orderType==2">已参加拼团课程</p>
+                                        <p v-if="item.orderType==3">已参加砍价课程</p>
+                                        <p v-if="item.orderType==4">已参加拼团砍价课程</p>
+                                    </div>
+                                    <div class="active-button jianbian-btn" v-if="item.isCut==1&&item.isGroup==0">
+                                        去砍价
+                                    </div>
+                                    <div class="active-button jianbian-btn" v-if="(item.isCut==1&&item.isGroup==1) || (item.isGroup==1&&item.isCut==0)">
+                                        去拼团
+                                    </div>
+                                    <div class="active-button jianbian-btn" v-if="item.isCut==0&&item.isGroup==0">
+                                        去购买
+                                    </div>
+                                    <div style="clear: both"></div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="swiper-slide" v-if="tenList.length>3">
+                            <ul class="active-list">
+                                <li v-for="(item,index) in tenList" v-if="index>2&&index<6" @click="openProductDetail1(item)">
+                                    <div class="active-head">
+                                        <img src="../icon/get2.png" alt="">
+                                    </div>
+                                    <div class="acitve-detail">
+                                        <span>{{item.userName}}</span>
+                                        <p v-if="item.orderType==1">已购买课程</p>
+                                        <p v-if="item.orderType==2">已参加拼团课程</p>
+                                        <p v-if="item.orderType==3">已参加砍价课程</p>
+                                        <p v-if="item.orderType==4">已参加拼团砍价课程</p>
+                                    </div>
+                                    <div class="active-button" v-if="item.isCut==1&&item.isGroup==0">
+                                        去砍价
+                                    </div>
+                                    <div class="active-button" v-if="(item.isCut==1&&item.isGroup==1) || (item.isGroup==1&&item.isCut==0)">
+                                        去拼团
+                                    </div>
+                                    <div class="active-button" v-if="item.isCut==0&&item.isGroup==0">
+                                        去购买
+                                    </div>
+                                    <div style="clear: both"></div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="swiper-slide" v-if="tenList.length>6">
+                            <ul class="active-list">
+                                <li v-for="(item,index) in tenList" v-if="index>5&&index<9" @click="openProductDetail1(item)">
+                                    <div class="active-head">
+                                        <img src="../icon/get2.png" alt="">
+                                    </div>
+                                    <div class="acitve-detail">
+                                        <span>{{item.userName}}</span>
+                                        <p v-if="item.orderType==1">已购买课程</p>
+                                        <p v-if="item.orderType==2">已参加拼团课程</p>
+                                        <p v-if="item.orderType==3">已参加砍价课程</p>
+                                        <p v-if="item.orderType==4">已参加拼团砍价课程</p>
+                                    </div>
+                                    <div class="active-button" v-if="item.isCut==1&&item.isGroup==0">
+                                        去砍价
+                                    </div>
+                                    <div class="active-button" v-if="(item.isCut==1&&item.isGroup==1) || (item.isGroup==1&&item.isCut==0)">
+                                        去拼团
+                                    </div>
+                                    <div class="active-button" v-if="item.isCut==0&&item.isGroup==0">
+                                        去购买
+                                    </div>
+                                    <div style="clear: both"></div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--开课banner-->
+        <div class="startclass">
+            <img :src="pushObj.imageUrl" @click="openPush" alt="">
+        </div>
+        <!--热门课程-->
+        <div class="hotclass" v-if="classList.length>0">
+            <div class="itemstitle">
+                热门课程
+            </div>
+            <ul class="classlist">
+                <li v-for="(item,index) in classList" v-if="index<3" @click="openProductDetail(item)">
+                    <div class="class-cover" :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                        <img v-if="item.isCut==1&&item.isGroup==0" src="../icon/cuting.png" alt="">
+                        <img v-if="item.isGroup==1&&item.isCut==0" src="../icon/grouping.png" alt="">
+                        <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                    </div>
+                    <div class="class-detail">
+                        <p class="class-title">{{item.productName}}</p>
+                        <div class="class-tag">
+                            <span>{{item.productIntro}}</span>
+                        </div>
+                        <div class="class-tag">
+                            <span>{{item.teachName}}</span>
+                        </div>
+                        <div class="activename">
+                            <span v-if="item.isCut==1">邀请砍价</span>
+                            <span v-if="item.isGroup==1">拼团优惠</span>
+                            <span v-if="item.isCommission">邀请返佣</span>
+                        </div>
+                        <div class="class-num">
+                            <div class="class-price">
+                                <a href="javascript:;">￥</a>
+                                <span>{{item.productPrice}}</span>
+                                <div style="clear: both"></div>
+                            </div>
+
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+            </ul>
+        </div>
+        <div class="hotorgan" v-if="classList.length>2">
+            <ul v-if="classList.length>2">
+                <li v-bind:class="{'borderli' : index == 4}" @click="openProductDetail(item)" v-for="(item,index) in classList" v-if="index>2&&index<6">{{item.productName}}</li>
+                <div style="clear: both"></div>
+            </ul>
+            <ul v-if="classList.length>5">
+                <li v-bind:class="{'borderli' : index == 7}" @click="openProductDetail(item)" v-for="(item,index) in classList" v-if="index>5&&index<9">{{item.productName}}</li>
+                <div style="clear: both"></div>
+            </ul>
+            <ul  v-if="classList.length>8">
+                <li v-bind:class="{'borderli' : index == 10}" @click="openProductDetail(item)" v-for="(item,index) in classList" v-if="index>8&&index<12">{{item.productName}}</li>
+                <div style="clear: both"></div>
+            </ul>
+        </div>
+        <!--热门机构-->
+        <div style="margin-top: 15px;">
+            <div class="itemstitle">
+                热门机构
+            </div>
+            <ul class="organlist">
+                <li @click="openOrganDetail(item.id,item.name)" v-for="(item,index) in orgList" v-show="index<6">
+                    <div>
+                        <img :src="item.imageUrl" alt="">
+                    </div>
+                    <p>{{item.name}}</p>
+                </li>
+            </ul>
+        </div>
+        <div class="hotorgan" v-if="orgList.length>6" >
+            <ul >
+                <li @click="openOrganDetail(item.id,item.name)"  v-for="(item,index) in orgList" v-show="index<9" v-bind:class="{'borderli' : index == 7}" v-if="index>5&&index<9">{{item.name}}</li>
+
+                <div style="clear: both"></div>
+            </ul>
+            <ul v-if="orgList.length>8">
+                <li @click="openOrganDetail(item.id,item.name)" v-for="(item,index) in orgList" v-show="index<12" v-bind:class="{'borderli' : index == 10}" v-if="index>8&&index<12">{{item.name}}</li>
+
+                <div style="clear: both"></div>
+            </ul>
+            <ul v-if="orgList.length>11">
+                <li @click="openOrganDetail(item.id,item.name)" v-for="(item,index) in orgList" v-show="index<15" v-bind:class="{'borderli' : index == 13}" v-if="index>11&&index<15">{{item.name}}</li>
+
+                <div style="clear: both"></div>
+            </ul>
+        </div>
+        <div style="height: 30px;"></div>
+        <div class="live-list" style="display: none;">
+            <span class="menu-title-index">热门直播</span>
+            <div class="live-list-a">
+                <div>
+                    <div class="live-list-img">
+                        <img src="../icon/testicon2.png" alt="">
+                    </div>
+                    <div class="live-list-title">一级建造师一级建造师</div>
+                    <p class="live-list-teacher">主讲师：啦啦啦</p>
+                </div>
+                <div>
+                    <div class="live-list-img">
+                        <img src="../icon/testicon2.png" alt="">
+                    </div>
+                    <div class="live-list-title">一级建造师一级建造师</div>
+                    <p class="live-list-teacher">主讲师：啦啦啦</p>
+                </div>
+                <div>
+                    <div class="live-list-img">
+                        <img src="../icon/testicon2.png" alt="">
+                    </div>
+                    <div class="live-list-title">一级建造师一级建造师</div>
+                    <p class="live-list-teacher">主讲师：啦啦啦</p>
+                </div>
+                <div>
+                    <div class="live-list-img">
+                        <img src="../icon/testicon2.png" alt="">
+                    </div>
+                    <div class="live-list-title">一级建造师一级建造师</div>
+                    <p class="live-list-teacher">主讲师：啦啦啦</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--限免好课-->
+    <div class="free-classes" style="display: none;">
+        <span class="menu-title-index">限免好课</span>
+        <ul class="classlist">
+            <li  @click="openProductDetail(1)">
+                <div class="class-cover" style="background: url('../icon/testicon2.png')" >
+
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">激发啊啊</p>
+                    <div class="class-tag">
+                        <span>主讲师：李老师</span>
+                    </div>
+                    <div class="class-num free-class-person">
+                        <div class="class-price">
+                            <span>免费</span>
+                            <div style="clear: both"></div>
+                        </div>
+
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+            <li  @click="openProductDetail(1)">
+                <div class="class-cover" style="background: url('../icon/testicon2.png')" >
+
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">激发啊啊</p>
+                    <div class="class-tag">
+                        <span>主讲师：李老师</span>
+                    </div>
+                    <div class="class-num free-class-person">
+                        <div class="class-price">
+                            <span>免费</span>
+                            <div style="clear: both"></div>
+                        </div>
+
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+            <li  @click="openProductDetail(1)">
+                <div class="class-cover" style="background: url('../icon/testicon2.png')" >
+
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">激发啊啊</p>
+                    <div class="class-tag">
+                        <span>主讲师：李老师</span>
+                    </div>
+                    <div class="class-num free-class-person">
+                        <div class="class-price">
+                            <span>免费</span>
+                            <div style="clear: both"></div>
+                        </div>
+
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+        </ul>
+
+    </div>
+    <div class="orderno" v-show="orderFlag">
+        <div class="orderf">
+            <p>订单提醒</p>
+            <span>您有未完成的订单</span>
+            <div @click="openMyOrder">点击查看</div>
+        </div>
+        <img @click="closeOrder" src="../icon/closekan.png" alt="">
+    </div>
+
+</div>
+
+
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script type="text/javascript" src="../script/swiper-3.3.1.min.js"></script>
+<script>
+
+    var browser,swiper12;
+    var chatSysObj = {}; //存放系统聊天数据
+    apiready = function () {
+//        setUserInfo({userPhone:'1211',userId:'121',token:'1231235455'})
+        browser = api.require('webBrowser');
+//        app.getTypList();
+        app.initSwiper();
+        app.getIndexPush();
+        app.getHotClasses();
+        app.getHotOrganList();
+        app.getTenList();
+        app.getSystemChatData();
+        var user = getUserInfo();
+        var day = localStorage.getItem('loginday');
+        var choujiangday = localStorage.getItem('choujiangday');
+        var day1 = new Date().getDay();
+        if(!user){
+            setTimeout(function () {
+                if(day){
+                    if(day != day1){
+                        localStorage.setItem('loginday',day1);
+                        alertLogin();
+                    }
+                }else{
+                    alertLogin();
+                    localStorage.setItem('loginday',day);
+                }
+            },2000)
+        }else{
+//            if(choujiangday){
+//                if(choujiangday != day1){
+//                    localStorage.setItem('choujiangday',day1);
+//                    openChoujiang();
+//                }
+//            }else{
+//                openChoujiang();
+//                localStorage.setItem('choujiangday',day1);
+//            }
+            ajaxGet(signUserUrl,{},function (ret,err) {
+                if(ret && ret.code == 0){
+                    if(ret.signType==0){
+                        toast('签到成功，已获取100太奇币至您的账户')
+                    }
+                    if(ret.countOrder){
+                        app.orderFlag = true;
+                    }
+                }
+            })
+        }
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+    };
+    function reloadHome() {
+        reload()
+    }
+    function openChoujiang() {
+        api.openFrame({
+            name: 'choujiang',
+            url: './choujiang_body.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                name: 'test'
+            }
+        });
+    }
+    function closeChoujiang() {
+        api.closeFrame({
+            name: 'choujiang'
+        });
+    }
+    function alertLogin() {
+        api.confirm({
+            title: '温馨提示',
+            msg: '登录后浏览产品即可获得太奇币',
+            buttons:['去登录','取消'],
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+            if(index==1){
+                openRegister('login','./login/login.html',{})
+            }
+        });
+    }
+    var app = new Vue({
+        el: '.homeall',
+        data: {
+            typeList:[],
+            bannerList:[],
+            pushObj:{},
+            classList:[],
+            orgList:[],
+            image:"../icon/indexbanner.png",
+            searchKey:'',
+            cityName:localStorage.getItem('cityName') || '',
+            orderFlag:false,
+            showCityName:"",
+            tenList:[],
+        },
+        methods:{
+            closeOrder:function(){
+                this.orderFlag = false;
+            },
+            //获取系统聊天需要的data
+            getSystemChatData(){
+                ajaxGetVistor(getSystemChatDataUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        chatSysObj = ret.data;
+                    }
+                })
+            },
+            //搜索
+            openSearchResult(){
+                if(!this.searchKey){
+                    toast('请输入关键字查询')
+                    return;
+                }
+                openRegister('searchresult','./searchresult.html',{key:this.searchKey})
+            },
+            openMyOrder(){
+                openNewWindow('myclass','./main/myclass.html',{})
+                this.orderFlag = false;
+            },
+            getTenList(){
+                var _this = this;
+                ajaxGetVistor(getIndexTenListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.tenList = ret.data;
+                        _this.$nextTick(function () {
+                            var swiper1 = new Swiper('.swiper3', {
+                                direction: 'vertical',
+                                autoplay:true,
+                                loop:false,
+                                pagination: {
+                                    el: '.swiper-pagination3',
+                                    clickable: true,
+                                },
+
+                            });
+                        })
+                    }
+                })
+            },
+            //获取热门机构
+            getHotOrganList(){
+                var _this = this;
+                ajaxGetVistor(getIndexHotOrgansUrl,{cityName:this.cityName},function (ret,err) {
+                    if(ret && ret.code == 0){
+
+                        _this.orgList = ret.data;
+                    }
+                })
+            },
+            //打开机构详情
+            openOrganDetail(id,name){
+                openRegister('organ_detail','./organ_detail.html',{id:id,name:name})
+            },
+            openProductListByType(type){
+                openRegister('threelist','./threelist.html',{type:type})
+            },
+            openProductListByType1(){
+//                openRegister('special_class','./special_class.html',{})
+                openNewWindow('ai_learn_list','./aitest/ailearn/ai_learn_list.html',{})
+            },
+            openWords(){
+                openNewWindow('word_index','./word/word_index.html',{})
+            },
+            //获取热门课程
+            getHotClasses(){
+                var _this = this;
+                ajaxGetVistor(getIndexHotClassesUrl,{cityName:this.cityName},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.classList = ret.data;
+                    }
+                })
+            },
+//打开课程简介
+            openProductDetail(data){
+                if(data.imageType==2){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.imageType == 4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                    }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                        openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                    }
+                }
+            },
+            //打开课程简介
+            openProductDetail1(data){
+                if(data.orderType==1){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.orderType == 2 || data.orderType==4){
+                    openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                }else if(data.orderType == 3){
+                    openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+
+                }
+            },
+            //获取首页推送
+            getIndexPush(){
+                var _this = this;
+                ajaxGetVistor(getIndexPushUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.pushObj = ret.data;
+                    }
+
+                })
+            },
+            //打开推送链接
+            openPush(){
+                openRegister('special_class','./special_class.html',{})
+
+                return;
+                browser.open({
+                    url: this.pushObj.pushUrl
+                });
+            },
+            //获取首页轮播图
+            initSwiper(){
+                var _this = this;
+                ajaxGetVistor(indexBannerUrl,{},function (ret,err) {
+                    if(ret){
+                        if(ret.code == 0){
+                            _this.bannerList = ret.data;
+                            _this.$nextTick(function () {
+                                swiper12 = new Swiper('.swiper1',{
+                                    spaceBetween: 30,
+                                    centeredSlides: true,
+                                    loop: true,
+                                    pagination: {
+                                        el: '.swiper-pagination',
+                                        clickable: true,
+                                    },
+                                    on:{
+                                        click: function(){
+                                            var index = swiper12.realIndex;
+                                            var data = ret.data[index];
+                                            if(data.imageType == 2){
+                                                if(data.isCut == 1 && data.isGroup == 0){
+                                                    openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                                                }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                                                    openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                                                }else if(data.isGroup == 0 && data.isCut == 0){
+                                                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                                                }
+                                            }else if(data.imageType==1){
+
+                                            }else if(data.imageType==5){
+                                                openRegister('special_class','./special_class.html',{})
+                                            }else if(data.imageType==6){
+                                                _this.openProductListByType(2);
+                                            }else if(data.imageType==7){
+                                                _this.openProductListByType(1);
+                                            }
+                                        },
+                                    },
+                                });
+                            })
+                        }
+                    }
+
+                })
+
+            },
+            //获取分类
+            getTypList(){
+                var _this = this;
+                ajaxGetVistor(indexTypeListUrl,{},function (ret,err) {
+                    if(ret){
+                        for(var i=0;i<ret.data.length;i++){
+                            ret.data[i].img = '../icon/index-' + (i+1) + '.png'
+                        }
+                        _this.typeList = ret.data;
+                    }else{
+                    }
+                })
+            },
+            //打开分类
+            openTypeDetail(id){
+                openNewWindow('ai_train_index','./aitest/aitrain/ai_train_index.html',{})
+//                openRegister('productlist','./productlist.html',{id:id})
+            },
+        },
+
+    })
+
+    function bindConsult() {
+//        chat_id = '191101000001'; // 座席商家id，统一分配，联系管理员获取
+//        chat_user = 'taiyuan001'; // 座席用户，统一分配，联系管理员获取
+//        client_user = '13800138000'; //用户（任意字符，用于座席聀天时显示以区分用户，尽可能用惟一值）
+//        chat_token = 'asdfhasdfjhasdkjhfkasdjhsk'; //商家安全认证token，正式版只能由
+        if(!getUserInfo()){
+            api.confirm({
+                title: '温馨提示',
+                msg: '登录后即可实时咨询，是否去登录？',
+                buttons:['去登录','取消'],
+            }, function(ret, err) {
+                var index = ret.buttonIndex;
+                if(index==1){
+                    openRegister('login','./login/login.html',{})
+                }
+            });
+            return;
+        }
+        var user = getUserInfo();
+        api.openWin({
+            name: 'chat_win',
+            url: './chat/chat_win.html',
+            reload: true,
+            delay: 300,
+            pageParam: {
+                chat_id:chatSysObj.socketOrgInfo.imOrgSerial,
+                chat_user:chatSysObj.userName,
+                client_user:user.userPhone,
+                chat_token:chatSysObj.token,
+                chat_source:'index',
+                title:'系统客服'
+            },
+           
+        });
+    }
+</script>
+</html>

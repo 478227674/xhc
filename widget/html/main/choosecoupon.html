@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+</head>
+<body >
+<div id="topbar">
+
+    <div class="left_title" style="text-align: center;margin: 0;">
+        <div id="leftButton" onclick="closeWin()">
+            <img src="../../icon/shape.png" >
+        </div>
+        选择优惠券
+    </div>
+
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+        initFrameInWin(api.pageParam);
+    };
+</script>
+</html>

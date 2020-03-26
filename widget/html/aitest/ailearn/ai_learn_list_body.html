@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <div class="app-center leran_items">
+            <div :class="{'active-btns' : subjectId == item.subjectId}" @click="getTwoLevelByKid(item)" v-for="item in knowledgeList">
+                {{item.subjectName}}
+            </div>
+        </div>
+        <div class="learn-list">
+            <ul>
+                <li v-for="item in testList" @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../../icon/ai/llisticon.png" alt="">
+                    <div>{{item.knowledgeName}}</div>
+                    <span v-show="item.isInput==1">已诊断</span>
+                    <span v-show="item.isInput==0" class="candia">可诊断</span>
+                    <img class="learn-list-right" src="../../../icon/right.png" alt="">
+                </li>
+            </ul>
+            <div class="nomore" v-show="!isMore">暂无更多数据~</div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var idArr = [];
+    apiready = function () {
+        if(api.pageParam.sids){
+            idArr = JSON.parse(api.pageParam.sids);
+        }
+        app.getKnowledgeList();
+    };
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            knowledgeList: [],
+            knowledgeId:null,
+            subjectId:null,
+            testList:[],
+            isMore:true,
+            pagenum:1,
+            firstName:'',//选择的一级知识点名
+        },
+        methods:{
+            //选择有一个知识点进行测评
+            openTestDetail(data){
+                if(data.isInput==0 || !data.isInput){
+                    openNewWindow('ai_learn_detail','./ai_learn_detail.html',{id:data.knowledgeId,name:data.knowledgeName})
+                }else if(data.isInput==1){
+                    api.confirm({
+                        title: '温馨提示',
+                        msg: '您已测评此知识点，是否重新测评？',
+                        buttons:['去测评','查看报告'],
+                    }, function(ret, err) {
+                        var index = ret.buttonIndex;
+                        if(index==1){
+                            openNewWindow('ai_learn_detail','./ai_learn_detail.html',{id:data.knowledgeId,name:data.knowledgeName})
+                        }else if(index==2){
+                            openNewWindow('ai_learn_diagnose','./ai_learn_diagnose.html',{id:data.knowledgeId,name:data.knowledgeName})
+                        }
+                    });
+                }
+//                openNewWindow('ai_learn_list_third','./ai_learn_list_third.html',{id:data.knowledgeId,name:data.knowledgeName,firstName:this.firstName})
+            },
+            //学科按钮单击事件
+            getTwoLevelByKid(data){
+                var _this = this;
+                this.subjectId = data.subjectId;
+                this.pagenum = 1;
+                this.testList = []
+                this.getTestListFn();
+            },
+            //根据学科ID获取测试单元列表
+            getTestListFn(){
+                var _this = this;
+                ajaxGet(getKnowledgeListUrl,{subjectId:this.subjectId,level:2},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.testList = ret.data.list[0].libraries;
+                        _this.isMore = false;
+                    }
+                })
+            },
+            //获取学科列表
+            getKnowledgeList(){
+                var _this=this;
+                ajaxGet(getAiSubjectListUrl,{sortId:4},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.length;i++){
+                            var id = ret.data[i].subjectId;
+                            for(var n=0;n<idArr.length;n++){
+                                if(id == idArr[n]){
+                                    _this.knowledgeList.push(ret.data[i])
+                                }
+                            }
+                        }
+                        if(_this.knowledgeList.length>0){
+                            //默认获取第一个学科的试题列表
+                            _this.subjectId = _this.knowledgeList[0].subjectId;
+                            _this.firstName = _this.knowledgeList[0].subjectName;
+                            _this.getTwoLevelByKid(_this.knowledgeList[0])
+                        }
+
+                    }
+                })
+            },
+        },
+    })
+
+
+
+</script>
+</html>

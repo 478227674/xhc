@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/words.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/test.css"/>
+    <style>
+        html,body{
+            background: #f6f6f6;
+        }
+        .result-box p{
+            font-size: 14px;
+            color:#333;
+            line-height: 40px;
+            text-align: center;
+        }
+        .result-box-title {
+            font-size: 14px;
+            color:#666666;
+            text-align: center;
+        }
+        .result-box-title span{
+            color:#f73e3c;
+
+        }
+        .result-btns{
+            padding-bottom: 10px;
+            width:60%;
+            display: flex;
+            justify-content: space-around;
+            margin: 15px auto;
+        }
+        .result-btns span{
+            display: block;
+            border:1px solid #f73e3c;
+            border-radius: 5px;
+            width:40%;
+            height:30px;line-height:30px;
+            font-size: 14px;
+            text-align: center;
+            color:#f73e3c;
+        }
+        .isright{
+            width:20px;
+            height:20px;
+            margin-right: 15px;
+        }
+        .app-center{
+            padding: 20px 10px 0px 10px;
+        }
+        .chooselist{
+            padding: 20px 3% 0px 3%;
+        }
+    </style>
+</head>
+<body >
+    <div class="testindex-box" style="">
+        <div class="result-box">
+            <p>{{name}}</p>
+            <div class="result-box-title">
+                共{{testCount}}题，正确{{rightCount}}题，错误<span>{{testCount-rightCount}}</span>题
+            </div>
+            <div class="result-btns">
+                <span @click="openWrong">错词本</span>
+                <span @click="closeToHome">返回首页</span>
+            </div>
+        </div>
+        <div class="app-center" v-for="(item,index) in list">
+            <div>{{index+1}}.{{item.wordName}}</div>
+            <div>
+                <div>
+                    <div class="chooselist">
+                        <ul>
+                            <li>
+                                <!--没有选择当前这个并且当前这个也不是正确答案 需要空一格div-->
+                                <div class="isright" v-show="item.currentChoice!=item.wordName1&&item.wordName1!=item.zhWordName"></div>
+                                <!--选择错误-->
+                                <img v-show="item.currentChoice==item.wordName1 && item.currentChoice!=item.zhWordName" class="isright" src="../../../icon/wordwrong.png" alt="">
+                                <!--正确-->
+                                <img v-show="item.wordName1==item.zhWordName" class="isright" src="../../../icon/testright.png" alt="">
+                                <!--未选择-->
+                                <span v-show="item.currentChoice!=item.wordName1"></span>
+                                <!--已选择-->
+                                <img v-show="item.currentChoice==item.wordName1" src="../../../icon/wordchoosed.png" alt="">
+
+                                <p>{{item.wordName1}}</p>
+                            </li>
+                            <li>
+
+                                <div class="isright" v-show="item.currentChoice!=item.wordName2&&item.wordName2!=item.zhWordName"></div>
+                                <img v-show="item.currentChoice==item.wordName2&& item.currentChoice!=item.zhWordName" class="isright" src="../../../icon/wordwrong.png" alt="">
+                                <!--选择正确-->
+                                <img v-show="item.wordName2==item.zhWordName" class="isright" src="../../../icon/testright.png" alt="">
+                                <!--未选择-->
+                                <span v-show="item.currentChoice!=item.wordName2"></span>
+                                <!--已选择-->
+                                <img v-show="item.currentChoice==item.wordName2" src="../../../icon/wordchoosed.png" alt="">
+                                <p>{{item.wordName2}}</p>
+
+                            </li>
+                            <li>
+                                <div class="isright" v-show="item.currentChoice!=item.wordName3&&item.wordName3!=item.zhWordName"></div>
+                                <img v-show="item.currentChoice==item.wordName3 && item.currentChoice!=item.zhWordName" class="isright" src="../../../icon/wordwrong.png" alt="">
+                                <!--选择正确-->
+                                <img v-show="item.wordName3==item.zhWordName" class="isright" src="../../../icon/testright.png" alt="">
+                                <!--未选择-->
+                                <span v-show="item.currentChoice!=item.wordName3"></span>
+                                <!--已选择-->
+                                <img v-show="item.currentChoice==item.wordName3" src="../../../icon/wordchoosed.png" alt="">
+                                <p>{{item.wordName3}}</p>
+
+                            </li>
+                            <li>
+                                <div class="isright" v-show="item.currentChoice!=item.wordName4&&item.wordName4!=item.zhWordName"></div>
+                                <img v-show="item.currentChoice==item.wordName4 && item.currentChoice!=item.zhWordName" class="isright" src="../../../icon/wordwrong.png" alt="">
+                                <!--选择正确-->
+                                <img v-show="item.wordName4==item.zhWordName" class="isright" src="../../../icon/testright.png" alt="">
+                                <!--未选择-->
+                                <span v-show="item.currentChoice!=item.wordName4"></span>
+                                <!--已选择-->
+                                <img v-show="item.currentChoice==item.wordName4" src="../../../icon/wordchoosed.png" alt="">
+                                <p>{{item.wordName4}}</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none;" class="app-center">
+            <div>1.water</div>
+            <div>
+                <div>
+                    <div class="chooselist">
+                        <ul>
+                            <li>
+                                <!--<img src="../../../icon/testright.png" alt="">-->
+                                <img class="isright" src="../../../icon/wordwrong.png" alt="">
+                                <!--<span></span>-->
+                                <img src="../../../icon/wordchoosed.png" alt="">
+
+                                <p>sadasd</p>
+                            </li>
+                            <li>
+                                <img class="isright" src="../../../icon/testright.png" alt="">
+                                <span></span>
+                                <!--<img src="../../../icon/wordchoosed.png" alt="">-->
+                                <p>sadasd</p>
+                            </li>
+                            <li>
+                                <div class="isright"></div>
+                                <span></span>
+                                <!--<img src="../../../icon/wordchoosed.png" alt="">-->
+                                <p>sadasd</p>
+                            </li>
+                            <li>
+                                <div class="isright"></div>
+                                <span></span>
+                                <!--<img src="../../../icon/wordchoosed.png" alt="">-->
+                                <p>sadasd</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.testindex-box',
+        data: {
+            name:null,
+            id:null,
+            list:[],
+            testCount:0,
+            rightCount:0,
+        },
+        created(){
+//            console.log(this.list[0])
+//            for(var i=0;i<this.list.length;i++){
+//                if(this.list[i].currentChoice == this.list[i].zhWordName){
+//                    this.rightCount+=1
+//                }
+//            }
+//            this.testCount = this.list.length;
+        },
+        mounted(){
+
+        },
+        methods:{
+            getHistory(id){
+                var _this = this;
+                var obj = {
+                    synchroId:id
+                }
+                ajaxGet(submitSynTestListUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.name = ret.lessonName || '同步考结果';
+                        _this.list = ret.data;
+                        _this.testCount = ret.data.length;
+                        for(var i=0;i<ret.data.length;i++){
+                            if(ret.data[i].currentChoice == ret.data[i].zhWordName){
+                                _this.rightCount+=1
+                            }
+                        }
+
+                    }
+                })
+            },
+            closeToHome(){
+                api.closeToWin({
+                    name:'root'
+                })
+            },
+            openWrong(){
+                openNewWindow('wrongword','../wrongword/wrongword.html',{})
+            },
+        },
+        watch:{
+
+        },
+    });
+
+    var id,name,alltype,allpagenum;
+    apiready = function () {
+        app.id = api.pageParam.id;
+        app.getHistory(app.id)
+//        app.name = api.pageParam.name;
+//        if(api.pageParam.type){
+//            alltype = api.pageParam.type;
+//            allpagenum = api.pageParam.pagenum
+//        }
+    };
+
+</script>
+</html>

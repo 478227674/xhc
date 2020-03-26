@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        #box-big{
+            display: flex;
+        }
+        #box-big p {
+            color:#666666;
+            font-size: 14px;
+            line-height: 50px;
+            width:60%;
+            padding-left: 50px;
+            background:#fff1f1 url("../../../icon/ai/timeicon.png") no-repeat 20px; 15px;
+            background-size:20px 20px;
+        }
+        #submit-anwser{
+            width:40%;
+            border-radius: 0px;
+            margin:0px;
+            height:50px;
+            line-height: 50px;
+        }
+
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <div class="train-box">
+            <p>
+                综合测试
+            </p>
+            <div>
+                <span>答题说明:</span>
+                <p>答题说明：系统在考试时间剩余2分钟时会提示您考试时间快到了，考试时间到时若您没提交试卷会自动帮您提交。</p>
+            </div>
+            <div class="train-time">
+                <div>
+                    开始时间： <span>{{startTime}}</span>
+                </div>
+                <div>
+                    测试总时间： <span>10</span>分钟
+                </div>
+            </div>
+        </div>
+        <div>
+            <ul class="qusition-list">
+                <li v-for="(item,index) in testList">
+                    <div class="qusition-choose">
+                        <div style="padding-top: 10px;">{{index+1}}.<span v-html="item.questionStem"></span></div>
+                        <div v-for="(items,indexs) in item.alQuestionOption">{{chooseList[indexs]}}. {{items.optionName}}</div>
+                        <!--<div>B. 大的，很大的，</div>-->
+                        <!--<div>C. 用以表示听清楚对方说的话</div>-->
+                        <!--<div>D. 用以表示听清楚对方说的话</div>-->
+                    </div>
+                    <div class="qusition-choosed">
+                        <div v-for="(items,indexs) in item.alQuestionOption" @click="chooseThisAnwser(index,indexs)">
+                            <div :class="{'qusition-choosethis':items.optionId==item.userAnwser}"><a href="javascript:;"></a></div>
+                            <span>{{chooseList[indexs]}}</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div style="height:80px"></div>
+        <div id="box-big" class="submit-anwser" style="height:50px;">
+            <p>
+                剩余：{{time}}
+            </p>
+            <div id="submit-anwser" @click="submitTest">
+                 提交
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            subId:null,//知识点ID
+            testList:[{"pageNum":1,"pageSize":10,"questionId":2,"questionStem":"b的中译英","typeId":1,"knowledgeMain":2,"optionId":6,"analysis":"这是一个b","difficultyLevel":1,"createTime":1577428543000,"isDelete":0,"alQuestionOption":[{"pageNum":1,"pageSize":10,"optionId":5,"questionId":2,"optionName":"呵呵","createTime":1577428586000,"isDelete":0},{"pageNum":1,"pageSize":10,"optionId":6,"questionId":2,"optionName":"这是一个b","createTime":1577428588000,"isDelete":0},{"pageNum":1,"pageSize":10,"optionId":7,"questionId":2,"optionName":"哈哈","createTime":1577428590000,"isDelete":0},{"pageNum":1,"pageSize":10,"optionId":8,"questionId":2,"optionName":"嘿嘿","createTime":1577428592000,"isDelete":0}]}],
+            chooseList:['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            inTime:null, //进来页面的时间
+            time:'', //倒计时
+            startTime:'',
+        },
+        methods:{
+            submitTest(){
+                var _this = this;
+                var arr = [];
+                for(var i=0;i<this.testList.length;i++){
+
+                    if(!this.testList[i].userAnwser){
+                        alert('还有被漏掉的题哦~');
+                        return;
+                    }
+
+                    var rightId = null;
+                    //根据每个选择里的isRight字段是否等于1 判断哪个选项为正确答案
+                    for(var n=0;n<this.testList[i].alQuestionOption.length;n++){
+                        if(this.testList[i].alQuestionOption[n].isRight == 1){
+                            rightId = this.testList[i].alQuestionOption[n].optionId;
+                            if(rightId == this.testList[i].userAnwser){
+                                isRight = 1;
+                            }else{
+                                isRight = 0;
+                            }
+                        }
+                    }
+
+                    var obj = {
+                        userAnswer:this.testList[i].userAnwser || '',//用户选择
+                        questionId:this.testList[i].questionId,//题ID
+                        answer:rightId,//正确选择
+                        isRight:isRight,
+                    };
+                    arr.push(obj)
+                }
+                let endTime = new Date().getTime();
+
+                var submitObj = {
+                    records:arr,
+                    createTime:Math.floor(this.inTime/1000),
+                    useTime:Math.floor((endTime-this.inTime)/1000),
+                    subjectId:this.subId
+                };
+                ajaxGet(submitTrainTestUrl,submitObj,function (ret, err) {
+                    if(ret && ret.code == 0){
+                        openNewWindow('zhtest_detail','./zhtest_detail.html',{id:ret.data.testId})
+                    }
+                })
+
+            },
+            //选择其中题的一个答案
+            chooseThisAnwser(index,index2){
+                //设置当前用户所选答案ID
+                this.testList[index].userAnwser = this.testList[index].alQuestionOption[index2].optionId;
+                this.$set(this.testList,index,this.testList[index])
+            },
+
+            //根据知识点ID获取题列表
+            getTestListByKid(){
+                var _this = this;
+                ajaxGet(getAiTestListUrl,{knowledgeMain:this.kid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.testList = ret.data;
+                    }
+                })
+            },
+        },
+    })
+    var maxtime = 10 * 60; //
+    function CountDown() {
+        if (maxtime >= 0) {
+            minutes = Math.floor(maxtime / 60);
+            minutes = minutes<10 ? '0'+minutes : minutes
+            seconds = Math.floor(maxtime % 60);
+            seconds = seconds<10 ? '0'+seconds : seconds
+
+            msg = minutes + ":" + seconds;
+            app.time = msg;
+            if (maxtime == 2 * 60){
+                toast('考试时间快到了哦，请抓紧~')
+            };
+            --maxtime;
+        } else{
+            clearInterval(timer);
+
+        }
+    }
+    timer = setInterval("CountDown()", 1000);
+    apiready = function () {
+//        app.kid = api.pageParam.id;
+//        app.getTestListByKid();
+        app.testList = api.pageParam.list;
+        al(app.testList)
+
+        app.subId = api.pageParam.id;
+        app.startTime = formatTimeToDate(new Date().getTime())
+        app.inTime = new Date().getTime();
+    };
+
+
+</script>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/type.css"/>
+    <style>
+        body,html{
+            background: #fff;
+        }
+        .pic-remember-box{
+            overflow: hidden;
+        }
+        .words{
+            color:#333;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 40px;
+            text-align: center;
+        }
+        .pic-soundmark{
+            text-align: center;
+            margin-top: 25px;
+        }
+        .pic-soundmark img{
+            height:12px;
+        }
+        .pic-cnmean{
+            font-size: 16px;
+            color:#003336;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .pic-img {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .pic-img img{
+            width:180px;
+        }
+        .playbtns{
+            margin: 0 auto 0 -35%;
+            width:70%;
+            display: flex;
+            justify-content: space-around;
+            position: absolute;
+            bottom:40px;
+            left:50%;
+            align-items: center;
+        }
+        .changebtn img{
+            height: 1.7rem;
+            width:1.7rem;
+        }
+        .audiohandle img{
+            width:2rem;
+            height:2rem;
+        }
+    </style>
+</head>
+<body >
+    <div class="pic-remember-box">
+        <audio src="" id="audiobox"></audio>
+        <div class="words">
+            {{activeObj.words}}
+        </div>
+        <div class="pic-soundmark">
+            <img :src="activeObj.soundmark" alt="">
+        </div>
+        <div class="pic-cnmean">
+            {{activeObj.cnmean}}
+        </div>
+        <div class="pic-img">
+            <img :src="activeObj.pic" alt="">
+        </div>
+
+        <div class="playbtns">
+            <div class="changebtn">
+                <img v-show="activeIndex<=0" src="../../../icon/prev-1.png" alt="">
+                <img @click="changeWords(-1)" v-show="activeIndex>0" src="../../../icon/prev.png" alt="">
+            </div>
+
+            <div class="audiohandle">
+                <img v-show="playStatus==0" @click="playAudio" src="../../../icon/peasu.png" alt="">
+                <img v-show="playStatus==1" @click="peasuAudio" src="../../../icon/playing.png" alt="">
+            </div>
+
+            <div class="changebtn">
+                <img @click="changeWords(1)" v-show="activeIndex<allList.length-1"  src="../../../icon/next.png" alt="">
+                <img v-show="activeIndex>=allList.length-1"  src="../../../icon/next-1.png" alt="">
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.pic-remember-box',
+        data: {
+            allList:[],
+            typeId:null,
+            activeIndex:0, //当前播放下标
+            isFnish:true, //是否播放完成
+            activeObj:{}, //当前播放的单词详情
+            playStatus:0, //0是未播放 1是播放中
+            audioDom:undefined,
+        },
+        created(){
+        },
+        mounted(){
+            this.audioDom = document.getElementById('audiobox');
+            this.audioDom.addEventListener('ended',function(){
+                app.isFnish = true;
+                app.activeIndex+=1;
+                if(app.activeIndex==app.allList.length){
+                    app.activeIndex = 0;
+                }
+                var audio = document.getElementById('audiobox');
+                app.activeObj = app.allList[app.activeIndex]
+                audio.src = app.activeObj.mp3;
+                audio.play()
+            },false)
+        },
+        methods:{
+            //获取当前单元下的单词列表
+            getList(obj){
+                var _this = this;
+                ajaxGet(getWorsListByClassIdUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.typeId = ret.data[0].lessonId
+                        _this.allList = ret.data;
+                        _this.activeObj = ret.data[0];
+                    }
+                })
+
+            },
+            //暂停播放
+            peasuAudio(){
+                this.playStatus = 0;
+                this.isFnish = true;
+                this.audioDom.pause();
+            },
+            //播放当前
+            playAudio(){
+                this.audioDom.src = this.activeObj.mp3;
+                this.playStatus = 1;
+                this.audioDom.play();
+            },
+            //切换当前播放单词
+            changeWords(t){
+                this.activeIndex += t;
+                this.activeObj = this.allList[this.activeIndex];
+                this.playAudio();
+            },
+            broThisWord(data,index){
+                var audio = document.getElementById('audiobox');
+                if(!this.isFnish && index==this.activeIndex){
+                    audio.pause();
+                    this.isFnish = true;
+                    return;
+                }
+                this.activeObj = data;
+                audio.src = this.allList[index].mp3;
+                this.activeIndex = index;
+                this.isFnish = false;
+                audio.play();
+            },
+        },
+        watch:{
+            activeIndex:function () {
+                if(this.activeIndex>=this.allList.length-1){
+                    getCoinByTest(1,this.typeId)
+                }
+
+            }
+        },
+    });
+    var obj = {};
+    apiready = function () {
+        app.typeId = api.pageParam.id;
+        if(api.pageParam.type){
+            obj = {coreId:app.typeId,pageNum:api.pageParam.pagenum}
+        }else{
+            obj = {lessonId:app.typeId}
+        }
+        app.getList(obj);
+    };
+//    apiready = function () {
+//        app.typeId = api.pageParam.id;
+//        app.getList();
+//    };
+</script>
+</html>

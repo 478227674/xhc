@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+        .getmoneyall{
+            width: 90%;
+            margin: 0 auto;
+        }
+        .getmoneyall>span{
+            color:#666;
+            font-size: 12px;
+            line-height: 40px;
+        }
+        .gettype{
+            background: #fff;
+            border-radius: 5px;
+        }
+        .gettype li {
+            width: 90%;
+            margin: 0 auto;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: flex-start;
+            padding: 15px 0px;
+        }
+        .gettype li img{
+            height: 30px;
+        }
+        .gettype li span{
+            line-height: 30px;font-size: 14px;color:#333;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body >
+    <div class="getmoneyall">
+        <span>请选择提现方式</span>
+        <ul class="gettype">
+            <li onclick="openGetMoney(1)">
+                <img src="../../icon/wxicon.png" alt="">
+                <span>微信钱包</span>
+            </li>
+            <li onclick="openGetMoney(2)" style="border-bottom:none;">
+                <img src="../../icon/aliicon.png" alt="">
+                <span>支付宝余额</span>
+            </li>
+        </ul>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    function openGetMoney(type) {
+        openRegister('getmoney','./getmoney.html',{type:type})
+    }
+
+    apiready = function () {
+    };
+
+
+</script>
+</html>

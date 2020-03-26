@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        .class-c-1{
+            position: relative;
+            z-index:20;
+        }
+        body{
+            background: #fff;
+        }
+        .test-result{
+            color:#f7260a !important;
+            text-align: right;
+            flex: 1;
+        }
+        .class-c-2{
+            justify-content: flex-start;
+        }
+        .test-time{
+            width:50% !important;
+            text-align: center;
+        }
+        .class-c-time{
+
+            width:50%;
+            text-align: center !important;
+        }
+    </style>
+</head>
+<body >
+<div class="class-list-el" style="overflow:hidden;">
+    <div class="">
+        <div class="class-c-1">
+            <div class="class-c-2">
+                <div class="class-c-num">测试科目</div>
+                <div class="class-c-time">测试时间</div>
+                <div style="flex:1;text-align: right">详情</div>
+            </div>
+            <div class="class-c-3">
+                <ul>
+                    <li v-for="(item,index) in list">
+                        <div :class="{'testchoosed':item.checked}" class="ischoosed " @click="choosedThisWrong(index)">
+                            <span></span>
+                        </div>
+                        <div class="test-subject">{{item.subjectName}}</div>
+                        <div class="test-time">
+                            {{item.createTime}}
+                        </div>
+                        <div class="test-result" @click="openWrongDetail(item.testId)">
+                            查看
+                        </div>
+                    </li>
+                </ul>
+                <div v-show="!isMore" class="nomore">没有更多数据了~</div>
+
+
+            </div>
+        </div>
+        <div style="height:80px;"></div>
+        <div class="test-bottom-box">
+            <div class="choosedall" @click="chooceAll">
+                <div class="ischoosed" :class="{'testchoosed':allChecked}">
+                    <span></span>
+                </div>
+                <p >
+                    全选
+                </p>
+            </div>
+            <p @click="deleteWrong">
+                删除
+            </p>
+
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            isShow:false,
+            list:[],
+            isMore:true,
+            pagenum:1,
+            allChecked:false,
+        },
+        methods:{
+            //选择所有
+            chooceAll(){
+                for(var i=0;i<this.list.length;i++){
+                    this.list[i].checked = !this.list[i].checked;
+                }
+                if(this.list[0].checked){
+                    this.allChecked = true;
+                }else{
+                    this.allChecked = false;
+                }
+            },
+            //删除错题
+            deleteWrong(){
+                var arr = [],_this = this;
+
+                api.confirm({
+                    title: '温馨提示',
+                    msg: '确定要删除记录吗?',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index == 1){
+                        for(var i=0;i<_this.list.length;i++){
+                            if(_this.list[i].checked){
+                                arr.push(_this.list[i].bookId)
+                            }
+                        }
+                        ajaxGet(deleteAiWrongWordUrl,{bookIds:arr},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                toast('已删除')
+                                for(var i=0;i<_this.list.length;i++){
+                                    _this.list[i].checked = false;
+                                    for(var n=0;n<arr.length;n++){
+                                        if(_this.list[i].bookId == arr[n]){
+                                            _this.list.splice(i,1)
+                                        }
+                                    }
+                                }
+//                                _this.getTrainWrongList()
+                            }
+
+                        })
+                    }else{
+
+                    }
+                });
+
+
+            },
+            //选择此错题
+            choosedThisWrong(index){
+                this.list[index].checked = !this.list[index].checked;
+            },
+            //打开错词详情
+            openWrongDetail(id){
+                openNewWindow('zhtest_wrong_detail','./zhtest_wrong_detail.html',{id:id})
+            },
+            //获取测试错词列表
+            getTrainWrongList(){
+                var _this = this;
+                var obj = {pageNum:this.pagenum,pageSize:10};
+                ajaxGet(getTrainWrongListUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret)
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDate(ret.data.list[i].createTime);
+                            ret.data.list[i].checked = false;
+                        }
+                        _this.list = [..._this.list,...ret.data.list]
+                        if(ret.data.isLastPage){
+                            _this.isMore = false;
+                            return;
+                        }
+                        _this.pagenum+=1;
+                    }
+                })
+            },
+        },
+    });
+
+    apiready = function(){
+        app.getTrainWrongList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getTrainWrongList();
+            }
+        });
+	    api.setRefreshHeaderInfo({
+		    loadingImg: 'widget://image/refresh.png',
+		    bgColor: '#f73e3c',
+		    textColor: '#fff',
+		    textDown: '下拉刷新...',
+		    textUp: '松开刷新...'
+	    }, function(ret, err) {
+		    reload();
+		    api.refreshHeaderLoadDone();
+		    //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+	    });
+    };
+</script>
+</html>

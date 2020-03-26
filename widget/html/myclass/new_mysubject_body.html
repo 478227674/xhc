@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/ailearn.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <style>
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <div class="app-center leran_items">
+            <div :class="{'active-btns' : subId == item.subjectId}" @click="getTestListBySubId(item.subjectId)" v-for="item in subList">
+                {{item.subjectName}}
+            </div>
+        </div>
+        <div class="learn-list">
+            <ul>
+                <li @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../icon/ai/llisticon.png" alt="">
+                    <div>构建师</div>
+                    <img class="learn-list-right" src="../../icon/right.png" alt="">
+                </li>
+                <li @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../icon/ai/llisticon.png" alt="">
+                    <div>构建师</div>
+                    <img class="learn-list-right" src="../../icon/right.png" alt="">
+                </li>
+                <li @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../icon/ai/llisticon.png" alt="">
+                    <div>构建师</div>
+                    <img class="learn-list-right" src="../../icon/right.png" alt="">
+                </li>
+                <li @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../icon/ai/llisticon.png" alt="">
+                    <div>构建师</div>
+                    <img class="learn-list-right" src="../../icon/right.png" alt="">
+                </li>
+                <li @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../icon/ai/llisticon.png" alt="">
+                    <div>构建师</div>
+                    <img class="learn-list-right" src="../../icon/right.png" alt="">
+                </li>
+            </ul>
+            <div class="nomore" v-show="!isMore">暂无更多数据~</div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+        app.getSubjectList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getTestListFn();
+            }
+        });
+    };
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            subList: [
+                {subjectName:'数学',subjectId:1},
+                {subjectName:'数学',subjectId:1},
+                {subjectName:'数学',subjectId:1},
+                {subjectName:'数学',subjectId:1},
+                {subjectName:'数学',subjectId:1},
+            ],
+            subId:null,
+            testList:[],
+            isMore:true,
+            pagenum:1,
+        },
+        methods:{
+            //选择有一个知识点进行测评
+            openTestDetail(data){
+                if(data.isInput==0){
+                    openNewWindow('ai_learn_detail','./ai_learn_detail.html',{id:data.knowledgeId,name:data.knowledgeName})
+                }else{
+                    api.confirm({
+                        title: '温馨提示',
+                        msg: '您已测评此知识点，是否重新测评？',
+                        buttons:['去测评','查看报告'],
+                    }, function(ret, err) {
+                        var index = ret.buttonIndex;
+                        if(index==1){
+                            openNewWindow('ai_learn_detail','./ai_learn_detail.html',{id:data.knowledgeId,name:data.knowledgeName})
+                        }else{
+                            openNewWindow('ai_learn_diagnose','./ai_learn_diagnose.html',{id:data.knowledgeId,name:data.knowledgeName})
+                        }
+                    });
+                }
+            },
+            //学科按钮单击事件
+            getTestListBySubId(id){
+                var _this = this;
+                this.subId = id;
+                this.pagenum = 1;
+                this.getTestListFn();
+            },
+            //根据学科ID获取测试单元列表
+            getTestListFn(){
+                var _this = this;
+                ajaxGet(getAiKnowledgeListUrl,{subjectId:this.subId,pageNum:this.pagenum,pageSize:10},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.testList = ret.data.list;
+                        if(ret.data.list.length<10){
+                            _this.isMore = false;
+                        }
+                        _this.pagenum++;
+//                        if(ret.data.length>0){
+//                            _this.subId = ret.data[0].subjectId
+//                        }
+                    }
+                })
+            },
+            //获取学科列表
+            getSubjectList(){
+                var _this=this;
+                ajaxGet(getAiSubjectListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.subList = ret.data;
+                        if(ret.data.length>0){
+                            //默认获取第一个学科的试题列表
+                            _this.subId = ret.data[0].subjectId;
+                            _this.getTestListBySubId(_this.subId)
+                        }
+                    }
+                })
+            },
+        },
+    })
+
+
+
+</script>
+</html>

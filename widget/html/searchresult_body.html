@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/organlist.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css"/>
+    <style>
+        .collectbox{
+            width: 90%;
+            margin: 0 auto;
+        }
+        .goods_list{
+            padding-top: 0px;
+        }
+        .goods_list li{
+            background: #fff;
+            border-radius: 5px;
+            padding: 0 10px;
+            border-bottom: none !important;
+            margin-bottom: 10px;
+        }
+        .collect-tab{
+            width: 90%;
+            overflow: hidden;
+            border-radius:5px;
+            margin: 10px auto;
+            border:1px solid #1bb1af;
+        }
+        .collect-tab span{
+            width: 50%;
+            display: block;
+            height: 44px;font-size: 16px;text-align: center;
+            line-height: 44px;
+            float: left;
+            color:#1bb1af;
+
+        }
+        .active-tab{
+            background: #1bb1af;
+            color:#fff !important;
+        }
+        .classlist li{
+            margin-bottom: 10px;
+        }
+        .class-cover{
+            position: relative;
+        }
+        .class-cover img{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body >
+    <div class="collectbox" v-cloak>
+        <div class="goods_list">
+            <div v-for="item in resultList">
+                <!--<ul v-if="item.imageType==0" @click="openOrganDetail(item.id,item.name)">-->
+                    <!--<li>-->
+                        <!--<div class="organ-icon">-->
+                            <!--<img :src="item.fileUrl" alt="">-->
+                        <!--</div>-->
+                        <!--<div class="organ-detail">-->
+                            <!--<p class="organ-title">{{item.name}}</p>-->
+                            <!--<div class="organ-class">{{item.intro}}</div>-->
+                            <!--<div class="organ-class">课程({{item.countProduct}})：学习{{item.purchaseNum}}人</div>-->
+                            <!--<div class="organ-data">-->
+                                <!--<div class="organ-mark">-->
+                                    <!--<p>评分:</p>-->
+                                    <!--<span>{{item.userGrade}}</span>-->
+                                    <!--<a href="javascript:;" v-if="item.userGrade>4">满意</a>-->
+                                    <!--<a href="javascript:;" v-if="item.userGrade<4 && item.userGrade>2">一般</a>-->
+                                    <!--<a href="javascript:;" v-if="item.userGrade<2">很差</a>-->
+                                <!--</div>-->
+                                <!--<p class="organ-joinnum">-->
+                                    <!--学习<span>{{item.purchaseNum}}</span>人-->
+                                <!--</p>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div style="clear: both"></div>-->
+                    <!--</li>-->
+                <!--</ul>-->
+                <ul class="classlist">
+                    <li @click="openProductDetail(item)">
+                        <div class="class-cover" :style="{backgroundImage: 'url(' + item.fileUrl + ')'}">
+                            <img v-if="item.isCut==1" src="../icon/cuting.png" alt="">
+                            <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                        </div>
+                        <div class="class-detail">
+                            <p class="class-title">{{item.name}}</p>
+                            <div class="class-tag">
+                                <span>{{item.intro}}</span>
+                            </div>
+                            <div class="activename">
+                                <span v-if="item.isCut==1">邀请砍价</span>
+                                <span v-if="item.isGroup==1">拼团优惠</span>
+                                <span v-if="item.isCommission">邀请返佣</span>
+                            </div>
+
+                            <div class="class-num">
+                                <div class="class-price">
+                                    <a href="javascript:;">￥</a>
+                                    <span>{{item.price}}</span>
+                                    <div style="clear: both"></div>
+                                </div>
+                                <div class="class-person">
+                                    报名<span>{{item.purchaseNum}}</span>人
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="list-vip-free" v-show="item.memberLevels">
+                                <span v-for="(vitem,vindex) in item.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=item.memberLevels.length-1">/</a></span>免费
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            searchKey:"",
+            resultList:[],
+        },
+        methods:{
+            closePageThis:function (){
+                closeWin()
+            },
+            getSearchResultList(){
+                var _this = this;
+                ajaxGetVistor(searchResultUrl,{key:this.searchKey},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.resultList = ret.data
+                    }
+                })
+            },
+            openProductDetail(data){
+                if(data.imageType == 2){
+                    openRegister('product_detail','./product_detail.html',{id:data.id})
+                }else if(data.imageType==4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.id})
+                    }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                        openRegister('productgroup_detail','./productgroup_detail.html',{id:data.id})
+                    }
+                }else if(data.imageType==5){
+                    openRegister('productspe_detail','./productspe_detail.html',{id:data.id})
+                }
+
+            },
+            openOrganDetail(id,name){
+                openRegister('organ_detail','./organ_detail.html',{id:id,name:name})
+            },
+        },
+    })
+
+    apiready = function () {
+        app.searchKey = api.pageParam.key;
+        app.getSearchResultList();
+    };
+
+
+</script>
+</html>

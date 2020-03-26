@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css">
+    <link rel="stylesheet" type="text/css" href="../css/product.css">
+    <link rel="stylesheet" type="text/css" href="../css/swiper-3.3.1.min.css">
+    <style>
+
+        .w100{
+            width: 100% !important; ;
+        }
+        .joinlist{
+            /*position: absolute;*/
+            /*bottom: -5px;*/
+            /*right: 5%;*/
+        }
+        .sharegeta{
+            top:15px;
+        }
+        .guigeactive{
+            padding-right: 15px !important;
+            background: url("../icon/choosed.png") no-repeat right bottom;
+            background-size: 17px 17px;
+        }
+    </style>
+</head>
+<body >
+<div id="product-detail" v-cloak>
+    <div class="consult" tapmode @click="openChatByProductDetail">
+        咨询
+    </div>
+
+    <div class="swiperlist">
+        <div class="swiper-container" style="position: relative;z-index: 1" >
+            <div class="swiper-wrapper" id="bannerHm">
+                <div class="swiper-slide " @click="seeImg(index)" v-for="(item,index) in bannerList" style="overflow: hidden;height: 250px;">
+                    <img class="boxshadow" style="height: 240px;" :src="item" alt="">
+                </div>
+            </div>
+            <!-- Add Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+    <div class="group-price" v-for="item in aaa">
+        <div class="grouped-price">
+            <div>
+                {{item.groupSumNum}}人团  ￥{{item.groupPrice}} <span v-if="item.cutFloorPrice">可砍去:￥{{item.cutFloorPrice}}</span>
+            </div>
+        </div>
+        <div  class="group-time" style="text-align: center">
+            <div class="endtext">距结束还剩</div>
+            <div class="endnum">
+                <a href="javascript:;">{{item.d}}天</a><span>{{item.h}}</span><div>:</div><span>{{item.m}}</span><div>:</div><span>{{item.s}}</span>
+            </div>
+            <!--<span style="float: none"> 还剩{{item.time}}</span>-->
+        </div>
+    </div>
+    <div class="product_box">
+        <div class="product_title">
+            {{pobj.productName}}
+            <div class="vip-free" v-show="pobj.memberLevels.length">
+                <span v-for="(vitem,vindex) in pobj.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=pobj.memberLevels.length-1">/</a></span>免费
+            </div>
+        </div>
+        <div v-if="isCut == 1" style="color:red;font-size: 12px;padding-bottom: 5px;">注释：可砍去的金额为团报价的基础上减去的价额</div>
+
+        <div class="joinlist">
+            <span>已拼团{{pobj.countGroupNum}}人</span>
+            <div style="clear: both"></div>
+        </div>
+        <div class="sharegeta" @click="showBg(true)">邀约返佣</div>
+    </div>
+
+
+    <div class="desc-tab">
+        <span @click="tabClick(1)" :class="{'desc-tab-active':tabindex==1}">详情</span>
+        <span @click="tabClick(2)" :class="{'desc-tab-active':tabindex==2}">课程试听</span>
+    </div>
+    <div v-show="tabindex==1">
+        <div class="couponbox" @click="openGetCoupon" v-if="coupons.length>0">
+            <span class="cspan1">
+                优惠
+
+            </span>
+            <span class="cspan2">
+                领券
+            </span>
+            <div class="cdiv1" v-for="(item,index) in coupons" v-if="index<2">
+                满{{item.withAmount}}减{{item.usedAmount}}
+            </div>
+            <img class="openicon" src="../icon/right.png" alt="">
+        </div>
+        <div class="product_desc">
+            <p>
+                课程参数
+                <span></span>
+            </p>
+            <div class="typelist" style="margin-top: 15px;">
+                <div class="typetitle">授课形式:</div>
+                <div class="typelist11">
+                    <div v-for="item in classTypes">
+                        <span class="typeicon" v-bind:class="{'typetext1':item.isHave==1}"></span>
+                        <span class="typetext">{{item.className}}</span>
+                    </div>
+                </div>
+            </div>
+            <!--<div class="typelist" style="margin-top: 15px;">-->
+                <!--<div class="typetitle">上课形式:</div>-->
+                <!--<div class="typelist11">-->
+                    <!--<div  v-for="item in teachTypes">-->
+                        <!--<span class="typeicon" v-bind:class="{'typetext1':item.isHave==1}"></span>-->
+                        <!--<span class="typetext">{{item.teachName}}</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+            <!--</div>-->
+            <div class="typelist">
+                <div class="typetitle">上课时段:</div>
+                <div>
+                    <div>
+                        <span class="typetext">{{pobj.startTime}}至{{pobj.endTime}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="typelist">
+                <div class="typetitle">课程课时:</div>
+                <div>
+                    <div>
+                        <span class="typetext">{{pobj.classTime}}课时 (40—60分钟/课时)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="product_desc">
+            <p>
+                课程简介
+                <span></span>
+            </p>
+            <div v-html="pobj.productDesc" id="pcontent">
+
+            </div>
+        </div>
+        <div class="hot-class">
+            <div class="hotclasstitle">
+                推荐课程
+                <img onclick="openRegister('active','./free/active.html',{})" style="float:right;margin-left: 20px;height: 14px;" src="../icon/ai/more.png" alt="">
+                <span @click="changeList">换一批</span>
+            </div>
+            <div>
+                <ul class="classlist">
+                    <li v-for="(item,index) in hotClassList" @click="openDetail(item)"  v-if="index<5">
+                        <div class="class-cover"  :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                            <img v-if="item.isCut==1&&item.isGroup==0" src="../icon/cuting.png" alt="">
+                            <img v-if="item.isGroup==1&&item.isCut==0" src="../icon/grouping.png" alt="">
+                            <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                        </div>
+                        <div class="class-detail">
+                            <p class="class-title">{{item.productName}}</p>
+                            <div class="class-tag">
+                                <span>{{item.productIntro}}</span>
+                            </div>
+                            <div class="activename">
+                                <span v-if="item.isCut==1">邀请砍价</span>
+                                <span v-if="item.isGroup==1">拼团优惠</span>
+                                <span v-if="item.isCommission">邀请返佣</span>
+                            </div>
+
+                            <div class="class-num">
+                                <div class="class-price">
+                                    <a href="javascript:;">￥</a>
+                                    <span>{{item.productPrice}}</span>
+                                    <div style="clear: both"></div>
+                                </div>
+                                <div class="class-person">
+                                    报名<span>{{item.purchaseNum}}</span>人
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="list-vip-free" v-show="item.memberLevels">
+                                <span v-for="(vitem,vindex) in item.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=item.memberLevels.length-1">/</a></span>免费
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div v-show="tabindex==2">
+        <div class="subjects-btn">
+            <span @click="getStageListBySubjectId(item.subjectId)" :class="{'active-btns':subjectId==item.subjectId}" v-for="item in subjectList">{{item.subjectName}}</span>
+            <!--<span>英语</span>-->
+        </div>
+        <div class="class-list">
+            <div v-for="(item,index) in stageList">
+                <div class="stagelist" @click="getVideosListByStageId(item.stageId,index)">
+                        <span>
+                            {{item.stageName}}
+                        </span>
+                    <img :class="{'open-active':stageId==item.stageId&&item.flag}" src="../icon/right.png" alt="">
+                </div>
+                <ul v-show="stageActiveIndex == index && item.flag">
+                    <li v-for="(item,index) in videos">
+                        <div>
+                            {{index+1}}.{{item.videoName}}
+                        </div>
+                        <span v-show="item.isTry==1"  @click="tryThisVideo(item)">
+                                可试看
+                            </span>
+                    </li>
+                </ul>
+            </div>
+            <!--<div>-->
+            <!--<div class="stagelist">-->
+            <!--<span>-->
+            <!--建造师第一阶段-->
+            <!--</span>-->
+            <!--<img src="../icon/right.png" alt="">-->
+            <!--</div>-->
+
+            <!--</div>-->
+        </div>
+
+    </div>
+
+    <div style="height:50px;"></div>
+    <div class="detail_b">
+        <div class="detail_b_l">
+            <div @click="closeToHome">
+                <img src="../icon/home-1.png" alt="">
+                <span >首页</span>
+            </div>
+            <div @click="openOrgDetail">
+                <img src="../icon/school.png" alt="">
+                <span>学校</span>
+            </div>
+        </div>
+        <div class="detail_b_r">
+
+            <span @click="openSelect(true,1)">原价购买￥{{pobj.productPrice}}</span>
+            <!--<span @click="collectionProduct">原价购买￥{{pobj.productPrice}}</span>-->
+            <p @click="openSelect(true,2)" v-if="isCut==1">砍价报名</p>
+            <p @click="openSelect(true,2)" v-else>立即团购</p>
+        </div>
+    </div>
+    <div class="buynowbox" v-show="selectFlag">
+        <div class="buydata">
+            <img @click="openSelect(false)" src="../icon/close.png" alt="">
+            <div class="buytop">
+                <div class="buy-head">
+                    <img style="width: 100%;height: 100%" :src="coverImg" alt="">
+                </div>
+                <div class="buydetail" v-if="buyType==2">
+                    <div>
+                        ￥<span>{{groupObj.groupPrice}}</span>
+                    </div>
+                    <p>
+                        已选：{{groupObj.groupSumNum}}人团 {{pobj.teachName}} {{pobj.className}} {{pobj.startTime}}开课
+                    </p>
+                </div>
+                <div class="buydetail" v-if="buyType==1">
+                    <div>
+                        ￥<span>{{pobj.productPrice}}</span>
+                    </div>
+                    <p>
+                        已选：原价购买 {{pobj.teachName}} {{pobj.className}} {{pobj.startTime}}开课
+                    </p>
+                </div>
+            </div>
+            <div class="guige">
+                <div>
+                    <p v-if="isCut==0&&buyType==2">拼团规格：</p>
+                    <p v-if="isCut==1&&buyType==2">拼团砍价：</p>
+                    <p v-if="buyType==1">课程价格：</p>
+
+                    <ul v-for="item in aaa" v-if="buyType==2">
+                        <li style="margin: 0px 5px 5px " @click="chooseThisGroup(item)" v-bind:class="{'guigeactive':groupId == item.groupId}" ><span>{{item.groupSumNum}}人团</span><span>￥{{item.groupPrice}}</span>
+                            <span v-if="item.cutFloorPrice">可砍去￥{{item.cutFloorPrice}}</span>
+                            <span v-else class="endtimebox">{{item.d}}天{{item.h}}小时{{item.m}}分{{item.s}}秒</span>
+                            <span>已团{{item.groupNum}}人</span>  </li>
+                    </ul>
+                    <ul v-if="buyType==1">
+                        <li style="margin: 0px 5px 5px " class="guigeactive">
+                           原价购买 ￥{{pobj.productPrice}}
+                        </li>
+
+                    </ul>
+                </div>
+                <div>
+                    <p>课程课时：</p>
+                    <ul>
+                        <li class="guigeactive">{{pobj.classTime}} (40—60分钟/课时)</li>
+                    </ul>
+                </div>
+                <div>
+                    <p>授课形式：</p>
+                    <ul>
+                        <li class="guigeactive">{{pobj.teachName}}</li>
+                    </ul>
+                </div>
+                <div>
+                    <p>开课时间：</p>
+                    <ul>
+                        <li class="guigeactive">{{pobj.startTime}}至{{pobj.endTime}}</li>
+                    </ul>
+                </div>
+            </div>
+            <!--<div class="buynum">-->
+                <!--<span>购买数量</span>-->
+                <!--<div class="buyinput">-->
+                    <!--<span style="border-right: 1px solid #e5e5e5" @click="changeBuyNum(-1)">-</span>-->
+                    <!--<a href="javascript:;">{{buyNum}}</a>-->
+                    <!--<span style="border-left: 1px solid #e5e5e5" @click="changeBuyNum(1)">+</span>-->
+                <!--</div>-->
+                <!--<div style="clear: both"></div>-->
+            <!--</div>-->
+            <div class="buybtn" v-if="isCut==0" @click="buyGroupNow">
+                立即团购
+            </div>
+            <div class="buybtn" v-else @click="buyGroupNow">
+                砍价报名
+            </div>
+        </div>
+    </div>
+    <div style="height: 50px;"></div>
+
+    <div class="buynowbox" v-show="showBgFlag">
+        <div class="bg-top">
+            <div class="sharetitle">
+                分享至
+            </div>
+            <div class="shareitem">
+                <ul>
+                    <li  @click="shareToWx('session')">
+                        <img src="../icon/wx1.png" alt="">
+                        <span>微信</span>
+                    </li>
+                    <li @click="shareToWx('timeline')">
+                        <img src="../icon/timeline2.png" alt="">
+                        <span>朋友圈</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="sharerule" >
+                此课程分享好友下单后，可获得5%佣金和50太奇币
+            </div>
+            <div class="cancle_share" @click="showBg(false)">取消</div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script type="text/javascript" src="../script/fastclick.js"></script>
+<script type="text/javascript" src="../script/swiper-3.3.1.min.js"></script>
+<script>
+   var wx,imageFilter,UIPhotoViewer,swiper,browser,v_Width,vivi;
+
+    apiready = function () {
+        v_Width = api.winWidth;
+        vivi = api.require('advancedPlayer');
+        wx = api.require('wx')
+        browser = api.require('webBrowser');
+        UIPhotoViewer = api.require('UIPhotoViewer')
+        imageFilter = api.require('imageFilter')
+        api.addEventListener({
+            name: 'openproductpage1'
+        }, function(ret, err) {
+            app.productId = ret.value.id;
+            app.getProductDetail();
+//            alert(JSON.stringify(ret.value));
+        });
+
+
+        document.getElementsByClassName('detail_b')[0].style.paddingBottom = api.safeArea.top + 'px';
+        app.productId = api.pageParam.id;
+        app.getProductDetail();
+    }
+    var app = new Vue({
+        el: '#product-detail',
+        data: {
+            showBgFlag:false,
+            tabIndex:0,
+            selectIndex:0,
+            selectFlag:false,
+            productId:null,
+            pobj:{
+	            memberLevels:[],
+            },
+            activeGuige:{},//
+            defultPrice:0, //默认价格
+            buyNum:1,//购买数量
+            hotClassList:[], //热门课程
+            groups:[], //拼团列表
+            isCut:0, //是否是砍价
+            activeObj:{}, //当前规格
+            bannerList:[], //轮播图
+            groupId:null,
+            groupObj:{},
+            coverImg:'',
+            coupons:[],
+            classTypes:[],
+            teachTypes:[],
+            aaa:undefined,
+            buyType:null,//1原价购买 2拼团砍价购买
+            chatObj:{},
+            tabindex:1,//详情和课程试听控制
+
+            videos:[],
+            subjectId:null, //查看的当前学科ID
+            subjectList:[],//学科列表
+            stageId:null,//查看的当前阶段ID
+            stageList:[],//阶段列表
+            stageActiveIndex:null,
+
+        },
+        methods:{
+            //试听课程
+            tryThisVideo(data){
+                if(data.onLive==1){
+                    browser.open({
+                        url: data.videoUrl
+                    });
+                }else{
+                    ajaxGet(getVideoUrl,{fileId:data.lineVideoUrl},function (ret,err) {
+//                        _this.videoUrl = ret.m3u8Url;
+                        vivi.openplayer({
+                            x: 0,
+                            y :api.safeArea.top+200,
+                            w : v_Width,
+                            h: 250,
+                            title: '名师讲解',
+                            url: ret.m3u8Url,
+                        }, function(ret, err) {
+
+                        });
+                    })
+                }
+
+            },
+            //详情和课程试听点击事件
+            tabClick(index){
+                this.tabindex = index;
+            },
+            openChatByProductDetail(){
+//                this.chatObj
+//                this.pobj
+                var obj = {
+                    id:this.productId, //商品ID,
+                    img:this.coverImg,//商品图片
+                    intro:this.pobj.productIntro, //商品简介
+                    price:this.pobj.productPrice,//商品价格
+                    chat_source:'product', //来源
+                    chat_id:this.chatObj.socketOrgInfo.imOrgSerial,
+                    chat_user:this.chatObj.userName,
+                    chat_token:this.chatObj.token,
+                    client_user:getUserInfo().userPhone,
+                    isOnline:this.chatObj.onLine,
+                    link:chatShareUrl+'productgroup_detail?id=' + this.productId
+                }
+                bindConsult(obj)
+            },
+            //新增优惠券
+            openGetCoupon(){
+                var _this = this;
+                api.openFrame({
+                    name: 'getcoupon',
+                    url: './main/getcoupon.html',
+                    rect: {
+                        x: 0,
+                        y: 0,
+                        w: 'auto',
+                        h: 'auto'
+                    },
+                    animation:{
+                        type:"fade",                //动画类型（详见动画类型常量）
+                        subType:"from_right",       //动画子类型（详见动画子类型常量）
+                        duration:300                //动画过渡时间，默认300毫秒
+                    },
+                    bgColor:'rgba(0,0,0,0.2)',
+                    pageParam: {
+                        list: _this.coupons
+                    }
+                });
+            },
+            shareToWx(type){
+                var _this = this;
+                var wxA = wx;
+                var productUrl = shareUrl + 'productgroup_detail.html?id='+ this.productId+'&'
+                var user = getUserInfo();
+                if(user){
+                    productUrl += 'inviteCode='+user.inviteCode + '&'
+                }else{
+                    openNewWindow('login','./login/login.html')
+                    return
+                }
+
+                shareToWx(imageFilter,wxA,type,_this.pobj.productName,document.getElementById('pcontent').textContent,this.pobj.attachment.fileUrl,productUrl,function (ret) {
+                    toast('分享成功')
+
+                },this.productId,4)
+            },
+            //选择规格
+            chooseGuige(index){
+                this.activeGuige = this.pobj.rules[index]
+                this.activeGuige.startTime = formatTimeToDay(this.activeGuige.startTime)
+            },
+            openSelect:function(f,type){
+                this.selectFlag = f;
+                this.buyType=type;
+            },
+            buyGroupNow(){
+                var _this = this;
+                var obj = {
+                    productAid:this.productId,
+                    groupId:this.groupId
+                };
+                if(this.buyType==1){
+                    ajaxGet(buyProductByAllPriceUrl,obj,function (ret,err) {
+                        if(ret){
+                            setTimeout(function () {
+                                if(ret.code == 0){
+                                    openNewWindow('payorder1','./orders/payorder1.html',{id:ret.data.orderId})
+                                    reload()
+                                }else if(ret.code == 4){
+                                    toast('订单已存在')
+                                }
+                            },1000)
+                        }
+                    })
+
+                }else{
+                    if(_this.pobj.isEnd==1){
+                        toast('活动日期已结束，您可以原价购买此产品')
+                        return;
+                    }
+                    ajaxGet(createGroupOrderUrl,obj,function (ret,err) {
+                        if(ret){
+                            if(ret.code == 0){
+                                setTimeout(function () {
+                                    if(_this.isCut  == 1){
+                                        openNewWindow('order_kan','./main/order_kan.html',{id:ret.data.orderId})
+                                        reload()
+                                    }else{
+                                        openNewWindow('payorder1','./orders/payorder1.html',{id:ret.data.orderId})
+                                        reload()
+                                    }
+                                },1000)
+                            }else if(ret.code == 4){
+                                api.confirm({
+                                    title: '温馨提示',
+                                    msg: '订单已存在，是否去支付?',
+                                    buttons: ['确定', '取消']
+                                }, function(ret, err) {
+                                    var index = ret.buttonIndex;
+                                    if(index==1){
+                                        openNewWindow('myclass','./main/myclass.html',{})
+                                    }
+                                });
+                            }
+                        }
+                    })
+
+                }
+            },
+            seeImg:function(index){
+                var _this = this;
+                previewPhoto(UIPhotoViewer, _this.bannerList,index)
+            },
+            //根据阶段ID查看课时列表
+            getVideosListByStageId(stageId,index){
+                this.stageList[index].flag = !this.stageList[index].flag;
+                if(!this.stageList[index].flag){
+                    return;
+                }
+                var _this = this;
+                _this.stageId = stageId;
+                _this.stageActiveIndex = index;
+                ajaxGetVistor(getVideosListUrl,{stageId:stageId,productId:_this.productId,productType:4,subjectId:_this.subjectId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.videos = ret.data;
+                    }
+                })
+            },
+            //根据学科ID查询阶段列表
+            getStageListBySubjectId(subjectId){
+                var _this = this;
+                _this.subjectId = subjectId;
+                _this.stageList = [];
+                _this.videos = [];
+                ajaxGetVistor(getStageListUrl,{productId:_this.productId,productType:4,subjectId:_this.subjectId},function (ret,err) {
+                    for(var i=0;i<ret.data.length;i++){
+                        ret.data[i].flag = false;
+                    }
+                    if(ret && ret.code == 0){
+                        _this.stageList = ret.data;
+                    }
+
+                })
+
+            },
+            getProductDetail(){
+                var _this = this;
+                var obj = {productAid:this.productId}
+                var user = getUserInfo();
+                if(user){
+                    obj.userId = user.userId
+                }
+                ajaxGetVistor(getActiveGoodsDetailUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.coupons = ret.data.orgCoupons || [];
+                        _this.classTypes = ret.data.allRules.classTypes;
+                        _this.teachTypes = ret.data.allRules.teachTypes;
+                        var arr =  Object.assign([], ret.data.groups);
+                        _this.groupObj = ret.data.groups[0];
+                        _this.groupId = ret.data.groups[0].groupId;
+                        ret.data.startTime = formatTimeToDay(ret.data.startTime)
+                        ret.data.endTime = formatTimeToDay(ret.data.endTime)
+                        for(var i=0;i<ret.data.imageList.length;i++){
+                            _this.bannerList.push(ret.data.imageList[i].attachment.fileUrl)
+                        }
+                        _this.isCut = ret.data.productDetail.isCut;
+                        _this.coverImg = ret.data.attachment.fileUrl;
+                        _this.pobj = ret.data;
+	                    _this.pobj.memberLevels = _this.pobj.memberLevels ? _this.pobj.memberLevels : []
+                        if(ret.data.productDetail.isGroup == 1){
+                            for(var i=0;i<arr.length;i++){
+                                var obj = MillisecondToDate(arr[i].groupEndTime)
+                                arr[i].d = obj.d || '0';
+                                arr[i].h = obj.h || '0';
+                                arr[i].m = obj.m || '0';
+                                arr[i].s = obj.s || '0';
+                            }
+                            _this.aaa = arr;
+                        }
+                        _this.$nextTick(function () {
+                            swiper = new Swiper('.swiper-container',{
+                                spaceBetween: 30,
+                                centeredSlides: true,
+                                loop: true,
+//        autoplay: true,
+                                pagination: {
+                                    el: '.swiper-pagination',
+                                    clickable: true,
+                                }
+                            });
+                        })
+                        //获取学科列表
+                        ajaxGetVistor(getSubjectListByProductUrl,{productType:4,productId:_this.productId},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.subjectList = ret.data;
+                                _this.subjectId =  ret.data[0].subjectId;
+                                _this.getStageListBySubjectId(_this.subjectId)
+                            }
+                        })
+                        getCoinByBrower(2,_this.productId);
+                        _this.changeList();
+                        ajaxGetVistor(getOrganChatDataUrl,{orgId:ret.data.orgId},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.chatObj = ret.data;
+                            }
+                        })
+                    }
+                })
+            },
+            changeList(){
+                var _this = this;
+                ajaxGetVistor(getDetailHotClassesUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.hotClassList = ret.data;
+                    }
+                })
+            },
+            getEndTime(){
+                var _this = this;
+                setTimeout(function () {
+//                    for(var i=0;i<_this.groups.length;i++){
+//                        _this.groups[i].time = MillisecondToDate(_this.groups[i].groupEndTime)
+//                        var obj = MillisecondToDate(_this.groups[i].groupEndTime)
+//                        _this.groups[i].d = obj.d || '0';
+//                        _this.groups[i].h = obj.h || '0';
+//                        _this.groups[i].m = obj.m || '0';
+//                        _this.groups[i].s = obj.s || '0';
+//                    }
+                },200)
+            },
+            changeBuyNum(type){
+                if(type>0){
+                    this.buyNum++;
+                }else{
+                    if(this.buyNum>1){
+                        this.buyNum--;
+                    }
+                }
+            },
+            chooseThisGroup(data){
+                this.groupObj = data;
+                this.groupId = data.groupId;
+            },
+            closeToHome(){
+                api.closeToWin({
+                    name:'root'
+                })
+            },
+            openOrgDetail(){
+                openRegister('organ_detail','./organ_detail.html',{id:this.pobj.orgId,name:'机构详情'})
+            },
+            changeBuyNum(type){
+                if(type>0){
+                    this.buyNum++;
+                }else{
+                    if(this.buyNum>1){
+                        this.buyNum--;
+                    }
+                }
+            },
+            openDetail(data){
+                if(data.imageType == 2){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.imageType==4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+
+                    }else if(data.isGroup == 1 && data.isCut == 0){
+                      api.sendEvent({
+                          name: 'openproductpage1',
+                          extra: {
+                              id: data.productId,
+                          }
+                      });
+                        this.bannerList = [];
+                        swiper.destroy(false)
+                        window.scrollTo(0, 0);
+                    }else if(data.isGroup == 1 && data.isCut == 1){
+                      api.sendEvent({
+                          name: 'openproductpage1',
+                          extra: {
+                              id: data.productId,
+                          }
+                      });
+                      this.bannerList = [];
+                        swiper.destroy(false)
+                        window.scrollTo(0, 0);
+                    }
+                }
+            },
+            showBg(f){
+                this.showBgFlag = f;
+            },
+            collectionProduct(){
+                collectionProductFn(this.productId,4)
+            },
+        },
+    })
+    function openShare() {
+        app.showBgFlag = true;
+    }
+</script>
+</html>

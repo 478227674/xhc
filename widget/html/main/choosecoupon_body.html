@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+        .coupontab{
+            line-height: 44px;
+            height: 44px;
+            background: #fff;
+            color:#666
+        }
+        .coupontab span{
+            display: block;
+            width: 50%;
+            text-align: center;
+            height: 44px;
+            line-height: 44px;
+            font-size: 14px;
+            float: left;
+            position: relative;
+        }
+        .coupontab span a {
+            display: block;
+            width: 60px;
+            position: absolute;
+            bottom: 0px;
+            border-bottom: 3px solid #f73e3c;
+            left: 50%;
+            margin-left: -30px;
+        }
+        .tabcaa{
+            color:#f73e3c !important;
+        }
+        .coupon-bottom{
+            width: 90%;
+            margin: 0 auto;
+        }
+        .errortext{
+            padding: 13px 25px;
+            background: url("../../icon/errro.png") no-repeat left 10px ;
+            font-size: 12px;color:#666666;
+            background-size:18px 18px;
+        }
+        .couponlist li {
+            display: flex;
+            margin-bottom: 10px;
+            justify-content: flex-start;
+        }
+        .couponlist li .coupon-left{
+            height: 90px;
+            width: 90px;
+            background: url("../../icon/couponbg.png") no-repeat 0px 0px;
+            background-size:100% 100%;
+            line-height: 90px;
+            color:#fff;
+            font-size: 14px;
+            text-align: center;
+        }
+        .couponlist li .coupon-left1{
+            height: 90px;
+            width: 90px;
+            background: url("../../icon/yiguoqi.png") no-repeat 0px 0px;
+            background-size:100% 100%;
+            line-height: 90px;
+            color:#fff;
+            font-size: 14px;
+            text-align: center;
+        }
+        .couponlist li .coupon-left span,.couponlist li .coupon-left1 span{
+            font-size: 30px;
+        }
+        .coupon-center{
+            flex: 1;
+            background: #fff;
+
+        }
+        .coupon-center span{
+            margin: 25px 0 15px 15px;
+            font-size: 16px;color:#333;
+        }
+        .coupon-center p {
+            color:#999999;
+            margin-left: 15px;
+            font-size: 12px;
+        }
+        .coupon-right{
+            color:#ff9000;
+            font-size: 12px;
+            padding: 18px 10px;
+            width: 20px;
+            border-left: 1px solid #e5e5e5;
+            text-align: center;
+            background: #fff;
+        }
+        .yig{
+            color:#666 !important;
+            padding: 22px 10px !important;
+        }
+    </style>
+</head>
+<body >
+    <div class="couponboxall" style="position:relative;top:0px;margin-top: 5px;">
+        <div class="coupon-bottom">
+            <ul class="couponlist">
+                <li v-for="item in list" @click="chooseThisCoupon(item)">
+                    <div class="coupon-left">
+                        <div class="manjian1">￥<span>{{item.usedAmount}}</span></div>
+                        <div class="manjian2">满{{item.withAmount}}可用</div>
+                    </div>
+                    <div class="coupon-center">
+                        <span>{{orgName}}</span>
+                        <p>有限期:{{item.startTime}}/{{item.endTime}}</p>
+                    </div>
+                    <span class="coupon-right">立即使用</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.couponboxall',
+        data: {
+            currentIndex:0,
+            list:[],
+            orgName:'',
+            allPrice:0,
+        },
+        methods:{
+            closePageThis:function (){
+                closeWin()
+            },
+            getCouponList(id){
+                var _this = this;
+                ajaxGet(getCanUseCouponListUrl,{orgId:id,pagenum:1,pagesize:100},function (ret, err) {
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].startTime = formatTimeToDay(ret.data.list[i].startTime);
+                            ret.data.list[i].endTime = formatTimeToDay(ret.data.list[i].endTime);
+                        }
+                        _this.list = ret.data.list;
+                    }
+                })
+            },
+            chooseThisCoupon(data){
+                if(this.allPrice<data.withAmount){
+                    toast('订单金额未满'+data.withAmount+'元，优惠券不可用')
+                    return;
+                }
+                api.execScript({
+                    name:'payorder',
+                    frameName:'payorder_body',
+                    script:"getCouponObj("+ JSON.stringify(data) + ")"
+                })
+                closeWin();
+            },
+//            clickTab(index){
+//                this.currentIndex = index;
+//            },
+        },
+    })
+
+    apiready = function () {
+        app.allPrice = api.pageParam.price;
+        app.getCouponList(api.pageParam.id)
+        app.orgName = api.pageParam.name;
+    };
+
+
+</script>
+</html>

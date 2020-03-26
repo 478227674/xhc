@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+</head>
+<body >
+<div style="height: 45px;"></div>
+<div class="collectbox" v-cloak>
+    <div class="typeselect">
+
+        <p @click="clickTab(2)"  tapmode v-bind:class="{'activeclick':tabIndex==2&& showFlag,'bacactive':tabIndex==2&& showFlag}" class="canselect">
+            {{typeText}}
+        </p>
+        <p @click="clickTab(1)"  tapmode v-bind:class="{'activeclick':tabIndex==1,'bacactive':tabIndex==1&& showFlag}" class="canselect">
+            价格
+        </p>
+
+    </div>
+    <div>
+        <ul class="classlist"  >
+            <li v-for="item in list" @click="openProductDetail(item)">
+                <div class="class-cover"  :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                    <img v-if="item.isCut==1&&item.isGroup==0" src="../../icon/cuting.png" alt="">
+                    <img v-if="item.isGroup==1&&item.isCut==0" src="../../icon/grouping.png" alt="">
+                    <img v-if="item.isCut==1&&item.isGroup==1" src="../../icon/kpkk.png" alt="">
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">{{item.productName}}</p>
+                    <div class="class-tag">
+                        <span>{{item.productIntro}}</span>
+                    </div>
+                    <div class="activename">
+                        <span v-if="item.isCut==1">邀请砍价</span>
+                        <span v-if="item.isGroup==1">拼团优惠</span>
+                        <span v-if="item.isCommission">邀请返佣</span>
+                    </div>
+
+                    <div class="class-num">
+                        <div class="class-price">
+                            <div v-show="item.productPrice>0">
+                                <a href="javascript:;">￥</a>
+                                <span>{{item.productPrice}}</span>
+                            </div>
+                            <div v-show="item.productPrice==0">
+                                <span>免费</span>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                        <div class="class-person">
+                            报名<span>{{item.purchaseNum}}</span>人
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="list-vip-free" v-show="item.memberLevels">
+                        <span v-for="(vitem,vindex) in item.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=item.memberLevels.length-1">/</a></span>免费
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+
+        </ul>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+    </div>
+    <div class="selectarea" v-show="tabIndex == 1 && showFlag">
+        <span></span>
+        <div>
+            <ul>
+                <li v-bind:class="{'areaactive':!priceId}" @click="chooseThisPrice(null)">不限</li>
+                <!--<li class="areaactive">全部</li>-->
+                <li v-bind:class="{'areaactive':priceId==item.rangeId}" v-for="item in priceList" @click="chooseThisPrice(item)">{{item.startPrice}}-{{item.endPrice}}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="typeall" v-show="tabIndex == 2 && showFlag">
+        <!--项目-->
+        <div class="item2">
+            <ul>
+                <li v-bind:class="{'clickactive2':!threeLevelId}" @click="chooseType(null,2)">全部</li>
+                <li v-bind:class="{'clickactive2':threeLevelId==item.id}" v-for="(item,index) in sort3List" @click="chooseType(index,2)" >
+                    {{item.name}}
+                </li>
+            </ul>
+        </div>
+        <!--科目-->
+        <div class="item3">
+            <ul>
+                <li @click="chooseType(null,3)">全部</li>
+                <li v-for="(item,index) in subjectList" @click="chooseType(index,3)">
+                    {{item.subjectName}}
+                </li>
+                <li> </li>
+                <li> </li>
+
+            </ul>
+        </div>
+        <div style="clear: both"></div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+//        document.getElementsByClassName('item1')[0].style.height = api.frameHeight+'px';
+        document.getElementsByClassName('item2')[0].style.height = api.frameHeight+'px';
+        document.getElementsByClassName('item3')[0].style.height = api.frameHeight+'px';
+        document.getElementsByClassName('selectarea')[0].style.height = api.frameHeight+'px';
+        app.getProductList();
+        app.getPriceList();
+        app.getSubjects();
+//        app.getCityList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getProductList();
+            }
+        });
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+    };
+
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            priceList:[],
+            currentIndex:0,
+            pagenum:1,
+            pagesize:10,
+            list:[],
+            isMore:true,
+            sortId:null,
+            subjectId:null,
+            tabIndex:0,
+            selectIndex:0,
+            showFlag:false,
+            pageSize:10,
+            pageNum:1,
+            orgList:[],
+            lastPage:null,
+            oneLevelId:null,
+            twoLevelId:null,
+            threeLevelId:null,
+            activeTypeIndex:null,
+            activeTypeIndex1:null,
+            typeText:'类别',
+            priceId:null,
+
+            cityIdC:null,
+            cityList:[],
+            st:null,
+            et:null,
+
+            subjectList:[],
+            sort3List:[],
+        },
+        methods:{
+            getSubjects(){
+                var _this = this;
+
+                ajaxGetVistor(getThreeSortListUrl,{level:3},function (ret,err) {
+                    if(ret && ret.code ==0){
+                        _this.sort3List = ret.data;
+                    }
+
+                })
+            },
+            chooseType(index,type){
+                var _this = this;
+                if(index || index==0){
+                    if(type == 2){
+                        this.threeLevelId = this.sort3List[index].id
+                        ajaxGetVistor(getAiSubjectListUrl,{sortId:this.sort3List[index].id},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.subjectList = ret.data;
+                            }
+                        })
+//                       this.getProductList(this.threeLevelId,this.st,this.et,this.subjectId)
+                    }else if(type==3){
+
+                        this.list = [];
+                        this.subjectId = this.subjectList[index].subjectId
+                        this.getProductList(this.threeLevelId,this.st,this.et,this.subjectId)
+                        this.showFlag = false;
+                    }
+                }else{
+                    this.typeText = '全部'
+                    this.pagenum = 1;
+                    this.showFlag = false;
+                    this.list = [];
+                    this.isMore = true;
+                    if(type==3){
+                        this.subjectId = null;
+                        this.getProductList(this.threeLevelId,this.st,this.et,this.subjectId)
+                    }else if(type==2){
+                        this.threeLevelId = null;
+                        this.getProductList(this.threeLevelId,this.st,this.et,this.subjectId)
+                    }
+                }
+            },
+            getPriceList(){
+                var _this = this;
+                ajaxGetVistor(getPriceListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.priceList = ret.data;
+                    }
+                })
+            },
+            chooseThisPrice(data){
+                if(!data){
+                    this.st='';
+                    this.et=''
+                    this.list = [];
+                    this.pagenum = 1;
+                    this.getProductList(this.threeLevelId,'','',this.subjectId)
+                    this.showFlag = false;
+                    this.isMore = true;
+                    return;
+                }
+                this.priceId = data.rangeId;
+                this.list = [];
+                this.pagenum = 1;
+                this.getProductList(this.threeLevelId,data.startPrice,data.endPrice,this.subjectId)
+                this.st=data.startPrice;
+                this.et=data.endPrice;
+                this.showFlag = false;
+                this.isMore = true;
+            },
+            openProductDetail(data){
+                if(data.imageType == 2){
+                    openRegister('product_detail','../product_detail.html',{id:data.productId})
+                }else if(data.imageType==4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','../productkan_detail.html',{id:data.productId})
+                    }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                        openRegister('productgroup_detail','../productgroup_detail.html',{id:data.productId})
+                    }
+                }
+
+            },
+            getProductList(sortid,st,et,sId){
+                var _this = this;
+
+                var obj = {
+                    pagenum:this.pagenum,
+                    pagesize:this.pagesize
+                }
+                if(st){
+                    obj.startPrice = st;
+                }
+                if(et){
+                    obj.endPrice = et;
+                }
+                if(sortid){
+                    obj.sortId = sortid;
+                }
+                if(sId){
+                    obj.subjectId = sId;
+                }
+                if(getUserInfo()){
+                    obj.userId = getUserInfo().userId;
+                }
+                ajaxGetVistor(getAuditionUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(_this.pagenum==1 && ret.data.list.length==0){
+                            toast('暂无数据哦~')
+                            return;
+                        }
+                        if(ret.data.list.length<_this.pagesize){
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin();
+            },
+
+            clickTab(index){
+                if(index==0){
+                    this.orgList = [];
+                    this.pagenum = 1;
+                    this.getProductList();
+                }
+                if(index != this.tabIndex){
+                    this.tabIndex = index;
+                    this.showFlag = true;
+                    if(index==2){
+                        document.body.style.overflow='hidden';
+                        document.addEventListener("touchmove",mo,false);//禁止页面滑动
+                    }
+                }else{
+                    this.showFlag = !this.showFlag;
+                    document.body.style.overflow='';//出现滚动条
+                    document.removeEventListener("touchmove",mo,false);
+                }
+            },
+        },
+    })
+
+
+
+</script>
+</html>

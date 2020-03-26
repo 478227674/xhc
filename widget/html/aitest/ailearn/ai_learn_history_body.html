@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        .learn-list li{
+            height:62px !important;
+        }
+        .learn-list li p {
+            line-height: 20px;
+            color:#666;
+            font-size: 12px;
+        }
+        .learn-title{
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <div class="app-center leran_items">
+            <div :class="{'active-btns' : subId == item.subjectId}" @click="getReportHistoryList(item.subjectId)" v-for="item in subList">
+                {{item.subjectName}}
+            </div>
+        </div>
+        <div class="learn-list">
+            <ul>
+                <li v-for="item in testList" @click="openDetail(item)">
+                    <img class="learn-list-icon" src="../../../icon/ai/llisticon.png" alt="">
+                    <div>
+                        <p class="learn-title">{{item.knowledgeName}}</p>
+                        <p>{{item.createTime}}</p>
+                    </div>
+                    <img class="learn-list-right" src="../../../icon/right.png" alt="">
+                </li>
+            </ul>
+            <div v-show="!isMore" class="nomore">没有更多数据了~</div>
+
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            subList:[],
+            subId:null,
+            testList:[],
+            isMore:true,
+            pagenum:1,
+        },
+        methods:{
+            openDetail(data){
+                openNewWindow('ai_learn_diagnose','./ai_learn_diagnose.html',{id:data.knowledgeId,name:data.knowledgeName})
+
+
+            },
+            //学科按钮单击事件
+            getReportHistoryList(id){
+                var _this = this;
+                this.subId = id;
+                this.pagenum = 1;
+                this.getReportHistoryListFn();
+            },
+            //根据学科ID获取诊断记录
+            getReportHistoryListFn(){
+                var _this = this;
+                ajaxGet(getReportHistoryListUrl,{subjectId:this.subId,pageNum:this.pagenum,pageSize:10},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDate(ret.data.list[i].createTime)
+                        }
+                        _this.testList = ret.data.list;
+
+                        if(ret.data.list.length<10){
+                            _this.isMore = false;
+                        }
+                        _this.pagenum++;
+                    }
+                })
+            },
+            //获取学科列表
+            getSubjectList(){
+                var _this=this;
+                ajaxGet(getAiSubjectListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.subList = ret.data;
+                        if(ret.data.length>0){
+                            //默认获取第一个学科的试题列表
+                            _this.subId = ret.data[0].subjectId;
+                            _this.getReportHistoryList(_this.subId)
+                        }
+                    }
+                })
+            },
+        },
+    })
+
+    apiready = function () {
+        app.getSubjectList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getReportHistoryListFn();
+            }
+        });
+	    api.setRefreshHeaderInfo({
+		    loadingImg: 'widget://image/refresh.png',
+		    bgColor: '#f73e3c',
+		    textColor: '#fff',
+		    textDown: '下拉刷新...',
+		    textUp: '松开刷新...'
+	    }, function(ret, err) {
+		    reload();
+		    api.refreshHeaderLoadDone();
+		    //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+	    });
+    };
+
+</script>
+</html>

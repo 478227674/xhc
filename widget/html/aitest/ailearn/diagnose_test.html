@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        .qusition-dia-mychoose{
+            display: flex;
+            justify-content:flex-start;
+            align-items: center;
+        }
+        .qusition-dia-mychoose img{
+            width:15px;
+            height:15px;
+            margin-left: 10px;
+        }
+        .qusition-list li{
+        }
+        .qusition-index-text{
+            color:#666666;
+        }
+        .qusition-index-text span{
+            font-size: 12px;
+        }
+        .show-anwser{
+            border:1px solid #f7260a;
+            color:#f7260a;
+            font-size: 14px;
+            padding: 7px 30px 7px 13px;
+            border-radius: 5px;
+            display: inline-block;
+            background: url("../../../icon/ai/reddown.png") no-repeat 75px 10px;
+            background-size:  12px 7px;
+        }
+
+
+        .daanjiexi img{
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body style="background: #f6f6f6">
+    <div id="learn-box">
+        <div>
+            <div  style="margin-top: 10px">
+                <div>
+                    <ul class="qusition-list">
+                        <li v-for="(item,index) in tobj">
+                            <div class="qusition-index">
+                                <div class="qusition-index-text">第{{index+1}}题</div>
+                                <div>
+                                    题号:{{item.questionId}}
+                                </div>
+                            </div>
+                            <div class="qusition-choose">
+                                <span v-html="item.questionStem"></span>
+                                <div v-show="item.alQuestionOption.length>0" v-for="(items,indexs) in item.alQuestionOption">{{chooseList[indexs]}}. {{items.optionName}}</div>
+                            </div>
+                            <div class="show-anwser" v-show="!item.isShow" @click="showAnswer(index,true)">
+                                显示答案
+                            </div>
+                            <div class="hide-answer" v-show="item.isShow">
+                                <div class="hide-anwser" @click="showAnswer(index,false)">
+                                    隐藏答案
+                                </div>
+                                <div class="anwser-box">
+                                    <div class="anwser-right">
+                                        参考答案：{{chooseList[item.anwIndex]}}
+                                    </div>
+                                    <div class="anwser-btns">
+                                        <div @click="showAnswerJiexi(true,index)">
+                                            答案详解
+                                        </div>
+                                        <div  @click="showVideoJiexi1(item)" class="anwser-btns-video">
+                                            视频详解
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div style="height:100px;"></div>
+            </div>
+            <div v-show="answerFlag" class="mask answerjiexi" @click="showAnswerJiexi(false)">
+                <div @click.stop="returnFalse">
+                    <div v-html="analysis" class="daanjiexi">
+
+                    </div>
+                    <!--<img src="../../../icon/ai/videotbg.png" alt="">-->
+                </div>
+            </div>
+            <div v-show="videoFlag" class="mask answerjiexi" @click="showVideoJiexi(false)">
+                <div @click.stop="returnFalse">
+                    <div style="display: flex;justify-content: space-between">
+                        <span>解答视频</span>
+                        <img @click.stop="showVideoJiexi(false)" style="width: 15px;height:15px;" src="../../../icon/ai/clkosex.png" alt="">
+                    </div>
+                    <video  poster="../../../icon/ai/videotbg.png" src="https://vdept.bdstatic.com/694d59336d6152417857664662387868/4b4955615077684a/706d39fe6aed7117ff0dc6e603c7afddb38ed9094b92e9d102f8807d2eabbf97835258391d8ab450735fad128b05e575.mp4?auth_key=1577438448-0-0-d4e4062b4c3be4243bd070316179a4ca" controls="controls" id="videobox"></video>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/zepto.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script>
+
+    var vivi,v_Width,idsArr;
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            answerFlag:false,//答案解析控制锁
+            videoFlag:false,//视频解析控制锁
+            kid:null,
+            tobj:[] ,
+            chooseList:['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            analysis:'',
+        },
+        created(){
+
+        },
+        methods:{
+            showVideoJiexi1(data){
+                if(data.videoUrl){
+                    ajaxGet(getVideoUrl,{fileId:data.videoUrl},function (ret,err) {
+                        vivi.openplayer({
+                            x: 0,
+                            y :api.safeArea.top+200,
+                            w : v_Width,
+                            h: 250,
+                            title: '名师讲解 ',
+                            url: ret.m3u8Url,
+                        }, function(ret, err) {
+
+                        });
+                    })
+                }
+            },
+            returnFalse(){
+                return false;
+            },
+            showVideoJiexi(f,index){
+                this.videoFlag = f;
+
+                if(index>=0){
+
+                }
+            },
+            //显示答案解析方法
+            showAnswerJiexi(f,index){
+                this.answerFlag = f;
+                if(f){
+                    this.analysis = this.tobj[index].analysis
+                }
+                if(index>=0){
+
+                }
+            },
+            showAnswer(index,flag){
+                this.tobj[index].isShow = flag;
+                this.$set(this.tobj,index,this.tobj[index])
+            },
+            getAiTest(){
+                var _this = this;
+                ajaxGet(getTestAiPushListUrl,{knowledgeId:this.kid,questionIds:idsArr},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.length;i++){
+                            for(var n=0;n<ret.data[i].alQuestionOption.length;n++){
+                                if(ret.data[i].alQuestionOption[n].isRight == 1){
+                                    ret.data[i].anwIndex = n;
+                                }
+                            }
+                        }
+                        _this.tobj = ret.data;
+                    }
+                })
+            },
+        },
+    })
+    apiready = function () {
+        v_Width = api.winWidth;
+        idsArr = api.pageParam.ids || []
+        vivi = api.require('advancedPlayer');
+        app.kid = api.pageParam.id;
+        app.getAiTest();
+    };
+
+</script>
+</html>

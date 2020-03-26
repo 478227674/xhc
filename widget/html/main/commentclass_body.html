@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order.css"/>
+
+    <style>
+        html,body{
+            overflow: hidden;
+        }
+        .orderallbox{
+            padding-bottom: 20px;
+        }
+        .classborder{
+            width: 90%;
+            margin: 0 auto;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .commentdetail-box{
+            width: 94%;
+            margin: 0 auto;
+        }
+        .comment-title{
+            display: flex;
+            margin-top: 15px;
+            justify-content:flex-start;
+        }
+        .comment-title>span{
+            margin-top: 5px;
+            font-size: 14px;color:#333;
+        }
+        .comment-title .comment-box{
+            height: 110px;
+            border: 1px solid #dddddd;
+            padding: 8px;
+            border-radius: 5px;
+            flex: 1;
+        }
+        .comment-title .comment-box textarea {
+            outline: none;
+        }
+        .img-list{
+            /*flex: 1;*/
+            /*display: flex;*/
+            /*justify-content: flex-start;*/
+
+        }
+        .img-list .imageBox{
+            float: left;
+            margin-right: 5px;
+            width: 45px;height:45px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 5px;
+        }
+        .img-list div img{
+            width: 100%;
+            height: 100%;
+        }
+        .img-list >span{
+            font-size: 12px;color:#999;
+            margin-top: 30px;
+            margin-left: 5px;
+        }
+        .gradebox{
+            /*display: flex;*/
+            /*justify-content: flex-start;*/
+            /*flex-wrap: wrap;*/
+        }
+        .gradebox>div{
+            width: 50%;
+            float: left;
+            margin-top: 10px;
+        }
+        .gradebox img{
+            width: 15px;
+        }
+        .gradebox>div>span{
+            color:#333;
+            font-size: 12px;
+            line-height: 19px;
+            display: block;
+            float: left;
+        }
+        .gradebox>div>div{
+            float: left;
+            width: auto !important;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body >
+    <div id="comment" v-cloak>
+        <div class="orderallbox">
+            <p>{{orderObj.orgName}}</p>
+            <ul class="classlist"  >
+                <li>
+                    <div class="class-cover" :style="{backgroundImage: 'url(' + orderObj.imageUrl + ')'}">
+
+                    </div>
+                    <div class="class-detail">
+                        <p class="class-title">{{orderObj.productName}}</p>
+                        <div class="class-tag">
+                            <span>{{orderObj.className}}</span>
+                        </div>
+                        <div class="class-num">
+                            <div class="class-price">
+                                <a href="javascript:;">￥</a>
+                                <span>{{orderObj.productPrice}}</span>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="class-person">
+                                x{{orderObj.productNum}}
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+            </ul>
+
+            <div class="allprice">
+                <span>共{{orderObj.productNum}}件</span>
+                <div style="float: right">
+                    小计
+                    <div>
+                        ￥<span>{{orderObj.payPrice}}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="clear: both"></div>
+            <div class="classborder"></div>
+            <div class="commentdetail-box">
+                <div class="comment-title">
+                    <span>评价内容：</span>
+                    <div class="comment-box">
+                        <textarea v-model="userDesc" name="" placeholder="请输入您的评价" id="" cols="30" rows="10"></textarea>
+                    </div>
+                </div>
+                <div class="comment-title">
+                    <span>上传图片：</span>
+                    <div class="img-list">
+                        <div class="imageBox" v-for="item in imgList">
+                            <img :src="item" alt="">
+                        </div>
+                        <div class="imageBox" @click="uploadImg">
+                            <img src="../../icon/uploadimg.png" alt="">
+                        </div>
+
+                        <span>上传照片（最多四张）</span>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div class="gradebox">
+                    <div>
+                        <span>环境</span>
+                        <div class="hjgrade"></div>
+                    </div>
+                    <div>
+                        <span>效果</span>
+                        <div class="xggrade"></div>
+                    </div>
+                    <div>
+                        <span>师资</span>
+                        <div class="szgrade"></div>
+                    </div>
+                    <div>
+                        <span>服务</span>
+                        <div class="fwgrade"></div>
+                    </div>
+                    <span style="display:block;clear: both"></span>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-bottom-btn" @click="submitCommentObj">提交评价</div>
+    </div>
+
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../../script/raty.js"></script>
+
+<script>
+    var app = new Vue({
+        el: '#comment',
+        data: {
+            userDesc:'',
+            envGrade:0,
+            effectGrade:0,
+            facultyGrade:0,
+            serviceGrade:0,
+            imageList:[],
+            imgList:[],
+            orderObj:{},
+        },
+        methods:{
+            uploadImg(){
+                if(this.imageList.length>=4){
+                    toast('最多可上传4张')
+                    return;
+                }
+                var _this = this;
+                api.getPicture({
+                    sourceType: 'library',
+                    encodingType: 'png',
+                    mediaValue: 'pic',
+                    destinationType: 'base64',
+                    allowEdit: false,
+                    quality: 50,
+                    targetWidth: 100,
+                    targetHeight: 100,
+                    saveToPhotoAlbum: false
+                }, function(ret, err) {
+                    if (ret) {
+                        var base64 = ret.base64Data;
+                        uploadImageToServer(uploadImageUrl,{base64:base64,fileName:'1.jpg'},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.imgList.push(ret.data.filePath)
+                                _this.imageList.push({imageId:ret.data.fileId})
+                            }
+                        })
+                    } else {
+                    }
+                });
+            },
+            submitCommentObj(){
+                if(!this.userDesc){
+                    toast('请填写评价内容')
+                    return;
+                }
+                if(this.imageList.length == 0){
+                    toast('请至少上传一张照片')
+                    return;
+                }
+                if(!this.envGrade){
+                    toast('请对环境进行评价')
+                    return;
+                }
+                if(!this.effectGrade){
+                    toast('请对效果进行评价')
+                    return;
+                }
+                if(!this.facultyGrade){
+                    toast('请对师资进行评价')
+                    return;
+                }
+                if(!this.serviceGrade){
+                    toast('请对服务进行评价')
+                    return;
+                }
+                var obj = {
+                    envGrade:this.envGrade,
+                    effectGrade:this.effectGrade,
+                    facultyGrade:this.facultyGrade,
+                    serviceGrade:this.serviceGrade,
+                    orderId:this.orderId,
+                    userDesc:this.userDesc,
+                    imageIdList:this.imageList
+                }
+                ajaxGet(commentOrderUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('评论成功')
+                        api.execScript({
+                            name:'myclass',
+                            frameName:"myclass_body",
+                            script:"reloadClassList()"
+                        })
+                        api.execScript({
+                            name:'classdetail',
+                            frameName:"classdetail_body",
+                            script:"reloadClassDetail()"
+                        })
+                        setTimeout(function () {
+                            closeWin();
+                        },1500)
+                    }
+                })
+            },
+            getOrderDetail(){
+                var _this = this;
+                ajaxGet(getOrderDetailUrl,{orderId:this.orderId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret)
+                        _this.orderObj = ret.data;
+                    }
+
+                })
+
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+        },
+    })
+
+    apiready = function () {
+        app.orderId = api.pageParam.id;
+        app.getOrderDetail();
+    };
+    $(function() {
+        $.fn.raty.defaults.path = '../../icon';
+        $('.hjgrade').raty({
+            readOnly: false,
+            score: 0,
+            number: 5,//多少个星星设置
+            starOff: 'star-off-big.png',
+            starOn: 'star-on-big.png',
+            targetKeep: true,
+            click: function (score, evt) {
+                app.envGrade = score;
+            }
+        });
+        $('.xggrade').raty({
+            readOnly: false,
+            score: 0,
+            number: 5,//多少个星星设置
+            starOff: 'star-off-big.png',
+            starOn: 'star-on-big.png',
+            targetKeep: true,
+            click: function (score, evt) {
+                app.effectGrade = score;
+
+            }
+        });
+        $('.szgrade').raty({
+            readOnly: false,
+            score: 0,
+            number: 5,//多少个星星设置
+            starOff: 'star-off-big.png',
+            starOn: 'star-on-big.png',
+            targetKeep: true,
+            click: function (score, evt) {
+                app.facultyGrade = score;
+
+            }
+        });
+        $('.fwgrade').raty({
+            readOnly: false,
+            score: 0,
+            number: 5,//多少个星星设置
+            starOff: 'star-off-big.png',
+            starOn: 'star-on-big.png',
+            targetKeep: true,
+            click: function (score, evt) {
+                app.serviceGrade = score;
+            }
+        });
+
+    });
+
+</script>
+</html>

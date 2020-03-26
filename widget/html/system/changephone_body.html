@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <style>
+        input::-webkit-input-placeholder {
+            color: #999999;
+            font-size: 12px;
+        }
+        input:-moz-placeholder {
+            color: #999999;
+            font-size: 12px;
+        }
+        input:-ms-input-placeholder {
+            color: #999999;
+            font-size: 12px;
+        }
+        body{
+            overflow: hidden;
+        }
+        .changetop{
+            width: 90%;
+            margin: 10px auto;
+        }
+        .changetop img{
+            width: 100%;
+        }
+        .inputbox{
+            width: 90%;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 5px;
+            padding-bottom: 10px;
+        }
+        .inputbox > span{
+            font-size: 17px;
+            line-height: 65px;
+            color:#333;
+            display: block;
+            text-align: center;
+        }
+        .inputlist li{
+            height: 40px;
+            border-radius: 5px;
+            background: #f7f7f7;
+            position: relative;
+            width: 90%;
+            margin: 0 auto 10px auto;
+        }
+        .inputlist li img{
+            float: left;
+            height: 20px;
+            margin: 10px;
+        }
+        .inputlist li input{
+            float: left;
+            height: 20px;
+            padding: 10px 0px;
+        }
+        .cannotgetcode{
+            margin-left: 5%;
+            font-size: 12px;
+            color:#333;
+        }
+        .cannotgetcode a{
+            color:#f73e3c;
+        }
+        .changenow{
+            width: 90%;
+            height: 40px;
+            border-radius: 5px;
+            background: #f73e3c;
+            font-size: 14px;
+            color:#fff;
+            text-align: center;
+            line-height: 40px;
+            margin: 30px auto;
+        }
+        .getcode {
+            color:#f73e3c;
+            padding: 0 5px;
+            border-left: 1px solid #f73e3c;
+            position: absolute;
+            right: 0px;bottom: 14px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body >
+    <div class="changepass">
+        <div class="changetop">
+            <img src="../../icon/system/changepassbg.png" alt="">
+        </div>
+        <div class="inputbox">
+            <span>手机号：{{userPhone}}</span>
+            <ul class="inputlist">
+                <li>
+                    <img src="../../icon/codeicon.png" alt="">
+                    <input v-model="code" placeholder="请输入验证码" type="text">
+                    <span class="getcode"  @click="getCodeFn">{{sendText}}</span>
+
+                    <!--<span>获取验证码</span>-->
+                </li>
+                <li>
+                    <img src="../../icon/phoneico.png" alt="">
+                    <input v-model="newPhone" placeholder="请输入您的新手机号" type="number">
+                    <!--<span>获取验证码</span>-->
+                </li>
+                <li>
+                    <img src="../../icon/codeicon.png" alt="">
+                    <input v-model="newCode" placeholder="请输入新手机验证码" type="number">
+                    <span class="getcode"  @click="getNewCodeFn">{{newsendText}}</span>
+
+                    <!--<span>获取验证码</span>-->
+                </li>
+            </ul>
+            <!--<div class="cannotgetcode">-->
+                <!--收不到验证码? <a href="javascript:;">联系客服</a>-->
+            <!--</div>-->
+        </div>
+        <div class="changenow" @click="submitData">确 定</div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.changepass',
+        data: {
+            code:'',
+            newCode:'',
+            newPhone:'',
+            userPhone:'',
+            newsendText:'发送验证码',
+            sendText:'发送验证码',
+            sendFlag:true,
+            newsendFlag:true,
+            setIntval:undefined,
+            newsetIntval:undefined,
+            setTime:60,
+            newsetTime:60
+        },
+        methods:{
+            submitData(){
+                var _this = this;
+                var obj = {
+                    originalPhone:this.userPhone,
+                    code:this.code,
+                    newPhone:this.newPhone,
+                    newCode:this.newCode
+                }
+                ajaxGet(changePhoneUrl,obj,function (ret,err){
+                    if(ret && ret.code == 0){
+                        toast('修改成功')
+                        setTimeout(function () {
+                            closeWin()
+                        },1000)
+                    }
+                })
+            },
+            getCodeFn(){
+                if(!this.sendFlag){
+                    toast('请稍后再获取')
+                    return;
+                }
+
+
+                let _this = this;
+                ajaxGetVistor(getCodeUrl,{userPhone:this.userPhone,type:3},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('验证码已发送，请注意接收')
+                        _this.sendFlag = false;
+                        _this.setIntval = setInterval(function () {
+                            if(_this.setTime>0){
+                                _this.setTime -= 1;
+                                _this.sendText = _this.setTime + 's后获取';
+                            }else{
+                                _this.sendFlag = true;
+                                _this.sendText = '获取验证码'
+                                _this.setTime = 60;
+                                clearInterval(_this.setIntval)
+                            }
+                        },1000)
+                    }else{
+                    }
+                })
+            },
+            getNewCodeFn(){
+                if(!this.newsendFlag){
+                    toast('请稍后再获取')
+                    return;
+                }
+                if(!checkPhone(this.newPhone)){
+                    toast('请输入正确的手机号码')
+                    return;
+                }
+                let _this = this;
+                ajaxGetVistor(getCodeUrl,{userPhone:this.newPhone,type:3},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('验证码已发送，请注意接收')
+                        _this.newsendFlag = false;
+                        _this.newsetIntval = setInterval(function () {
+                            if(_this.newsetTime>0){
+                                _this.newsetTime -= 1;
+                                _this.newsendText = _this.newsetTime + 's后获取';
+                            }else{
+                                _this.newsendFlag = true;
+                                _this.newsendText = '获取验证码'
+                                _this.newsetTime = 60;
+                                clearInterval(_this.newsetIntval)
+                            }
+                        },1000)
+                    }else{
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+        },
+    })
+
+    apiready = function () {
+        app.userPhone = api.pageParam.phone
+    }
+</script>
+</html>

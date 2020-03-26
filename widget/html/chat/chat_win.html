@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <link rel="stylesheet" type="text/css" href="../../css/aui/aui.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/extends/extends.css" />
+</head>
+
+<body>
+    <header class="aui-bar aui-bar-nav" id="aui-header">
+        <a class="aui-btn aui-pull-left" tapmode onclick="funCloseWsConnect()">
+            <span class="aui-iconfont aui-icon-left"></span>
+        </a>
+        <div class="aui-title"></div>
+        <a class="aui-pull-right aui-btn " tapmode onclick=""></a>
+    </header>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/public/zepto.js"></script>
+<script type="text/javascript">
+    var rety;
+    apiready = function() {
+        $api.fixStatusBar($api.dom('header'));
+        api.parseTapmode();
+        api.setStatusBarStyle({
+            style: 'light'
+        });
+        api.setKeepScreenOn({
+            keepOn: true //禁止屏幕休眠
+        });
+        $('.aui-title').text(api.pageParam.chat_user); //窗口标题
+
+
+
+        rety = $api.dom('header').offsetHeight;
+        funOpenFrame(api.pageParam);
+
+        funEventKeyback(); // 设备 back 键被点击事件，仅 Android 平台有效
+    }
+
+    function funOpenFrame(data) {
+        api.openFrame({
+            name: 'chat_frm',
+            url: './chat_frm.html',
+            bounces: false,
+            rect: {
+                x: 0,
+                y: rety,
+                w: 'auto',
+                h: 'auto',
+            },
+            pageParam: data
+        });
+    }
+
+    /**
+     * [funEventKeyback 设备 back 键被点击事件，仅 Android 平台有效]
+     * @return {[type]} [description]
+     */
+    function funEventKeyback() {
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            funCloseWsConnect();
+        });
+    }
+
+    /**
+     * [funCloseWsConnect 关闭当前win，并主动断开 WebSocket 连接]
+     * @return {[type]} [description]
+     */
+    function funCloseWsConnect() {
+        var jsfun = 'funWs.closeConnect();';
+        api.execScript({
+            frameName: 'chat_frm',
+            script: jsfun
+        });
+
+        setTimeout(function() {
+            api.closeWin(); //关闭当前window
+        }, 200);
+
+    }
+</script>
+
+</html>

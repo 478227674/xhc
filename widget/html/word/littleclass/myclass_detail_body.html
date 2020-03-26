@@ -1,0 +1,141 @@
+ <!DOCTYPE html>
+<!--suppress JSAnnotator -->
+ <html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+        .member-list-div{
+            display: flex;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .member-list-div div {
+            width:3.125rem;
+            /*height:4.25rem;*/
+            margin-bottom: 15px;
+            margin-right: 18px;
+        }
+        .member-list-div div img{
+            width:3.125rem;
+            height:3.125rem;
+            border-radius: 50%;
+        }
+        .member-list-div div span{
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            word-break: break-all;
+            display: block;
+            width:100%;
+            font-size: 0.8125rem;
+            color:#333;
+            margin-top: 5px;
+            text-align: center;
+        }
+        .see-more-member{
+            text-align: center;
+            font-size: 1rem;
+            color:#f73e3c;
+        }
+        .create-class-head{
+            display: flex;
+            justify-content: space-between !important;
+        }
+        .create-class-learn{
+            justify-content: space-between !important;
+        }
+    </style>
+</head>
+<body >
+    <div class="class-list-el">
+        <div style="background: #fff;padding-bottom: 15px;">
+            <div class="app-center">
+                <div class="member-list-div">
+                    <div v-for="item in users">
+                        <img :src="item.imageUrl" alt="">
+                        <span>{{item.userName}}</span>
+                    </div>
+                </div>
+                <div class="see-more-member">
+                    查看更多成员
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 10px">
+            <div style="background: #fff;">
+                <div class="app-center">
+                    <div class="create-class-head">
+                        <span>班级头像</span>
+                        <div>
+                            <img :src="classobj.classImage" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="background: #fff;margin: 10px 0" >
+                <div class="app-center">
+                    <div class="create-class-learn">
+                        <span>学习词汇</span>
+                        <div>请选择要学习词汇</div>
+                    </div>
+                </div>
+            </div>
+            <div style="background: #fff;">
+                <div class="app-center">
+                    <div class="create-class-learn" style="border-bottom: 1px solid #e5e5e5">
+                        <span>班级名称</span>
+                        <div>{{classobj.className}}</div>
+                    </div>
+                    <div class="create-class-learn" style="border-bottom: 1px solid #e5e5e5">
+                        <span>班级介绍</span>
+                        <div>{{classobj.classIntro}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    //如果是官方版不显示邀请码
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            cid:null,
+            classobj:{},
+            users:[],
+        },
+        methods:{
+            getClassDetail(){
+                var _this = this;
+                ajaxGet(getMyClassDetailUrl,{classId:this.cid},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        _this.users = ret.data.users;
+                        _this.classobj = ret.data;
+                    }
+                })
+            },
+        },
+    });
+
+    apiready = function () {
+        app.cid = api.pageParam.id;
+        app.getClassDetail()
+    };
+</script>
+</html>

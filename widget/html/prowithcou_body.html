@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/type.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+<div class="collectbox" v-cloak>
+    <div>
+        <ul class="classlist"  >
+            <li v-for="item in list" @click="openProductDetail(item)">
+                <div class="class-cover"  :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                    <img v-if="item.isCut==1&&item.isGroup==0" src="../icon/cuting.png" alt="">
+                    <img v-if="item.isGroup==1&&item.isCut==0" src="../icon/grouping.png" alt="">
+                    <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">{{item.productName}}</p>
+                    <div class="class-tag">
+                        <span>{{item.productIntro}}</span>
+                    </div>
+                    <div class="activename">
+                        <span v-if="item.isCut==1">邀请砍价</span>
+                        <span v-if="item.isGroup==1">拼团优惠</span>
+                        <span v-if="item.isCommission">邀请返佣</span>
+                    </div>
+                    <div class="class-num">
+                        <div class="class-price">
+                            <a href="javascript:;">￥</a>
+                            <span>{{item.productPrice}}</span>
+                            <div style="clear: both"></div>
+                        </div>
+                        <div class="class-person">
+                            报名<span>{{item.purchaseNum}}</span>人
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <div class="list-vip-free" v-show="item.memberLevels">
+                        <span v-for="(vitem,vindex) in item.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=item.memberLevels.length-1">/</a></span>免费
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+
+        </ul>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+        app.getProductList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getProductList();
+            }
+        });
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+    };
+
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            currentIndex:0,
+            pagenum:1,
+            pagesize:10,
+            list:[],
+            isMore:true,
+
+        },
+        methods:{
+            getProductList(){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pagenum,
+                    pagesize:this.pagesize,
+                }
+
+                ajaxGetVistor(getProductWithCouponUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(_this.pagenum==1 && ret.data.list.length==0){
+                            toast('暂无数据哦~')
+                            return;
+                        }
+                        if(ret.data.list.length<_this.pagesize){
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+                })
+            },
+
+            openProductDetail(data){
+                if(data.imageType == 2){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.imageType==4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                    }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                        openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                    }
+                }else if(data.imageType==5){
+                    openRegister('productspe_detail','./productspe_detail.html',{id:data.productId})
+
+                }
+
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+        },
+    })
+
+
+
+</script>
+</html>

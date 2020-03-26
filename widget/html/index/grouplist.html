@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <style>
+        .activeclick{
+            color:#f73e3c !important;
+        }
+        .collectbox{
+            width: 90%;
+            margin: 0 auto;
+        }
+        .goods_list{
+            padding-top: 0px;
+        }
+        .goods_list li{
+            background: #fff;
+            border-radius: 5px;
+            padding: 0 10px;
+            border-bottom: none !important;
+            margin-bottom: 10px;
+        }
+        .collect-tab{
+            width: 90%;
+            overflow: hidden;
+            border-radius:5px;
+            margin: 10px auto;
+            border:1px solid #f73e3c;
+        }
+        .collect-tab span{
+            width: 50%;
+            display: block;
+            height: 44px;font-size: 16px;text-align: center;
+            line-height: 44px;
+            float: left;
+            color:#f73e3c;
+
+        }
+        .active-tab{
+            background: #f73e3c;
+            color:#fff !important;
+        }
+        .classlist li{
+            margin-bottom: 10px;
+        }
+        .class-cover{
+            position: relative;
+        }
+        .class-cover img{
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body >
+<div class="collectbox" v-cloak>
+    <div>
+        <ul class="classlist"  >
+            <li v-for="item in list" @click="openProductDetail(item)">
+                <div class="class-cover"  :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                    <img v-if="item.isCut==1&&item.isGroup==0" src="../../icon/cuting.png" alt="">
+                    <img v-if="item.isGroup==1&&item.isCut==0" src="../../icon/grouping.png" alt="">
+                    <img v-if="item.isCut==1&&item.isGroup==1" src="../../icon/kpkk.png" alt="">
+                </div>
+                <div class="class-detail">
+                    <p class="class-title">{{item.productName}}</p>
+                    <div class="class-tag">
+                        <span>{{item.productIntro}}</span>
+                    </div>
+                    <div class="activename">
+                        <span v-if="item.isCut==1">邀请砍价</span>
+                        <span v-if="item.isGroup==1">拼团优惠</span>
+                        <span v-if="item.isCommission">邀请返佣</span>
+                    </div>
+                    <div class="class-num">
+                        <div class="class-price">
+                            <a href="javascript:;">￥</a>
+                            <span>{{item.productPrice}}</span>
+                            <div style="clear: both"></div>
+                        </div>
+                        <div class="class-person">
+                            报名<span>{{item.purchaseNum}}</span>人
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </li>
+
+        </ul>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+        app.orgId = api.pageParam.orgId || null;
+        if(api.pageParam.type==1){
+            app.getUrl = getGroupProductListUrl;
+            app.getProductList();
+        }else if(api.pageParam.type==2){
+            app.getUrl = getCutProductListUrl;
+            app.getProductList();
+        }else if(api.pageParam.type==3){
+            app.getUrl = getCommissionListUrl;
+            app.getProductList();
+        }
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore){
+                app.getProductList();
+            }
+        });
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+    };
+
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            currentIndex:0,
+            pagenum:1,
+            pagesize:10,
+            list:[],
+            isMore:true,
+            showFlag:false,
+            pageSize:10,
+            pageNum:1,
+            orgList:[],
+            lastPage:null,
+            getUrl:'',
+            orgId:null,
+
+        },
+        methods:{
+            openProductDetail(data){
+                if(data.imageType == 2){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.imageType==4){
+                    if(data.isCut == 1 && data.isGroup == 0){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                    }else if(data.isGroup == 1 || (data.isGroup == 1 && data.isCut == 1)){
+                        openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                    }
+                }
+
+            },
+            getProductList(){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pagenum,
+                    pagesize:this.pagesize,
+                    orgCityId:localStorage.getItem('cityId') || ''
+                }
+                if(this.orgId){
+                    obj.orgId = this.orgId;
+                }
+                ajaxGetVistor(_this.getUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(_this.pagenum==1 && ret.data.list.length==0){
+                            toast('暂无数据哦~')
+                            return;
+                        }
+                        if(ret.data.list.length<_this.pagesize){
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+        },
+    })
+
+
+
+</script>
+</html>

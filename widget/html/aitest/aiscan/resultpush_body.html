@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+  <meta name="format-detection" content="telephone=no"/>
+  <title></title>
+  <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+  <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+  <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+  <style>
+    .analysis-box img{
+      max-width: 100%;
+    }
+    .test-time{
+      color:#333;
+      font-size: 12px;
+    }
+    .test-time span{
+      color:#f85250;font-size: 12px;
+    }
+    .qusition-index{
+      /*border-bottom: none !important;*/
+    }
+
+    .test-anwser{
+      border-bottom: 1px solid #e5e5e5;
+      /*display: flex;*/
+      background: #fff;
+      margin: 10px 20px 0px 20px ;
+      padding-bottom: 10px;
+      /*justify-content: flex-start;*/
+    }
+    .test-right-anwser,.test-your-anwser{
+      color:#333;
+      font-size: 12px;
+      margin-right: 20px;
+    }
+    .test-your-anwser{
+      margin-top: 10px;
+      color:#666;
+    }
+    .test-right-anwser span{
+      color:#40d44f;
+    }
+    .test-your-anwser span{
+      color:#f73e3c;
+    }
+
+    .qusition-jiexi div{
+      color:#f73e3c;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .qusition-jiexi p {
+      margin-top: 15px;
+      color:#333;
+      font-size: 12px;
+    }
+    .qusition-list li{
+      margin-bottom: 1px;
+      padding: 0px 20px 10px 20px;
+    }
+    .test-result-num{
+      display: flex;
+      justify-content: flex-start;
+    }
+    .qusition-choosed{
+      padding-left: 20px;
+      margin-bottom: 15px;
+    }
+    .qusition-index-text{
+      padding: 5px 0px;
+      font-size: 14px;
+      display: flex;justify-content: space-between;
+    }
+    .qusition-index-text span{
+      font-size: 12px;
+    }
+    .learn-plan span{
+      color:#666 !important;
+      line-height: 20px;
+    }
+    .anwser-box{
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+  </style>
+</head>
+<body >
+<div id="learn-box">
+  <div style="background: #fff">
+
+    <div class="train-box">
+      <div class="train-time">
+        <div>
+          用户：<span>{{tobj.userName}}</span> 学科：<span>{{tobj.subjectName}}</span>
+        </div>
+      </div>
+      <div class="train-time">
+        <div>
+          时间：<span>{{submitTime}},用时{{useTime}}</span>
+        </div>
+      </div>
+      <div class="train-time">
+        <div>
+          总数量: <span>{{tobj.totalNum}}</span>  正确数量: <span>{{tobj.rightNum}}</span>  错误数量: <span>{{tobj.errorNum}}</span>  正确率: <span>{{tobj.rightRate}}%</span>
+        </div>
+      </div>
+    </div>
+    <!--&lt;!&ndash;考题列表&ndash;&gt;-->
+    <!--<div class="test-anwser" style="margin-top: 0px">-->
+    <!--<div class="test-result-num">-->
+    <!--<div class="test-your-anwser">-->
+    <!--测试满分为： <span>100</span>-->
+    <!--</div>-->
+    <!--<div class="test-your-anwser">-->
+    <!--得分为： <span>{{resultNum}}</span>-->
+    <!--</div>-->
+    <!--<div class="test-your-anwser">-->
+    <!--百分制得分： <span>{{resultNum}}%</span>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="test-anwser">
+      <div class="test-right-anwser">
+        扫描结果：
+      </div>
+      <div class="test-result-num" v-for="(item,index) in tobj.scanQuestions">
+        <div class="test-your-anwser">
+          {{item.knowledge.knowledgeName}}
+          <span v-show="item.difficultyLevel==1 && item.isRight == 0">知识点概念不清晰。</span>
+          <span v-show="item.difficultyLevel==1 && item.isRight == 1">知识点概念清晰</span>
+          <span v-show="item.difficultyLevel==2 && item.isRight == 0">知识点还未深入理解</span>
+          <span v-show="item.difficultyLevel==2 && item.isRight == 1">知识点已经能够理解</span>
+          <span v-show="item.difficultyLevel==3 && item.isRight == 0">知识点还不能运用熟练</span>
+          <span v-show="item.difficultyLevel==3 && item.isRight == 1">知识点已经能运用</span>
+        </div>
+      </div>
+
+    </div>
+    <div class="test-anwser">
+      <div class="test-right-anwser">
+        学习建议：
+      </div>
+      <div class="test-result-num">
+        <div class="test-your-anwser" style="margin-top: 0px;color:#333;">
+          <div class="learn-plan">
+            <span v-html="learnPlan(1)"></span>
+            <span v-html="learnPlan(2)"></span>
+            <span v-html="learnPlan(3)"></span>
+            <span v-html="noWrong()"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="qusition-list">
+      <li  v-for="(item,index) in tobj.scanQuestions">
+
+        <div class="qusition-index">
+          <div class="qusition-index-text">题：{{index+1}}</div>
+          <div class="qusition-dia-mychoose">
+            <span>选择:{{chooseList[item.userAnswerIndex]}}</span>
+            <img v-if="item.isRight==1" src="../../../icon/testright.png" alt="">
+            <img v-else src="../../../icon/wordwrong.png" alt="">
+          </div>
+          <div class="qusition-dia-mychoose">
+            正确答案:{{chooseList[item.optionAnswerIndex]}}
+          </div>
+          <div class="qusition-dia-mychoose">
+            题号:{{item.questionId}}
+          </div>
+        </div>
+        <div class="qusition-choose">
+          <div style="padding: 15px 0 0 0" v-html="item.alQuestion.questionStem"></div>
+          <div v-for="(items,indexs) in item.alQuestion.alQuestionOption">
+            {{chooseList[indexs]}}.
+            <span v-show="items.optionName" v-html="items.optionName"></span>
+            <img v-show="items.optionImage" :src="items.optionImage"></img>
+          </div>
+          <!--<div>B. 大的，很大的，</div>-->
+          <!--<div>C. 用以表示听清楚对方说的话</div>-->
+          <!--<div>D. 用以表示听清楚对方说的话</div>-->
+        </div>
+
+        <div class="anwser-box">
+          <div class="anwser-btns">
+            <div @click="showAnswerJiexi(true,index)">
+              答案详解
+            </div>
+            <div @click="showVideoJiexi1(item)" class="anwser-btns-video">
+              视频详解
+            </div>
+            <div v-show="item.isRight==0" class="anwser-btns-video" @click="getpushList(item)">
+              针对训练
+            </div>
+          </div>
+        </div>
+
+        <div class="qusition-jiexi">
+          <div>
+            【知识点】
+          </div>
+          <p class="analysis-box" style="font-size: 14px;margin: 10px 0">
+            {{item.knowledge.knowledgeName}}
+          </p>
+        </div>
+        <div class="qusition-jiexi" style="border-bottom: 1px solid #e5e5e5;padding-bottom: 10px">
+          <div>
+            【解题分析】
+          </div>
+          <p class="analysis-box" v-html="item.alQuestion.analysis">
+
+          </p>
+        </div>
+      </li>
+    </ul>
+    <div v-show="answerFlag" class="mask answerjiexi" @click="showAnswerJiexi(false)">
+      <div @click.stop="returnFalse">
+        <div v-html="analysis" class="daanjiexi">
+
+        </div>
+        <!--<img src="../../../icon/ai/videotbg.png" alt="">-->
+      </div>
+    </div>
+  </div>
+
+
+  <div style="height:80px"></div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+  var app = new Vue({
+    el: '#learn-box',
+    data: {
+      tid:null,
+      tobj:{
+
+      } ,
+      chooseList:['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+      submitTime:"",
+      resultNum:0,
+      useTime:'',
+
+      answerFlag:false,
+      analysis:''
+    },
+    methods:{
+      getpushList(data){
+        openNewWindow('scanpush','./scanpush.html',{id:data.questionId})
+      },
+      showVideoJiexi1(data){
+        if(data.alQuestion.videoUrl){
+          ajaxGet(getVideoUrl,{fileId:data.alQuestion.videoUrl},function (ret,err) {
+            vivi.openplayer({
+              x: 0,
+              y :api.safeArea.top+200,
+              w : v_Width,
+              h: 250,
+              title: '名师讲解 ',
+              url: ret.m3u8Url,
+            }, function(ret, err) {
+
+            });
+          })
+        }
+      },
+      returnFalse(){
+        return false;
+      },
+      //显示答案解析方法
+      showAnswerJiexi(f,index){
+        this.answerFlag = f;
+        if(f){
+          this.analysis = this.tobj.scanQuestions[index].alQuestion.analysis
+        }
+        if(index>=0){
+
+        }
+      },
+      learnPlan(lv){
+        var str = '';
+        var isHas = false; //记录是否有做错的
+        for(var i=0;i<this.tobj.scanQuestions.length;i++){
+          if(this.tobj.scanQuestions[i].isRight == 0 && this.tobj.scanQuestions[i].difficultyLevel == lv ){
+            isHas = true;
+            str+=this.tobj.scanQuestions[i].knowledge.knowledgeName+'、'
+          }
+        }
+        if(isHas){ //有做错的情况
+          if(lv == 1){
+            str += '概念不清晰，建议进入知识讲授栏目加强基本概念学习。'
+          }else if(lv == 2){
+            str += '还未理解，建议进入知识讲授栏目加强理解，在此基础进行相应的分点专栏训练。'
+          }else if(lv == 3){
+            str += '还不能运用熟练，建议进入相应的分点专栏训练。'
+          }
+          return str;
+        }else{
+          return ''
+        }
+      },
+      noWrong(){
+        var str = '';
+        var haveWrong = false; //记录是否有做错的
+        for(var i=0;i<this.tobj.scanQuestions.length;i++){
+          if(this.tobj.scanQuestions[i].isRight == 0 ){
+            haveWrong = true;
+          }
+        }
+        if(haveWrong){
+          str = ''
+        }else{
+          str = '恭喜您，您本次扫描全部过关，可继续扫描或者进入其他栏目学习。'
+        }
+        return str;
+      },
+      getTestDetail(){
+        var _this = this;
+        ajaxGet(getScanDetailUrl,{subjectId:this.tid},function (ret,err) {
+          if(ret && ret.code == 0){
+            for(var i=0;i<ret.data.scanQuestions.length;i++){
+              for(var n=0;n<ret.data.scanQuestions[i].alQuestion.alQuestionOption.length;n++){
+                //找到当前用户选择对应答案的下标 用于后边显示ABCD
+                if(ret.data.scanQuestions[i].userAnswer == ret.data.scanQuestions[i].alQuestion.alQuestionOption[n].optionId){
+                  ret.data.scanQuestions[i].userAnswerIndex = n;
+                }
+                //找到正确答案的下标
+                if(ret.data.scanQuestions[i].alQuestion.alQuestionOption[n].isRight == 1){
+                  ret.data.scanQuestions[i].optionAnswerIndex = n;
+                }
+              }
+            }
+            _this.submitTime = formatTimeToDate(ret.data.createTime)
+            _this.resultNum = ret.data.rightRate
+            _this.tobj = ret.data;
+            var m = Math.floor(ret.data.useTime/60);
+            var s = ret.data.useTime%60;
+            m = m<10 ? '0'+m : m;
+            s = s<10 ? '0'+s : s;
+            _this.useTime =  m+':'+s;
+          }
+        })
+      },
+    },
+  })
+
+  var vivi,v_Width;
+
+  apiready = function () {
+    v_Width = api.winWidth;
+    vivi = api.require('advancedPlayer');
+    app.tid = api.pageParam.id;
+    app.getTestDetail();
+  };
+
+
+</script>
+</html>

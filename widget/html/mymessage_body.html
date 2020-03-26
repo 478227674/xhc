@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/type.css"/>
+
+    <style>
+        .messageall{
+            width: 90%;
+            margin: 10px auto;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .messageall ul li {
+            width: 90%;
+            margin: 0 auto;
+            height: 75px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .messagetime{
+            display: flex;
+            justify-content: space-between;
+        }
+        .messagetime span{
+            color:#333;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+        .messagetime a{
+            color:#666;font-size: 12px;
+            margin-top: 15px;
+        }
+        .messageall ul li p {
+            font-size: 13px;color:#666;
+            margin-top: 10px;
+            width: 70%;
+            white-space:nowrap;/*规定段落中的文本不进行换行*/
+            overflow:hidden;/*内容会被修剪，并且其余内容是不可见的。*/
+            text-overflow:ellipsis;/*显示省略号来代表被修剪的文本*/
+        }
+    </style>
+</head>
+<body >
+    <div class="messagebox" v-cloak>
+        <div class="messageall">
+            <ul>
+                <li v-for="item in messageList" @click="openMsgDetail(item)">
+                    <div class="messagetime">
+                        <span>系统消息</span>
+                        <a href="javascript:;">{{item.pushTime}}</a>
+                    </div>
+                    <p class="messagecontent">{{item.messageContent}}</p>
+                </li>
+            </ul>
+            <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script>
+    apiready = function () {
+        app.getMessageList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200          //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore){
+                app.getmessageList();
+            }
+        });
+    };
+    var app = new Vue({
+        el: '.messagebox',
+        data: {
+            showFlag:false,
+            pageSize:10,
+            pageNum:1,
+            messageList:[],
+            lastPage:null,
+            isMore:true,
+        },
+        methods:{
+            openMsgDetail(data){
+                al(data)
+                if(data.orgMessage.couponId){
+                    openRegister('savecoupon','./coupon/savecoupon.html',{id:data.pushId})
+                }else{
+                    openRegister('message_detail','./message_detail.html',{id:data.pushId})
+                }
+            },
+            getMessageList(){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pageNum,pagesize:this.pageSize
+                }
+                ajaxGet(getMessageListUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.lastPage = ret.data.lastPage;
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].pushTime = formatTimeToDate(ret.data.list[i].pushTime)
+                        }
+                        if(_this.pageNum >= _this.lastPage){
+                            _this.messageList = [..._this.messageList,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.messageList = [..._this.messageList,...ret.data.list]
+                            _this.pageNum++;
+                        }
+                    }
+                })
+
+            },
+
+        },
+    })
+
+</script>
+</html>

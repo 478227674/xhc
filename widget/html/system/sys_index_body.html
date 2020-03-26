@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <style>
+        body{
+            overflow: hidden;
+        }
+        .sys-top{
+            width: 90%;
+            height: 90px;
+            border-radius: 5px;
+            background: #fff;
+            margin: 10px auto;
+        }
+        .sys-head{
+            border: 2px solid #f73e3c;
+            width: 56px;
+            height: 56px;
+            margin: 15px 10px;
+            overflow: hidden;
+            border-radius: 50%;
+            float: left;
+        }
+        .sys-head img{
+            width: 100%;height: 100%;
+        }
+        .sys-nick{
+            float: left;
+            margin-top: 20px;
+        }
+        .sys-nick p {
+            font-size: 16px;
+            color:#333;
+        }
+        .sys-nick span{
+            font-size: 14px;
+            color:#666;
+            margin-top: 10px;
+        }
+        .sys-top>img{
+            float: right;
+            margin-top: 36px;
+            margin-right: 10px;
+        }
+        .sys-list{
+            width: 90%;
+            border-radius: 5px;
+            background: #fff;
+            margin: 0px auto;
+        }
+        .sys-list ul li {
+            width: 90%;
+            margin: 0 auto;
+            border-bottom: 1px solid #e5e5e5;
+            height: 50px;
+        }
+        .sys-list ul li span{
+            font-size: 14px;
+            line-height: 50px;
+            float: left;
+            color:#333;
+        }
+        .sys-list ul li .sys-leftimg {
+            float: left;
+            width: 17px;
+            margin-top: 16px;
+            margin-right: 10px;
+        }
+        .sys-list ul li .sys-rightimg{
+            float: right;
+            height: 12px;
+            margin-top: 19px;
+        }
+        .loginout{
+            width: 100%;
+            text-align: center;
+            line-height: 40px;
+            background: #fff;
+            font-size: 14px;
+            color:#f73e3c;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+        }
+    </style>
+</head>
+<body >
+  <div class="sys-top" onclick="openRegister('detail','./detail.html',{})">
+      <div class="sys-head">
+          <img id="headimg" src="../../icon/signperson.png" alt="">
+      </div>
+      <div class="sys-nick">
+          <p id="username">穿拖鞋的猫</p>
+          <span>欢迎来到太奇教育</span>
+      </div>
+      <img src="../../icon/right.png" alt="">
+      <div style="clear: both"></div>
+  </div>
+
+    <div class="sys-list">
+        <ul>
+            <li onclick="openRegister('aboutus','./aboutus.html',{})">
+                <img class="sys-leftimg" src="../../icon/system/s1.png" alt="">
+                <span>关于我们</span>
+                <img class="sys-rightimg" src="../../icon/right.png" alt="">
+                <div style="clear: both"></div>
+            </li>
+            <li onclick="openRegister('callus','./callus.html',{})">
+                <img class="sys-leftimg" src="../../icon/system/s2.png" alt="">
+                <span>联系我们</span>
+                <img class="sys-rightimg" src="../../icon/right.png" alt="">
+                <div style="clear: both"></div>
+            </li>
+            <li onclick="openRegister('applyform','../applyform.html',{})">
+                <img class="sys-leftimg" src="../../icon/system/s3.png" alt="">
+                <span>加盟我们</span>
+                <img class="sys-rightimg" src="../../icon/right.png" alt="">
+                <div style="clear: both"></div>
+            </li>
+            <!--<li onclick="openRegister('shareget','./shareget.html',{})">-->
+                <!--<img class="sys-leftimg" src="../../icon/system/s4.png" alt="">-->
+                <!--<span>分享返佣</span>-->
+                <!--<img class="sys-rightimg" src="../../icon/right.png" alt="">-->
+                <!--<div style="clear: both"></div>-->
+            <!--</li>-->
+            <li onclick="openRegister('rule','./rule.html',{})">
+                <img class="sys-leftimg" src="../../icon/system/s5.png" alt="">
+                <span>隐私条款</span>
+                <img class="sys-rightimg" src="../../icon/right.png" alt="">
+                <div style="clear: both"></div>
+            </li>
+            <li onclick="openRegister('feedback','./feedback.html',{})">
+                <img class="sys-leftimg" src="../../icon/system/s6.png" alt="">
+                <span>意见反馈</span>
+                <img class="sys-rightimg" src="../../icon/right.png" alt="">
+                <div style="clear: both"></div>
+            </li>
+            <li onclick="openRegister('appversion','./appversion.html',{})" style="border-bottom: none">
+                <img class="sys-leftimg" src="../../icon/system/s7.png" alt="">
+                <span>版本号</span>
+                <img class="sys-rightimg" src="../../icon/right.png" alt="">
+                <div style="clear: both"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="loginout" onclick="loginOut()">退出登录</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    apiready = function () {
+        ajaxGet(getMainDetailUrl,{},function (ret,err) {
+            if(ret && ret.code == 0){
+                document.getElementById('headimg').src = ret.data.imageUrl;
+                document.getElementById('username').innerHTML = ret.data.userName;
+            }
+        })
+    };
+    function loginOut() {
+        api.confirm({
+            title: '退出登录',
+            msg: '确定退出登录吗',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+            if(index==1){
+                toast('已退出账号');
+                $api.rmStorage('userInfo');
+                setTimeout(function () {
+                    api.execScript({
+                        name:'root',
+                        script:'openIndex()'
+                    });
+                    api.closeToWin({
+                        name:'root'
+                    })
+                },1000)
+            }
+        });
+    }
+</script>
+</html>

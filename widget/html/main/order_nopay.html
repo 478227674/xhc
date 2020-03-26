@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <style>
+        .allprice>div{
+            font-size: 14px;
+        }
+        .allprice>span{
+            font-size: 14px;
+        }
+        .orderallbox>p{
+            margin-right:10px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 5px;
+        }
+        .orderallbox>p>span{
+            float: right;font-size: 12px;color:#f73e3c;
+        }
+        .classborder{
+            width: 90%;
+            margin: 0 auto;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .btn-list{
+            padding: 15px 0;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+            margin-right: 5%;
+        }
+        .btn-list>img{
+            height: 24px;
+            position: absolute;
+            left: 5%;
+            top:20px;
+        }
+        .btn-list>span{
+            padding: 8px 13px;
+            color:#666666;
+            font-size: 12px;border-radius: 20px;
+            border: 1px solid #dddddd;
+            margin-left: 10px;
+        }
+        .bluebtn{
+            color:#f73e3c !important;
+            border:1px solid #f73e3c !important;
+        }
+    </style>
+</head>
+<body >
+    <div class="orderall">
+        <div class="orderallbox" v-for="(item,index) in list">
+            <p>
+                {{item.productList.orgName}}
+                <span v-if="item.orderStatus==0">未付款</span>
+                <span v-if="item.orderStatus==1 && item.isEvaluate == 0">已付款</span>
+                <span v-if="item.orderStatus==1 && item.isEvaluate == 1">已完成</span>
+                <span v-if="item.orderStatus==2">已过期</span>
+            </p>
+            <div>
+                <ul class="classlist"  >
+                    <li @click="openOrderDetail(item)">
+                        <div class="class-cover"  :style="{backgroundImage: 'url(' + item.productList.imageUrl + ')'}">
+
+                        </div>
+                        <div class="class-detail">
+                            <p class="class-title">{{item.productList.productName}}</p>
+                            <div class="class-tag">
+                                <span>{{item.productList.className}}</span>
+                            </div>
+
+                            <div class="class-num">
+                                <div class="class-price">
+                                    <span style="color:#666666;font-weight: normal;font-size: 12px;">开课时间:{{item.productList.startTime}}</span>
+                                    <div style="clear: both"></div>
+                                </div>
+                                <div class="class-person">
+                                    x{{item.productNum}}
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                        </div>
+                        <div style="clear: both"></div>
+                    </li>
+                </ul>
+                <div class="allprice">
+                    <span>共{{item.productNum}}件</span>
+                    <div style="float: right">
+                        小计
+                        <div v-if="item.orderStatus==1">
+                            ￥<span>{{item.payPrice}}</span>
+                        </div>
+                        <div v-if="item.orderStatus==0">
+                            ￥<span>{{item.orderPrice}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="clear: both"></div>
+            </div>
+            <div class="classborder"></div>
+            <div class="btn-list">
+                <img @click="deleteOrder(item.orderId,index)" src="../../icon/delordericon.png" alt="">
+                <span @click="shareCut(item)" v-if="(item.orderType == 3 || item.orderType ==4) && item.orderStatus == 0">
+                    分享砍价
+                </span>
+
+                <!--openRegister('refund','./refund.html',{})-->
+                <!--<span @click="refound" v-if="item.orderStatus==1">-->
+                    <!--申请退款-->
+                <!--</span>-->
+                <span class="bluebtn" @click="openOrderDetail(item)" v-if="item.orderStatus==1 && item.isEvaluate == 1">
+                    查看详情
+                </span>
+                <span class="bluebtn" @click="openOrderDetail(item)" v-if="item.orderStatus == 2">
+                    查看详情
+                </span>
+                <span class="bluebtn" @click="commentOrder(item)" v-if="item.orderStatus==1 && item.isEvaluate == 0">
+                    立即评价
+                </span>
+                <!--<span class="bluebtn" @click="seeCheck(item)" v-if="item.orderStatus==1">-->
+                    <!--查看详情-->
+                <!--</span>-->
+                <span class="bluebtn" @click="payNow(item)" v-if="item.orderStatus==0">
+                    立即支付
+                </span>
+            </div>
+        </div>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+
+    var wxPay;
+    var app = new Vue({
+        el: '.orderall',
+        data: {
+            pagenum:1,
+            pagesize:10,
+            list:[],
+            isMore:true,
+        },
+        methods:{
+            commentOrder(item){
+                openNewWindow('commentclass','./commentclass.html',{id:item.orderId})
+            },
+            seeCheck(item){
+                openNewWindow('ordernopay','../orders/ordernopay.html',{id:item.orderId})
+            },
+            payNow(item){
+                openNewWindow('payorder1','../orders/payorder1.html',{id:item.orderId})
+            },
+            refound(){
+                api.confirm({
+                    title: '申请退款',
+                    msg: '申请退款请联系'+ companyTel +',点击确定拨打电话',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index == 1){
+                        api.call({
+                            type: 'tel_prompt',
+                            number: companyTel
+                        });
+                    }
+                });
+            },
+            deleteOrder(id,pindex){
+                var _this = this;
+                api.confirm({
+                    title: '确定删除',
+                    msg: '您确定删除订单吗？删除后不可恢复',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index == 1){
+                        ajaxGet(deleteOrderUrl,{orderList:[id]},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                toast('已删除')
+                                _this.list.splice(pindex,1)
+                            }
+                        })
+                    }
+                });
+            },
+            shareCut(data){
+                openNewWindow('order_kan','./order_kan.html',{id:data.orderId})
+            },
+            callUs(){
+                api.call({
+                    type: 'tel_prompt',
+                    number:companyTel
+                });
+            },
+            openOrderDetail(data){
+                openNewWindow('classdetail','./classdetail.html',{id:data.orderId})
+            },
+            getMyOrderList(){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pagenum,
+                    pagesize:this.pagesize,
+                }
+                ajaxGet(getNoPayOrderListUrl,obj,function (ret,err) {
+                    for(var i=0;i<ret.data.list.length;i++){
+                        ret.data.list[i].productList.startTime = formatTimeToDay(ret.data.list[i].productList.startTime);
+                    }
+                    if(ret && ret.code == 0){
+                        if(ret.data.list.length<_this.pagesize){
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.list.splice(3,1)
+                            _this.isMore = false;
+                        }else{
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+        },
+    })
+    var wx;
+    apiready = function () {
+        wxPay = api.require('wxPay')
+        wx = api.require('wx')
+        app.getMyOrderList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore){
+                app.getMyOrderList();
+            }
+        });
+
+    };
+
+    function reloadClassList() {
+        reload()
+    }
+</script>
+</html>

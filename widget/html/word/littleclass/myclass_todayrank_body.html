@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+    </style>
+</head>
+<body >
+    <div class="class-list-el" style="overflow:hidden;">
+        <div class="app-center" style="background: none;margin: 1rem 3%" >
+            <div class="class-tp-1">
+                <div class="class-tp-2">
+                    <img :src="classobj.classImage" alt="">
+                </div>
+                <div class="class-tp-3">
+                    <div class="my-class-name-guanfang">{{classobj.className}}</div>
+                    <p>完成率:{{classobj.finishRate}}% 人数:{{users.length+1}}</p>
+                </div>
+                <div class="class-tp-4">
+                    <img @click.stop="showGg(true)" src="../../../icon/gonggao.png" alt="">
+                    <img src="../../../icon/class-sys.png" alt="" @click.stop="openClassDetail">
+                </div>
+            </div>
+        </div>
+        <div class="app-center">
+            <div class="class-c-1">
+                <div class="class-c-2">
+                    <div class="class-c-today">今日计划</div>
+                    <div class="class-c-num">单词数</div>
+                    <div class="class-c-time">完成时间</div>
+                </div>
+                <div class="class-c-3">
+                    <div class="class-list-paiwei my-level-class">
+                        <div class="class-c-today">
+                            <img :src="myobj.imageUrl" alt="">
+                            <span>{{myobj.userName}}</span>
+                        </div>
+                        <div class="class-c-num">{{myobj.learnPlan.dailyTask}}</div>
+                        <div class="class-c-time">{{myobj.learnPlan.createTime}}</div>
+                    </div>
+                    <div class="class-list-paiwei" v-for="item in users">
+                        <div class="class-c-today">
+                            <img :src="item.imageUrl" alt="">
+                            <span>{{item.userName}}</span>
+                        </div>
+                        <div class="class-c-num">{{myobj.learnPlan.dailyTask}}</div>
+                        <div class="class-c-time">{{myobj.learnPlan.createTime}}</div>
+                    </div>
+                    <!--<div class="class-list-paiwei">-->
+                        <!--<div class="class-c-today">-->
+                            <!--<img src="../../../icon/testicon2.png" alt="">-->
+                            <!--<span>老虎他妈妈</span>-->
+                        <!--</div>-->
+                        <!--<div class="class-c-num">987</div>-->
+                        <!--<div class="class-c-time">09:56</div>-->
+                     <!--</div>-->
+                </div>
+
+            </div>
+        </div>
+        <div style="height:4.325rem;"></div>
+        <div class="class-c-bottom">
+            <div @click="openClassRank">
+                班级排名
+            </div>
+            <div class="class-c-getzzb"  onclick="openNewWindow('classzzb','./classzzb.html',{})">
+                领太奇币
+            </div>
+        </div>
+        <div class="mask" v-show="isShow" @click="showGg(false)">
+            <div @click.stop="function(){return false}">
+                <p class="gg-title">公告</p>
+                <div class="gg-content">
+                    <textarea class="shownotice" v-show="myobj.userType==1" name="" cols="30" rows="10" v-model="classobj.classNotice"></textarea>
+                    <textarea class="shownotice" v-show="myobj.userType==2" disabled name="" cols="30" rows="10" v-model="classobj.classNotice"></textarea>
+                    <div class="submitgg" v-show="myobj.userType==1" @click="saveClassNotice">保存</div>
+                </div>
+            </div>
+         </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            isShow:false,
+            cid:null,
+            users:[],
+            classobj:{},
+            myobj:{
+                learnPlan:{
+                    dailyTask:''
+                },
+            },
+        },
+        methods:{
+            //保存公告
+            saveClassNotice(){
+                if(!this.classobj.classNotice){
+                    toast('请输入公告进行保存')
+                    return;
+                }
+                var obj = {
+                    classId:this.cid,
+                    classNotice:this.classobj.classNotice
+                }
+                ajaxGet(saveClassNoticeUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('已保存公告')
+                        app.isShow = false;
+                    }
+
+                })
+            },
+            //打开排名页面
+            openClassRank(){
+                openNewWindow('class_rank','./class_rank.html',{id:this.cid})
+            },
+            //获取列表 以及班级详情
+            getClassPlanList(){
+                var _this = this;
+                ajaxGet(getClassPlanListUrl,{classId:this.cid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.users.length;i++){
+                            ret.data.users[i].learnPlan.createTime = formatTimeToDate(ret.data.users[i].learnPlan.createTime).split(' ')[1]
+                        }
+                        _this.users = ret.data.users;
+                        _this.classobj = ret.data;
+                        _this.myobj = ret.data.currentUser;
+                        _this.myobj.learnPlan.createTime = formatTimeToDate(_this.myobj.learnPlan.createTime).split(' ')[1]
+                    }
+                })
+            },
+            openClassDetail(){
+                openNewWindow('myclass_detail','./myclass_detail.html',{id:this.cid})
+            },
+            showGg(f){
+                this.isShow = f;
+            },
+        },
+    });
+
+    apiready = function () {
+        app.cid = api.pageParam.id;
+        app.getClassPlanList()
+    };
+</script>
+</html>

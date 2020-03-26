@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/test.css"/>
+    <style>
+        .testindex-box{
+            overflow: hidden;
+        }
+        .testindex-title{
+            text-align: center;
+            font-size: 14px;
+            color:#f73e3c;
+            margin-top: 50px;
+        }
+        .testindex-items{
+            height:75px;
+            width:250px;
+            background-size: 100% 100% !important;
+            text-align: center;
+            color:#fff;
+            font-size: 24px;
+            line-height: 75px;
+            margin: 50px auto 0 auto;
+        }
+        .testindex-items1{
+            background: url("../../../icon/testicon1.png") no-repeat 0px 0px;
+        }
+
+        .testindex-items2{
+            background: url("../../../icon/testicon2.png") no-repeat 0px 0px;
+        }
+
+        .testindex-items3{
+            background: url("../../../icon/testicon3.png") no-repeat 0px 0px;
+        }
+    </style>
+</head>
+<body >
+    <div class="testindex-box">
+        <p class="testindex-title">请选择测试类型</p>
+        <div class="testindex-items testindex-items1" @click="openTest(1)">英译中</div>
+        <div class="testindex-items testindex-items2" @click="openTest(2)">中译英</div>
+        <!--<div class="testindex-items testindex-items3" @click="openTest(3)">拼图写</div>-->
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.testindex-box',
+        data: {
+            name:null,
+            id:null,
+        },
+        created(){
+        },
+        mounted(){
+
+        },
+        methods:{
+            openTest(t){
+                //这里跳同步考页面之前需要区分是从词汇还是班级进来的 type有值表示从词汇进来
+                switch (t){
+                    case 1:
+                        openNewWindow('etoc','./etoc.html',{name:this.name,id:this.id,type:alltype,pagenum:allpagenum});
+                        break;
+                    case 2:
+                        openNewWindow('ctoe','./ctoe.html',{name:this.name,id:this.id,type:alltype,pagenum:allpagenum});
+                        break;
+                    case 3:
+                        openNewWindow('write','./write.html',{name:this.name,id:this.id,type:alltype,pagenum:allpagenum}); //品读写
+                        break;
+                }
+            },
+        },
+        watch:{
+
+        },
+    });
+
+    var id,name,alltype,allpagenum;
+    apiready = function () {
+        app.id = api.pageParam.id;
+        app.name = api.pageParam.name;
+        if(api.pageParam.type){
+            alltype = api.pageParam.type;
+            allpagenum = api.pageParam.pagenum
+        }
+    };
+
+</script>
+</html>

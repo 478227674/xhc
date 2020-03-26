@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <style>
+        .collectbox{
+            width:92%;
+            margin: 10px auto;
+        }
+        .collectbox li {
+            height: 60px;
+            width:100%;
+            margin-bottom: 10px;
+            background: url("../../icon/ai/loaditembg.png") no-repeat 0px 0px;
+            background-size:100%;
+            font-size: 14px;color:#f73e3c;
+            text-align: center;line-height: 60px;
+            position: relative;
+        }
+        .collectbox li img{
+            position: absolute;
+            left:10px;
+            height:40px;
+            top:10px;
+        }
+    </style>
+</head>
+<body >
+<div class="collectbox" v-cloak>
+    <ul class="loadlist">
+
+        <li @click="startTest(3)">
+            <img src="../../icon/ai/load-3.png" alt="">
+            全面扫描
+        </li>
+
+        <li @click="startTest(1)">
+            <img src="../../icon/ai/load-1.png" alt="">
+            分点诊断
+        </li>
+        <li @click="startTest(2)">
+            <img src="../../icon/ai/load-2.png" alt="">
+            综合训练
+        </li>
+
+    </ul>
+    <div style="height:90px;"></div>
+    <img style="position: fixed;bottom:0px;left:0px;width:100%;" src="../../icon/ai/load-6.png" alt="">
+    <!--<div class="t-btns">-->
+        <!--<span class="t-btns1" @click="startTest(1)" >分点训练</span>-->
+        <!--<span class="t-btns1" @click="startTest(2)" >综合训练</span>-->
+    <!--</div>-->
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var idArr;
+    apiready = function () {
+      idArr = api.pageParam.sids;
+    };
+
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            count:0,
+            saleList:[],
+
+        },
+        methods:{
+            //开始做题
+            startTest(type){
+                if(type==1){
+                    openNewWindow('ai_learn_list','../aitest/ailearn/ai_learn_list.html',{sids:idArr})
+                }else if(type==2){
+                    openNewWindow('ai_train_index','../aitest/aitrain/ai_train_index.html',{sids:idArr})
+                }else{
+                    openNewWindow('scanindex','../aitest/aiscan/scanindex.html',{sids:idArr})
+
+                }
+            },
+        },
+    })
+
+
+
+</script>
+</html>

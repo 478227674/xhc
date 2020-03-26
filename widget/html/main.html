@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css"/>
+    <style>
+        .classlist li{
+            margin-bottom: 0px;
+        }
+        .maintop{
+            width: 100%;
+            height: auto;
+            position: relative;
+        }
+        .maintop .mainbg{
+            width: 100%;
+            height: auto;
+            position: absolute;
+            left: 0px;top:0px;
+        }
+        .maintop>div{
+            position: relative;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .mainperson{
+            height: 60px;
+            width: 60px;
+            margin-top: 30px;
+            margin-left: 3%;
+            border-radius: 50%;
+        }
+        .righticon{
+            position: absolute;
+            right: 3%;top:50px;
+            height:18px;
+            transform: rotate(180deg);
+        }
+        .maintop>div>div{
+            margin-left: 15px;
+        }
+        .maintop>div>div p{
+            font-size: 18px;
+            color:#fff;
+            margin-top: 35px;
+        }
+        .maintop>div>div>span{
+            line-height: 16px;
+            font-size: 14px;color:#fff;
+            margin-top: 5px;
+            padding-left: 24px;
+            background-size:18px 16px ;
+        }
+
+        .is1{
+            background: url("../icon/isget.png") no-repeat left 0px;
+        }
+        .is0{
+            background: url("../icon/isget0.png") no-repeat left 0px;
+        }
+
+
+        .mymoney{
+            width: 94%;
+            margin: 10px 3% 10px 3%;
+            border-radius: 5px;
+            background: #fff;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 0;
+        }
+        .mymoney .mymoneyitem{
+            display: flex;
+            justify-content: space-around;
+        }
+        .mymoney .mymoneyitem img{
+            height: 35px;
+        }
+        .mymoney .mymoneyitem div{
+            margin-left: 10px;
+        }
+        .mymoney .mymoneyitem div p {
+            font-size: 14px;color:#666666;
+        }
+        .mymoney .mymoneyitem div span {
+            font-size: 12px;color:#ff9d00;
+        }
+        .main-itemlist{
+            width: 94%;
+            margin: 0px auto 10px auto;
+        }
+        .main-itemlist > div{
+            width: 94%;
+            padding: 0 3%;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .main-itemlist > div>div{
+            line-height: 50px;
+
+        }
+        .main-itemlist>div>div>.mainicon{
+            height: 18px;
+            float: left;
+            margin-top:16px;
+        }
+        .main-itemlist>div>div>span{
+            float: left;
+            margin-left: 10px;
+            color:#333;font-size: 14px;
+        }
+        .main-border{
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .mainright{
+            float: right;
+            height: 12px;
+            margin-top: 19px;
+        }
+        .onlyitem{
+            margin-top: 10px;
+        }
+        .seehistory-top{
+            padding: 15px 10px  !important;
+        }
+        .seehistory-top span{
+            color:#666;font-size: 14px;
+            padding-left: 5px;
+            border-left: 2px solid #f73e3c;
+            float: left;
+        }
+        .seehistory-top p {
+            float: right;
+            font-size: 12px;color:#f73e3c;
+        }
+
+        .history-list{
+            padding: 0 10px;
+            line-height: 25px;color:#333;
+            font-size: 12px;
+        }
+        .changereload{
+            padding-left: 20px;
+            background: url(../icon/reload.png) no-repeat left 1px;
+            background-size: 15px 12px;
+        }
+    </style>
+</head>
+<body >
+    <div class="maindiv" v-cloak>
+        <div id="mainup">
+            <div class="maintop"  @click="openSystem">
+                <img class="mainbg" src="../icon/signbg.png" alt="">
+                <div>
+                    <img class="mainperson" :src="imageUrl" alt="">
+                    <div>
+                        <p>{{mainObj.userName}}</p>
+                        <!--<p>sdasd </p>-->
+                        <span class="is1" v-if="mainObj.isCommission==1">拥有返佣权</span>
+                        <span class="is0"  @click.stop="getMoneyS" v-if="mainObj.isCommission==0">暂无返佣权(点击获取)</span>
+                    </div>
+                </div>
+                <img class="righticon" src="../icon/shape.png" alt="">
+            </div>
+            <div class="mymoney" style="visibility: hidden">
+                <div class="mymoneyitem" @click="openCoin">
+                    <img src="../icon/biicon.png" alt="">
+                    <div>
+                        <p>我的太奇币</p>
+                        <span>{{coinNum}}</span>
+                    </div>
+                </div>
+                <div class="mymoneyitem" @click="openMoney">
+                    <img src="../icon/yongjinicon.png" alt="">
+                    <div>
+                        <p>我的佣金</p>
+                        <span>￥{{money}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="main-itemlist">
+            <div>
+                <div class="main-border"  onclick="openRegister('new_myclass','./myclass/new_myclass.html',{})">
+                    <img class="mainicon" src="../icon/main1.png" alt="">
+                    <span>我的课程</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+<!--                <div class="main-border"  onclick="openRegister('myclass','./main/myclass.html',{})">-->
+<!--                    <img class="mainicon" src="../icon/main1.png" alt="">-->
+<!--                    <span>我的订单</span>-->
+<!--                    <img class="mainright" src="../icon/right.png" alt="">-->
+<!--                    <div style="clear: both"></div>-->
+<!--                </div>-->
+                <div class="main-border" onclick="openRegister('mycollect','./main/mycollect.html',{})">
+                    <img class="mainicon" src="../icon/main2.png" alt="">
+                    <span>我的收藏</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+                <div class="main-border" onclick="openRegister('mymessage','./mymessage.html',{})">
+                    <img class="mainicon" src="../icon/main3.png" alt="">
+                    <span>我的消息</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+                <div onclick="openRegister('mycomments','./main/mycomments.html',{})">
+                    <img class="mainicon" src="../icon/main3.png" alt="">
+                    <span>我的评价</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            <div class="onlyitem"  onclick="openRegister('mycoupon','./main/mycoupon.html',{})">
+                <div >
+                    <img class="mainicon" src="../icon/main4.png" alt="">
+                    <span>我的优惠券</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            <div class="onlyitem"  @click="openGetCoin">
+                <div >
+                    <img class="mainicon" src="../icon/main7.png" alt="">
+                    <span>赚取太奇币</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            <div class="onlyitem" @click="openMain">
+                <div >
+                    <img class="mainicon" src="../icon/main6.png" alt="">
+                    <span>我的设置</span>
+                    <img class="mainright" src="../icon/right.png" alt="">
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+            <!--<div class="onlyitem">-->
+                <!--<div >-->
+                    <!--<img class="mainicon" src="../icon/main5.png" alt="">-->
+                    <!--<span>我的客服</span>-->
+                    <!--<img class="mainright" src="../icon/right.png" alt="">-->
+                    <!--<div style="clear: both"></div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+        <div class="app-center" v-if="historyList.length>0">
+            <div class="seehistory-top" style="padding-bottom: 5px !important;">
+                <span>近期浏览记录</span>
+                <p @click="clearHistory">清空记录</p>
+                <div style="clear: both"></div>
+            </div>
+            <div class="history-list">
+                <ul>
+                    <li v-for="item in historyList">
+                        ◆ {{item.productName}}
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="app-center" style="margin-top: 10px;">
+            <div class="seehistory-top" style="padding-bottom: 5px !important;">
+                <span>猜你喜欢</span>
+                <p @click="changeLike" v-if="guessList.length>3" class="changereload">换一批</p>
+                <div style="clear: both"></div>
+            </div>
+            <ul class="classlist"  >
+                <li v-for="item in activeList" @click="openProductDetail(item)">
+                    <div class="class-cover" :style="{backgroundImage: 'url(' + item.imageUrl + ')'}">
+                        <img v-if="item.isCut==1&&item.isGroup==0" src="../icon/cuting.png" alt="">
+                        <img v-if="item.isGroup==1&&item.isCut==0" src="../icon/grouping.png" alt="">
+                        <img v-if="item.isCut==1&&item.isGroup==1" src="../icon/kpkk.png" alt="">
+                    </div>
+                    <div class="class-detail">
+                        <p class="class-title">{{item.productName}}</p>
+                        <div class="class-tag">
+                            <span>{{item.productIntro}}</span>
+                        </div>
+                        <div class="activename">
+                            <span v-if="item.isCut==1">邀请砍价</span>
+                            <span v-if="item.isGroup==1">拼团优惠</span>
+                            <span v-if="item.isCommission">邀请返佣</span>
+                        </div>
+
+                        <div class="class-num">
+                            <div class="class-price">
+                                <a href="javascript:;">￥</a>
+                                <span>{{item.productPrice}}</span>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="class-person">
+                                报名<span>{{item.purchaseNum}}</span>人
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                        <div class="list-vip-free" v-show="item.memberLevels">
+                            <span v-for="(vitem,vindex) in item.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=item.memberLevels.length-1">/</a></span>免费
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.maindiv',
+        data: {
+            mainObj:{},
+            coinNum:0,
+            money:0,
+            imageUrl:'../icon/signperson.png',
+            guessList:[],
+            activeList:[],
+            historyList:[],
+        },
+        methods:{
+            openGetCoin(){
+                openNewWindow('getcoin','./main/getcoin.html',{coinNum:this.coinNum})
+            },
+            openCoin(){
+                openRegister('mycoin','./main/mycoin.html',{num:this.coinNum})
+            },
+            openMoney(){
+                openRegister('mymakemoney','./main/mymakemoney.html',{num:this.money})
+            },
+            getMainDetail(){
+                var _this = this;
+                ajaxGet(getMainDetailUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.mainObj = ret.data;
+                        _this.coinNum = ret.data.appCoin.coinNum;
+                        if(ret.data.imageUrl){
+                            _this.imageUrl = ret.data.imageUrl;
+                        }
+                        _this.money = ret.data.appCommission.commissionTotalAmount || 0;
+                    }
+                })
+            },
+            getHistory(){
+                var _this = this;
+                ajaxGet(getMySawListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.historyList = ret.data
+                    }
+
+                })
+            },
+            clearHistory(){
+                var _this = this;
+                ajaxGet(clearHistoryUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('已清空浏览记录')
+                        _this.historyList = []
+                    }
+
+                })
+            },
+            changeLike(){
+                this.activeList = getRandomArrayElements(this.guessList,3);
+            },
+            getYouLikeList(){
+                var _this = this;
+                ajaxGet(guessYouLikeUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.guessList = ret.data;
+                        _this.activeList = getRandomArrayElements(_this.guessList,3);
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+            //打开课程简介
+            openProductDetail(data){
+                if(data.imageType==2){
+                    openRegister('product_detail','./product_detail.html',{id:data.productId})
+                }else if(data.imageType == 4){
+                    if(data.isCut == 1){
+                        openRegister('productkan_detail','./productkan_detail.html',{id:data.productId})
+                    }else if(data.isGroup == 1){
+                        openRegister('productgroup_detail','./productgroup_detail.html',{id:data.productId})
+                    }
+                }
+            },
+            openMain(){
+                openRegister('detail','./system/detail.html',{})
+            },
+            openSystem(){
+                if(this.imageUrl.indexOf('http')>=0){
+                    openRegister('sys_index','./system/sys_index.html',{img:this.imageUrl,name:this.mainObj.userName})
+                }else{
+                    openRegister('sys_index','./system/sys_index.html',{img:'../../icon/signperson.png',name:this.mainObj.userName})
+
+                }
+            },
+            getMoneyS(){
+                api.confirm({
+                    title: '温馨提醒',
+                    msg: '购买特价课获取返佣权，是否前往购买',
+                    buttons: ['取消', '确定']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index==1){
+
+                    }else{
+                        openRegister('special_class','./special_class.html',{})
+                    }
+                });
+            },
+        },
+    });
+
+    apiready = function (){
+        app.getMainDetail();
+        app.getYouLikeList();
+        app.getHistory();
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            apiready();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+//      document.getElementsByClassName('gosingin')[0].style.paddingBottom = api.safeArea.top+'px'
+    };
+    function getRandomArrayElements(arr, count) {
+        var shuffled = arr.slice(0), i = arr.length, min = i - count, temp, index;
+        while (i-- > min) {
+            index = Math.floor((i + 1) * Math.random());
+            temp = shuffled[index];
+            shuffled[index] = shuffled[i];
+            shuffled[i] = temp;
+        }
+        return shuffled.slice(min);
+    }
+    function reloadMain() {
+        reload();
+    }
+</script>
+</html>

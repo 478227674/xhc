@@ -1,0 +1,145 @@
+
+
+.input::-webkit-input-placeholder {
+    color: #999999;
+    font-size: 12px;
+}
+.input:-moz-placeholder {
+    color: #999999;
+    font-size: 12px;
+}
+.input:-ms-input-placeholder {
+    color: #999999;
+    font-size: 12px;
+}
+
+.signtop{
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+.signtop .signbg{
+    width: 100%;
+    height: auto;
+    position: absolute;
+    left: 0px;top:0px;
+}
+.signtop .signperson {
+    height: 70px;
+    width: 70px;
+    position: absolute;
+    left: 50%;
+    margin-left: -35px;
+    top: 15px;
+}
+.signbox{
+    background: #fff;
+    width: 92%;
+    height:auto;
+
+    min-height: 100px;
+    margin: 20px auto;
+}
+
+
+.boxtitle{
+    width: 60%;
+    line-height: 50px;
+    font-size: 14px;
+    color:#f73e3c;
+    text-align: center;
+    border-bottom: 3px solid #f73e3c;
+    margin: 0 auto;
+    padding-top: 10px;
+}
+
+.inputlist{
+    width: 90%;
+    margin: 30px auto 0px auto;
+}
+.inputlist li {
+    padding-top: 30px;
+    /*display: flex;*/
+    /*justify-content: space-around;*/
+    height: 30px;
+    position: relative;
+    border-bottom: 1px solid #e5e5e5;
+}
+.inputlist:first-child{
+    padding-top: 0px !important;
+}
+.inputlist li>img{
+    float: left;
+    /*height: 20px;*/
+    margin-top: 3px;
+}
+.inputlist li>input{
+    float: left;
+    height: 25px;
+    outline: none;
+    margin-left: 14px;
+    color:#333333;
+    font-size: 15px;
+}
+.inputlist li > span{
+    color:#f73e3c;
+    padding: 0 5px;
+    border-left: 1px solid #f73e3c;
+    position: absolute;
+    right: 0px;bottom: 10px;
+    font-size: 12px;
+}
+.shareicon{
+    width: 19px;
+}
+.phoneicon{
+    margin:0 5px;
+    width: 14px;
+}
+.codeicon{
+    width: 18px;
+    margin:0 3px;
+}
+.blue-btn{
+    width: 90%;
+    height: 40px;
+    line-height: 40px;
+    color:#fff;
+    background: #f73e3c;
+    text-align: center;
+    border-radius: 5px;
+    margin: 20px auto;
+}
+.agree{
+    padding-bottom: 30px;
+    width: 90%;
+    margin: 0 auto;
+}
+.agree img{
+    float: left;
+    height: 18px;
+    width: 18px;
+}
+.agree>p{
+    margin-left: 10px;
+    margin-top: 2px;
+    /*float: left;*/
+    color:#a1a1a1;
+    font-size: 12px;
+}
+.agree > p > a{
+    display: block;
+    color:#f73e3c;
+}
+.gosingin{
+    width: 100%;
+    height: 40px;
+    color:#fff;
+    font-size: 16px;
+    background: #fbba7b;
+    position: fixed;
+    bottom:0px;
+    left: 0px;
+    text-align: center;
+    line-height: 40px;
+}

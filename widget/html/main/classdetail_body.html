@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <style>
+        .orderallbox>p{
+            margin-right:10px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 5px;
+        }
+        .orderallbox>p>span{
+            float: right;font-size: 12px;color:#f73e3c;
+        }
+        .classborder{
+            width: 90%;
+            margin: 0 auto;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .btn-list{
+            background: #fff;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 90%;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: flex-end;
+            margin-right: 5%;
+        }
+        .btn-list>span{
+            padding: 8px 13px;
+            color:#666666;
+            font-size: 12px;border-radius: 20px;
+            border: 1px solid #dddddd;
+            margin-left: 10px;
+        }
+        .bluebtn{
+            color:#f73e3c !important;
+            border:1px solid #f73e3c !important;
+        }
+        .order-num{
+            margin: 10px 5% 0px 5%;
+            width: 90%;
+            border-bottom: 1px solid #e5e5e5;
+
+        }
+        .order-num ul li {
+
+            line-height: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .order-num span{
+            color:#666;
+        }
+        .order-num div{
+            color:#333;
+        }
+        .orderallprice{
+            color:#f7260a !important;
+        }
+        .lastprice{
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            line-height: 44px;
+        }
+        .lastprice>span{
+            font-size: 14px;color:#333;
+            font-weight: bold;
+        }
+        .lastprice div{
+            color:#f7260a;
+            font-size: 12px;
+        }
+        .lastprice>div>span{
+            font-size: 16px;
+        }
+        .orderdetailtitle{
+            font-size: 14px;color:#333;
+            margin: 15px 5%;
+        }
+        .detaillist li {
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: flex-start;
+            font-size: 12px;
+            padding-bottom: 10px;
+        }
+        .detaillist li span{
+            width: 25%;
+            color:#666;
+        }
+        .detaillist li div{
+            color:#333
+        }
+    </style>
+</head>
+<body >
+<div id="ordera">
+    <div class="orderallbox">
+        <p>
+            {{orderObj.orgName}}
+            <span v-if="orderObj.orderStatus==1 &&  orderObj.isEvaluate == 0">买家已付款</span>
+            <span v-if="orderObj.orderStatus==1 &&  orderObj.isEvaluate == 1">已完成</span>
+            <span v-if="orderObj.orderStatus==0">未付款</span>
+            <span v-if="orderObj.orderStatus==2">已过期</span>
+        </p>
+        <div>
+            <ul class="classlist"  >
+                <li>
+                    <div class="class-cover" :style="{backgroundImage: 'url(' + orderObj.imageUrl + ')'}">
+
+                    </div>
+                    <div class="class-detail">
+                        <p class="class-title">{{orderObj.productName}}</p>
+                        <div class="class-tag">
+                            <span>{{orderObj.className}}</span>
+                        </div>
+                        <div class="class-num">
+                            <div class="class-price">
+                                <a href="javascript:;">￥</a>
+                                <span>{{orderObj.productPrice}}</span>
+                                <div style="clear: both"></div>
+                            </div>
+                            <div class="class-person">
+                                x{{orderObj.productNum}}
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+                    <div style="clear: both"></div>
+                </li>
+            </ul>
+            <div style="clear: both"></div>
+        </div>
+        <div class="classborder"></div>
+        <div class="order-num">
+            <ul>
+                <li>
+                    <span>商品总价</span>
+                    <div>￥{{orderObj.sumPrice}}</div>
+                </li>
+                <li v-if="orderObj.orderType==3 || orderObj.orderType ==4">
+                    <span>砍价优惠</span>
+                    <div>-￥{{cutPrice}}</div>
+                </li>
+                <li v-if="orderObj.orderStatus==1">
+                    <span>太奇币抵扣</span>
+                    <div>-￥{{orderObj.useCoinNum/1000}}</div>
+                </li>
+                <li>
+                    <span>订单总价</span>
+                    <div class="orderallprice">￥{{orderObj.orderPrice}}</div>
+                </li>
+            </ul>
+        </div>
+        <div class="lastprice">
+            <span>实付款</span>
+            <div>￥<span>{{orderObj.payPrice}}</span></div>
+        </div>
+    </div>
+    <div class="app-center">
+        <span class="orderdetailtitle">订单详情</span>
+        <ul class="detaillist">
+            <li>
+                <span>订单编号：</span>
+                <div>{{orderObj.orderId}}</div>
+            </li>
+            <li v-if="orderObj.payNum">
+                <span>支付交易号：</span>
+                <div>{{orderObj.payNum}}</div>
+            </li>
+            <li>
+                <span>创建时间：</span>
+                <div>{{orderObj.createTime}}</div>
+            </li>
+            <li v-if="orderObj.payTime">
+                <span>付款时间：</span>
+                <div>{{orderObj.payTime}}</div>
+            </li>
+            <!--确认上课后显示的-->
+            <li>
+                <span>上课时间：</span>
+                <div>{{orderObj.startTime}}</div>
+            </li>
+        </ul>
+    </div>
+    <div class="btn-list" >
+        <!--<span @click="shareCut">-->
+            <!--分享砍价-->
+        <!--</span>-->
+        <!--<span @click="refound" v-if="orderObj.orderStatus==1">-->
+            <!--申请退款-->
+        <!--</span>-->
+
+        <span class="bluebtn" @click="commentOrder(item)" v-if="orderObj.orderStatus==1 && orderObj.isEvaluate == 0">
+            立即评价
+        </span>
+        <span class="bluebtn" @click="payNow()" v-if="orderObj.orderStatus==0">
+            立即支付
+        </span>
+    </div>
+
+</div>
+
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#ordera',
+        data: {
+            orderId:null,
+            orderObj:{},
+            cutPrice:0
+        },
+        methods:{
+            refound(){
+                api.confirm({
+                    title: '申请退款',
+                    msg: '申请退款请联系'+ companyTel +',点击确定拨打电话',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index == 1){
+                        api.call({
+                            type: 'tel_prompt',
+                            number: companyTel
+                        });
+                    }
+                });
+            },
+            commentOrder(){
+                openNewWindow('commentclass','./commentclass.html',{id:this.orderId})
+            },
+            payNow(){
+                openNewWindow('payorder1','../orders/payorder1.html',{id:this.orderId})
+            },
+            shareCut(){
+                openNewWindow('order_kan','./order_kan.html',{id:this.orderId})
+            },
+            callUs(){
+                api.call({
+                    type: 'tel_prompt',
+                    number:companyTel
+                });
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+            getOrderDetail(){
+                var _this = this;
+                ajaxGet(getOrderDetailUrl,{orderId:this.orderId},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        ret.data.startTime = formatTimeToDay(ret.data.startTime)
+                        ret.data.createTime = formatTimeToDate(ret.data.createTime)
+                        if(ret.data.payTime){
+                            ret.data.payTime = formatTimeToDate(ret.data.payTime) || '';
+                        }
+                        _this.orderObj = ret.data;
+                        if(ret.data.orderType ==3||ret.data.orderType==4){
+                            _this.cutPrice = ret.data.appOrderCut.cutPrice
+                        }
+                    }
+
+                })
+            },
+        },
+    })
+
+    apiready = function () {
+        app.orderId = api.pageParam.id;
+        app.getOrderDetail();
+    };
+
+    function reloadClassDetail() {
+        reload()
+    }
+</script>
+</html>

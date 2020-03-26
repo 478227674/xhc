@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/type.css"/>
+    <style>
+        .wronglist{
+            overflow:hidden;
+        }
+        .wronglist li{
+            line-height: 44px;
+            margin-bottom: 10px;
+            height:44px;
+            padding: 0 15px;
+            background: #fff;
+            position: relative;
+        }
+        .wronglist li span{
+            font-size: 16px;
+            color:#333;
+        }
+        .wronglist li img{
+            height:13px;
+            width:7px;
+            position: absolute;
+            top:15px;
+            right: 15px;
+        }
+        .unit-lisst {
+            margin: 15px 0;
+            color: #fff;
+            overflow-x:scroll;
+            height:30px;
+            padding: 0 3%;
+            width:94%;
+            white-space:nowrap;
+            overflow-y:hidden;
+        }
+        .unit-lisst .unit-name-list{
+            margin-right: 10px;
+            width:70px;
+            height:30px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 14px;background: #ccc;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .activeBtns{
+            background: #f73e3c !important;
+        }
+    </style>
+</head>
+<body >
+       <div class="levelbox">
+           <div >
+               <div class="unit-lisst">
+                   <div :class="{'activeBtns':activeLevelId == item.id}" class="unit-name-list" v-for="item in levelList" @click="getThisLevelList(item.id)">
+                       {{item.name}}
+                   </div>
+                   <p style="clear: both"></p>
+               </div>
+           </div>
+           <ul class="wronglist">
+               <li v-for="item in unitList" @click="openWrongList(item.id)">
+                   <span>{{item.name}} (共{{item.errorCount}}个错词)</span>
+                   <img src="../../../icon/right.png" alt="">
+               </li>
+           </ul>
+       </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.levelbox',
+        data: {
+            allList:[],
+            levelList:[],
+            unitList:[],
+            activeLevelId:null,
+
+            typeId:null,
+        },
+        methods:{
+            openWrongList(id){ //打开此单元下的错词列表
+                openNewWindow('wrongword2','./wrongword2.html',{lessonId:id,gradeId:this.activeLevelId})
+            },
+            getList(){
+                var _this = this;
+                ajaxGet(getWrongLevelListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret)
+                        app.levelList = ret.data;
+                        if(ret.data.length>0){
+                            _this.getUnitList(ret.data[0].id)
+                            _this.activeLevelId = ret.data[0].id
+                        }
+                    }
+                })
+
+
+            },
+            getThisLevelList(id){
+                this.activeLevelId = id;
+                this.getUnitList(id);
+            },
+            getUnitList(id){
+                ajaxGet(getWrongUnitListUrl,{gradeId:id},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret.data)
+                        app.unitList = ret.data;
+                    }
+                })
+            },
+        },
+    })
+
+    apiready = function () {
+        app.getList();
+    };
+
+</script>
+</html>

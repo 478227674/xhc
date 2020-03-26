@@ -1,0 +1,374 @@
+/*
+
+ ********************************************************智能练习列表样式****************************************
+
+*/
+
+.leran_items{
+    background: none !important;
+    /*display: flex;*/
+    /*justify-content: flex-start;*/
+    overflow-x: scroll;
+    /*flex-wrap: nowrap;*/
+    white-space: nowrap;
+}
+.leran_items > div{
+    padding: 0 5px;
+    display: inline-block;
+    background: #cccccc;
+    font-size: 14px;
+    color:#fff;
+    border-radius: 5px;
+    /*width:50px;*/
+    height:30px;
+    text-align: center;
+    line-height: 30px;
+    margin-right: 15px;
+    margin-top: 15px;
+}
+.active-btns{
+    background: #f73e3c !important;
+}
+.learn-list{
+    background: #fff;
+    margin-top: 15px;
+
+}
+.learn-list li {
+    background: #fff;
+    width:96%;
+    margin: 0 auto;
+    height: 44px;
+    display: flex;
+    justify-content: flex-start;
+    line-height: 44px;
+    position: relative;
+    border-bottom: 1px solid #e5e5e5;
+}
+.learn-list li div{
+    color:#333;
+    font-size: 14px
+
+}
+.learn-list li span{
+    position: absolute;
+    right:20px;
+    width:50px;
+    height:20px;
+    text-align: center;
+    line-height: 20px;
+    border-radius: 5px;
+    background: #ffa800;
+    font-size: 12px;
+    color:#fff;
+    top:12px;
+}
+.candia{
+    background: #2acb58 !important;
+}
+.learn-list-icon{
+    height:16px;
+    width:15px;
+    margin-top: 14px;
+    margin-right: 10px;
+}
+.learn-list-right{
+    position: absolute;
+    right:0px;
+    top:15px;
+    height:13px;
+    width:7px;
+}
+
+
+/*
+
+*******************************************************选择题列表样式*************************************************
+
+*/
+.qusition-list li {
+    background: #fff;
+    margin-bottom: 10px;
+    padding: 0 3% 15px 3%;
+
+}
+.qusition-list li .qusition-index{
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    line-height: 44px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.qusition-index-text{
+    color:#f73e3c;
+}
+.qusition-dia-mychoose{
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+}
+.qusition-dia-mychoose img{
+    width:15px;
+    height:15px;
+    margin-left: 10px;
+}
+.qusition-choose{
+    color:#333;
+    font-size: 0.875rem;
+}
+.qusition-choose img{
+    max-width: 100%;
+}
+.qusition-choose span{
+    line-height: 40px;
+}
+.qusition-choose div{
+    margin-bottom: 15px;
+}
+.qusition-choosed{
+    display: flex;
+    justify-content: flex-start;
+}
+.qusition-choosed>div{
+    display: flex;
+    justify-content: flex-start;
+    margin-right: 2rem;
+}
+.qusition-choosed>div>span{
+    line-height: 25px;
+    color:#333;
+    font-size:1rem;
+    margin-left: 0.55rem;
+}
+.qusition-choosed>div>div{
+    width:23px;
+    height:23px;
+    border:1px solid #e5e5e5;
+    border-radius: 50%;
+}
+.qusition-choosethis{
+    border-color:#f7260a !important;
+}
+.qusition-choosethis a{
+    width:15px;
+    height:15px;
+    background: #f7260a;
+    border-radius: 50%;
+    display: block;
+    margin: 4px auto;
+}
+.submit-anwser{
+    width:100%;
+    height:70px;
+    position: fixed;
+    bottom:0px;
+    left:0px;
+    background: #f5f5f5;
+}
+.submit-anwser div{
+    width:50%;
+    height:40px;
+    line-height: 40px;
+    background: #f7260a;
+    text-align: center;
+    border-radius: 5px;
+    color:#fff;
+    margin: 15px auto;
+}
+
+
+/*
+
+*******************************************************综合训练列表*************************************************
+
+*/
+
+.class-c-1{
+    /*padding: 15px 0px !important;*/
+    /*margin: 0 15px !important;*/
+    background: #fff;
+}
+.class-c-2>div{
+    font-size: 12px !important;
+}
+.class-list-paiwei>img{
+    height:1.5625rem;
+    width:1.125rem;
+    margin-top: 5px;
+    margin-right: 14px;
+}
+.class-c-today{
+    width:25%;
+    padding-left: 9%;
+}
+.class-c-3 ul li {
+    display: flex;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 15px 0px;
+    justify-content: space-around;
+    color:#666;font-size: 12px;
+}
+.ischoosed{
+    width:15px;
+    height:15px;
+    border: 1px solid #f7260a;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.ischoosed span{
+    width:9px;
+
+    height:9px;
+    margin: 3px auto;
+    border-radius: 50%;
+    background: #f7260a;
+    display: none;
+}
+.testchoosed span{
+    display: block !important;
+}
+.test-level{
+    width:25%;
+}
+.test-subject{
+    width:18%;
+    text-align: center;
+}
+.test-result{
+    flex:1;
+    text-align: right !important;
+}
+.test-bottom-box{
+    display: flex;
+    justify-content:flex-start;
+    position: fixed;
+    bottom:0px;
+    left:0px;
+    z-index:100;
+    width:96%;
+    padding: 0 15px;
+    height:50px;
+    background: #f5f5f5;
+}
+
+.choosedall{
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 17px;
+    width:65%;
+}
+
+.choosedall div{
+    width:15px;
+    height:15px;
+    border-radius: 50%;
+    border:1px solid #383838;
+    margin-right: 10px;
+}
+.choosedall p{
+    color:#666;
+    font-size: 15px;
+}
+.test-bottom-box>p{
+    width:35%;
+    text-align: center;
+    line-height: 50px;background: #e5e5e5;
+}
+
+.qusition-jiexi{
+    padding-left: 20px;
+}
+.hide-anwser{
+  border:1px solid #f7260a;
+  color:#f7260a;
+  font-size: 14px;
+  padding: 7px 30px 7px 13px;
+  border-radius: 5px;
+  display: inline-block;
+  background: url("../../../icon/ai/redup.png") no-repeat 75px 10px;
+  background-size:  12px 7px;
+}
+.answerjiexi>div{
+  width:80%;
+  padding: 20px 10%;
+  background: #fff;
+  position: absolute;
+  top:50px;
+}
+.answerjiexi img{
+  max-width: 100%;
+  margin-top: 20px;
+}
+.answerjiexi video {
+  max-width: 100%;
+  margin-top: 20px;
+}
+.anwser-box{
+  margin-top: 15px;
+  display: flex;
+  justify-content:space-between;
+}
+.anwser-btns{
+  display: flex;
+  justify-content:flex-start;
+}
+.anwser-right{
+  font-size: 14px;color:#333;
+  line-height: 31px;
+}
+.anwser-btns>div{
+  border:1px solid #f7260a;
+  color:#f7260a;
+  font-size: 14px;
+  padding: 7px 13px 7px  20px;
+  border-radius: 5px;
+  display: inline-block;
+  background: url("../icon/ai/redimg.png") no-repeat 4px 8px;
+  background-size:  13px 13px;
+}
+.anwser-btns-video{
+  background: url("../icon/ai/redvideo.png") no-repeat 4px 8px !important;
+  background-size:  14px 12px !important;
+  margin-left: 10px;
+}
+/*综合测试头部用时和考试开始时间等样式*/
+.train-box{
+    overflow: hidden;
+    border-bottom: 1px solid #e5e5e5;
+    background: #fff;
+    padding:10px 0px 0 0px;
+    margin: 0 20px;
+}
+.train-box>p{
+    line-height: 45px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.train-box>div{
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+.train-box>div span{
+    margin-right: 10px;
+    font-size: 12px;
+}
+.train-box>div p {
+    flex: 1;
+    line-height: 18px;
+    font-size: 12px;
+    color:#666;
+    flex-wrap: wrap;
+}
+.train-time{
+    display: flex;
+    justify-content: flex-start;
+}
+.train-time div{
+    color:#333;font-size: 12px;
+}
+.train-time div span{
+    color:#f73e3c;
+}
+.qusition-choose div{
+    padding-left: 20px !important;
+}

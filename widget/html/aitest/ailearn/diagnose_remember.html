@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+
+    </style>
+</head>
+<body style="background: #f6f6f6">
+    <div id="learn-box" style="background: #fff;">
+        <div style="padding: 20px;" v-html="reHtml"></div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/zepto.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            kid:null,
+            reHtml:'',
+        },
+        methods:{
+            getKnowledgeInfo(){
+                var _this = this;
+                ajaxGet(getTestKnowledgeInfoUrl,{knowledgeId:this.kid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.reHtml = ret.data.knowledgeMemory;
+                    }
+                })
+            },
+        },
+    })
+
+
+    apiready = function () {
+        app.kid = api.pageParam.id;
+        app.getKnowledgeInfo();
+    };
+
+
+</script>
+</html>

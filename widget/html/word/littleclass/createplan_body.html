@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+        .plan-title{
+            line-height: 3rem;
+            font-size: 1rem;
+            color:#333;
+        }
+        .words-item{
+            white-space: nowrap;
+            width:100%;
+            overflow-x: scroll;
+            overflow-y: hidden;
+            height:100px;
+        }
+        .words-item>div{
+            width: 80px;
+            height:100px;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+        .words-items{
+            width:90px;
+            height:100px;
+            background: url("../../../icon/planbg.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+            text-align: center;
+            font-size: 1rem;color:#fff;
+        }
+        .words-add{
+            width:90px;
+            height:100px;
+            background: url("../../../icon/planaddbg.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+        }
+        .words-add-active{
+            width:90px;
+            height:100px;
+            background: url("../../../icon/planbg11.png") no-repeat 0px 0px !important;
+            background-size: 100% 100%;
+            text-align: center;
+            font-size: 1rem;color:#fff;
+        }
+        .words-item div{
+            margin-right: 25px;
+            position: relative;
+        }
+        .words-items >div{
+            padding: 0 3px;
+            position: absolute;
+            display: block;
+            width:100%;
+            height:90%;
+            top:10px;
+            left:0px;
+            overflow: hidden;
+            white-space: pre-wrap;
+        }
+        .item-title-s p {
+            font-size: 1rem;
+            color:#333;
+            padding-bottom: 10px;
+        }
+        .item-title-s div{
+            font-size: 0.75rem;
+            color: #666;
+            padding-bottom: 10px;
+        }
+        .item-title-s div span{
+            color:#f73e3c
+        }
+        .items-plan-list-title{
+            line-height: 45px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .items-plan-list-title div{
+            text-align: center;
+            color:#666;
+        }
+        .items-plan-list-title1>div{
+            font-size: 0.9rem;
+            color:#333;
+        }
+        .create-btns{
+            width:100%;
+            height:40px;
+            line-height:40px;font-size: 1rem;
+            color:#fff;
+            text-align: center;
+            position: fixed;bottom:0px;
+            left:0px;
+            background: #f73e3c;
+        }
+        .activeplan>div{
+
+            color:#f7260a !important;
+
+        }
+    </style>
+</head>
+<body >
+<div class="class-list-el">
+    <div style="padding: 0 15px">
+        <div class="plan-title">选择学习词汇</div>
+        <div>
+            <div class="words-item">
+                <div @click="showGradeList" class="words-add"></div>
+                <div class="words-items" v-show="gradeName!=''">
+                    <div>
+                        <span>{{gradeName}} </br> </span>
+                        <span v-show="courseName" style="font-size: 12px;">({{courseName}})</span>
+
+                    </div>
+                </div>
+                <div class="words-items" :class="{'words-add-active' : gradeId == item.gradeId}" v-for="(item,index) in historyList" @click="chooseThisPlanHistory(index)">
+                    <div>
+                        <span>{{item.gradeName}} </br> </span>
+                        <span v-show="item.courseName" style="font-size: 12px;">({{item.courseName}})</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="app-center" style="padding: 14px 10px;margin-top: 15px;">
+        <div class="item-title-s" style="border-bottom: 1px solid #e5e5e5">
+            <p>{{gradeName}}（{{gradeWordCount}}词）</p>
+            <div>计划完成日期<span>{{endTime}}</span> </div>
+        </div>
+        <div class="items-plan-list">
+            <div class="items-plan-list-title">
+                <div>
+                    每天背单词
+                </div>
+                <div>完成天数</div>
+            </div>
+            <div @click="chooseThisPlan(item,index)" :class="{'activeplan':item.dailyTask == activeDaily}" class="items-plan-list-title items-plan-list-title1" v-for="(item,index) in planList">
+                <div>
+                    {{item.dailyTask}}个
+                </div>
+                <div>{{item.useDay}}天</div>
+            </div>
+        </div>
+    </div>
+    <div style="height:70px;"></div>
+    <div @click="submitCreatePlan" class="create-btns">确定</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            isShowAdd:false,
+            planObj:{},
+            gradeList:[],
+            planList:[],
+            gradeName:'',
+            gradeType:null,//1年纪 2词汇
+            courseId:null,//版本ID 如果是年级需要传 如果考研等科目则不需要
+            gradeId:'',
+            gradeWordCount:0,
+            nowTime:'',
+            endTime:'未选择',
+            activeDaily:null,
+            historyList:[],//历史计划列表
+            courseName:''
+        },
+        created(){
+        },
+        methods:{
+            //选择一个以往计划创建为当前计划
+            chooseThisPlanHistory(index){
+                var _this = this;
+                _this.courseId = this.historyList[index].courseId
+                _this.endTime = '';
+                _this.activeDaily = '';
+                _this.gradeName = this.historyList[index].gradeName;
+                _this.gradeId = this.historyList[index].gradeId;
+                _this.gradeWordCount = this.historyList[index].wordCount;
+                _this.gradeType = this.historyList[index].gradeType;;
+                for(var i=0;i<_this.planList.length;i++){
+                    _this.planList[i].useDay = Math.floor(Number(_this.gradeWordCount)/_this.planList[i].dailyTask);
+                    if( _this.planList[i].useDay == 0){
+                        _this.planList[i].useDay = 1;
+                    }
+                }
+            },
+            //获取以往计划
+            getLearnHistory(){
+                var _this = this;
+                ajaxGet(getLearnHistoryUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.historyList = ret.data;
+                    }
+                })
+            },
+            //确定制定计划
+
+            submitCreatePlan(){
+                var _this = this;
+                var obj = {};
+                if(!this.gradeId){
+                    toast('请选择年级')
+                    return;
+                }
+                if(this.gradeType==1){
+                    if(!this.courseId){
+                        toast('您还没选择年级版本')
+                        return;
+                    }
+                    obj.courseId = this.courseId;
+                }else{
+                    obj.courseId = 0;
+                }
+                if(!this.activeDaily){
+                    toast('请选择每日计划后提交')
+                    return;
+                }
+                obj.gradeId = this.gradeId;
+                obj.gradeType = this.gradeType;
+                obj.dailyTask = this.activeDaily;
+                al(obj)
+                ajaxGet(createPlanUrl,obj,function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        toast('计划制定成功，请按照计划进行学习哦')
+                        if(_this.gradeType == 1){ //年级
+                            openNewWindow('mtiword','../mtiword/mtiword.html',{name:_this.gradeName,id:obj.courseId,planId:ret.data.planId,gradeid:obj.gradeId})
+
+                        }else{ //考研
+                            openNewWindow('mtiword-4','../mtiword/mtiword-4.html',{name:_this.gradeName,id:obj.courseId,planId:ret.data.planId,gradeid:obj.gradeId})
+                        }
+                    }
+                })
+            },
+            //选择一个每日背词计划
+            chooseThisPlan(data,index){
+                if(!this.gradeWordCount){
+                    toast('请先选择词汇')
+                    return;
+                }
+                //计算大概完成计划时间
+                this.endTime = formatTimeToDay(this.nowTime+data.useDay*24*60*60*1000);
+                this.activeDaily = data.dailyTask;
+            },
+            //获取班级参数
+            getParams(){
+                var _this = this;
+                ajaxGet(getCreatePlanParamsUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.gradeList = ret.gradeList;
+                        _this.planList = ret.dailyTasks;
+                        for(var i=0;i<ret.gradeList.length;i++){
+                            if(ret.gradeList[i].wordCourses.length>0){
+                                for(var n=0;n<ret.gradeList[i].wordCourses.length;n++){
+                                    if(courseId == ret.gradeList[i].wordCourses[n].courseId){
+                                        _this.endTime = '';
+                                        _this.courseId = courseId
+                                        _this.activeDaily = '';
+                                        _this.gradeName = ret.gradeList[i].gradeName;
+                                        _this.gradeId = ret.gradeList[i].gradeId;
+                                        _this.gradeWordCount = ret.gradeList[i].wordCount;
+                                        for(var i=0;i<_this.planList.length;i++){
+                                            _this.planList[i].useDay = Math.floor(Number(_this.gradeWordCount)/_this.planList[i].dailyTask);
+                                            if( _this.planList[i].useDay == 0){
+                                                _this.planList[i].useDay = 1;
+                                            }
+                                        }
+                                        al(_this.planList)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+            },
+            //选择年级
+            showGradeList(){
+                openNewWindow('planchoose','../planchoose.html',{})
+                return;
+                var arr = [];
+                var _this = this;
+                for(var i=0;i<this.gradeList.length;i++){
+                    arr.push(this.gradeList[i].gradeName + '('+ this.gradeList[i].wordCount +'词)')
+                }
+                api.actionSheet({
+                    title: '请选择年级',
+                    cancelTitle: '取消',
+                    buttons: arr
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    //选择后记录当前选择
+                    if(index){
+                        _this.endTime = '';
+                        _this.activeDaily = '';
+                        _this.gradeName = _this.gradeList[index-1].gradeName;
+                        _this.gradeId = _this.gradeList[index-1].gradeId;
+                        _this.gradeWordCount = _this.gradeList[index-1].wordCount;
+                        //计算根据每日背词数量获取到大概使用天数
+                        for(var i=0;i<_this.planList.length;i++){
+                            _this.planList[i].useDay = Math.floor(Number(_this.gradeWordCount)/_this.planList[i].dailyTask);
+                            if( _this.planList[i].useDay == 0){
+                                _this.planList[i].useDay = 1;
+                            }
+                        }
+                        //判断选择的年级下是否有版本列表 如果有版本需要展示版本
+                        if(_this.gradeList[index-1].wordCourses.length>0){
+                            _this.gradeType = 1;
+                            _this.chooseEdition(_this.gradeList[index-1].wordCourses,index)
+                        }else{
+                            _this.courseId = null;
+                            _this.gradeType = 2;
+                        }
+                    }
+                });
+            },
+            //如果选择的年级下有版本 需要选择版本
+            chooseEdition(data,index){
+                var _this = this;
+                var arrTwo = [];
+                for(var n=0;n<data.length;n++){
+                    arrTwo.push(data[n].courseName)
+                }
+                api.actionSheet({
+                    title: '请选择版本',
+                    cancelTitle: '取消',
+                    buttons: arrTwo
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index){
+                        _this.courseId = data[index].courseId
+                    }
+                });
+            },
+            showAddClass(f){
+                this.isShowAdd = f;
+            },
+        },
+    });
+    function getWordsDetail(data) {
+        al(data)
+        var _this = app;
+        if(data.gradeType == 1){
+            _this.courseName = data.courseName;
+        }else{
+            _this.courseName = '';
+        }
+        app.gradeId = data.gradeId;
+        app.gradeType = data.gradeType;
+        app.courseId = data.courseId;
+        app.gradeName = data.gradeName;
+        app.gradeWordCount = data.wordCount;
+        for(var i=0;i<_this.planList.length;i++){
+            _this.planList[i].useDay = Math.floor(Number(_this.gradeWordCount)/_this.planList[i].dailyTask);
+            if( _this.planList[i].useDay == 0){
+                _this.planList[i].useDay = 1;
+            }
+        }
+    }
+    var courseId;
+    apiready = function () {
+        app.getParams();
+        app.getLearnHistory();
+        if(api.pageParam.id){
+            courseId = api.pageParam.id;
+            al(courseId+'a')
+        }
+        app.nowTime = new Date().getTime();
+//        app.typeId = api.pageParam.id;
+//        app.getList();
+    };
+</script>
+</html>

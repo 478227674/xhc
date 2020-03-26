@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+        html,body{
+            background: rgba(0,0,0,0);
+        }
+
+    </style>
+</head>
+<body >
+    <div class="couponboxall">
+        <div class="top-title">
+            优惠
+            <img src="../../icon/close.png" @click="closeGetCoupon" alt="">
+        </div>
+        <div class="coupon-bottom" >
+            <div  class="errortext">
+                可领取优惠券
+            </div>
+
+            <ul class="couponlist">
+                <li v-for="(item,index) in list" v-if="item.isGet == 0">
+                    <div class="coupon-left">
+                        <div class="manjian1">￥<span>{{item.usedAmount}}</span></div>
+                        <div class="manjian2">满{{item.withAmount}}可用</div>
+                    </div>
+                    <div class="coupon-center">
+                        <span>北京太奇教育</span>
+                        <p>有限期:{{item.startTime}}-{{item.endTime}}</p>
+                    </div>
+                    <span class="coupon-right" @click="getCoupon(item,index)">立即领取</span>
+                </li>
+                <div style="height: 50px;"></div>
+            </ul>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.couponboxall',
+        data: {
+            currentIndex:0,
+            list:[],
+        },
+        methods:{
+            closePageThis:function (){
+                closeWin()
+            },
+            closeGetCoupon(){
+                api.closeFrame({
+                    name:'getcoupon'
+                });
+            },
+            getCoupon(data,index){
+                if(data.isGet==0){
+                    ajaxGet(getCouponUrl,{couponId:data.couponId},function (ret,err) {
+                        if(ret && ret.code == 0){
+                            toast('已领取优惠券')
+                            app.list.splice(index,1)
+                        }
+
+                    })
+                }else{
+                    toast('您已领取过此优惠券')
+                }
+            },
+        },
+    })
+
+    apiready = function () {
+    	if(api.pageParam.list.length>0){
+		    for(var i=0;i<api.pageParam.list.length;i++){
+			    api.pageParam.list[i].startTime = formatTimeToDay(api.pageParam.list[i].startTime)
+			    api.pageParam.list[i].endTime = formatTimeToDay(api.pageParam.list[i].endTime)
+		    }
+		    app.list = api.pageParam.list || [];
+        }
+        document.getElementsByClassName('couponlist')[0].style.height = api.winHeight-300 + 'px';
+    };
+
+
+</script>
+</html>

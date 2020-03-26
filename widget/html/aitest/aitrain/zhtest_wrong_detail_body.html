@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        .test-time{
+            color:#333;
+            font-size: 12px;
+        }
+        .test-time span{
+            color:#f85250;font-size: 12px;
+        }
+        .qusition-index{
+            border-bottom: none !important;
+        }
+
+        .test-anwser{
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .test-right-anwser,.test-your-anwser{
+            color:#333;
+            font-size: 12px;
+            margin-right: 20px;
+        }
+        .test-right-anwser span{
+            color:#40d44f;
+        }
+        .test-your-anwser span{
+            color:#f73e3c;
+        }
+        .qusition-jiexi div{
+            color:#f73e3c;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .qusition-jiexi p {
+            margin-top: 15px;
+            color:#333;
+            font-size: 12px;
+        }
+        .qusition-jiexi img{
+            max-width: 100%;
+        }
+        .qusition-choose img{
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body >
+<div id="learn-box">
+    <div>
+        <ul class="qusition-list">
+            <li v-for="item in tobj.data">
+
+                <div class="qusition-index">
+                    <!--<div class="qusition-index-text">题：1</div>-->
+                    <div class="test-time">
+                        考试时间 <span>{{item.createTime}}</span>
+                    </div>
+                </div>
+                <div>
+                    <div class="test-anwser">
+                        <div class="test-right-anwser">
+                            本题正确答案：<span>{{chooseList[item.alQuestion.optionAnswerIndex]}}</span>
+                        </div>
+                        <div class="test-your-anwser">
+                            您的答案： <span>{{chooseList[item.alQuestion.userAnswerIndex]}}</span>
+                        </div>
+                    </div>
+                    <div class="qusition-choose">
+                        <span v-html="item.alQuestion.questionStem"></span>
+                        <div v-for="(items,indexs) in item.alQuestion.alQuestionOption">{{chooseList[indexs]}}. {{items.optionName}}</div>
+                        <!--<div>B. 大的，很大的，</div>-->
+                        <!--<div>C. 用以表示听清楚对方说的话</div>-->
+                        <!--<div>D. 用以表示听清楚对方说的话</div>-->
+                    </div>
+                    <div class="qusition-jiexi">
+                        <div>
+                            【解题分析】
+                        </div>
+                        <p v-html="item.alQuestion.analysis">
+                        </p>
+                    </div>
+                </div>
+            </li>
+            <li style="display: none;">
+                <div class="qusition-index">
+                    <!--<div class="qusition-index-text">题：1</div>-->
+                    <div class="test-time">
+                        考试时间 <span>2019.12.14 05:05</span>
+                    </div>
+                </div>
+                <div class="test-anwser">
+                    <div class="test-right-anwser">
+                        本题正确答案：<span>C</span>
+                    </div>
+                    <div class="test-your-anwser">
+                        您的答案： <span>A</span>
+                    </div>
+                </div>
+                <div class="qusition-choose">
+                    <span>what?</span>
+                    <div>A. 水</div>
+                    <div>B. 大的，很大的，</div>
+                    <div>C. 用以表示听清楚对方说的话</div>
+                    <div>D. 用以表示听清楚对方说的话</div>
+                </div>
+                <div class="qusition-jiexi">
+                    <div>
+                        【解题分析】
+                    </div>
+                    <p>
+                        宾语从句要用陈述句的语序，首先排除A答案。she是第三人称单
+                        数，谓语动词要加s或es.
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div style="height:80px"></div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            tid:null,
+            tobj:{},
+            chooseList:['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            submitTime:"",
+
+        },
+        methods:{
+            getTestDetail(){
+                var _this = this;
+                ajaxGet(getTrainWrongDetailUrl,{testId:this.tid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.length;i++){
+                            ret.data[i].createTime = formatTimeToDate(ret.data[i].createTime*1000)
+                            for(var n=0;n<ret.data[i].alQuestion.alQuestionOption.length;n++){
+                                //找到当前用户选择对应答案的下标 用于后边显示ABCD
+                                if(ret.data[i].userAnswer == ret.data[i].alQuestion.alQuestionOption[n].optionId){
+                                    ret.data[i].alQuestion.userAnswerIndex = n;
+                                }
+                                //找到正确答案的下标
+                                if(ret.data[i].alQuestion.alQuestionOption[n].isRight==1){
+                                    ret.data[i].alQuestion.optionAnswerIndex = n;
+                                }
+                            }
+                        }
+                        _this.tobj = ret;
+
+                    }
+                })
+            },
+        },
+    })
+
+
+    apiready = function () {
+        app.tid = api.pageParam.id;
+        app.getTestDetail();
+    };
+
+
+</script>
+</html>

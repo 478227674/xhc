@@ -1,0 +1,237 @@
+/* aui override */
+.aui-list-item-arrow:before {
+    border-color: #AAA;
+}
+
+/* ========= extends css ============ */
+/* bar-nav */
+.ext-bar-nav-white {
+    color: #51a3ff;
+    background-color: #ffffff;
+    border-bottom: 1px solid #51a3ff !important;
+}
+
+.ext-bar-nav-white .aui-iconfont {
+    color: #51a3ff !important;
+}
+
+
+/* font color */
+.ext-color-white{
+  color: #ffffff !important;
+}
+
+.ext-color-red {
+    color: #FF5722 !important;
+}
+
+.ext-color-orange {
+    color: #FFB800 !important;
+}
+
+.ext-color-green {
+    color: #009688 !important;
+}
+
+.ext-color-cyan {
+    color: #2F4056 !important;
+}
+
+.ext-color-blue {
+    color: #1E9FFF !important;
+}
+
+.ext-color-black {
+    color: #393D49 !important;
+}
+.ext-color-grey-9 {
+    color: #999 !important;
+}
+
+.ext-color-grey-8 {
+    color: #888 !important;
+}
+.ext-color-grey-7 {
+    color: #777 !important;
+}
+.ext-color-grey-6 {
+    color: #666 !important;
+}
+
+/* background-color */
+.ext-bg-white{
+  background-color: #ffffff;
+}
+
+.ext-bg-red {
+    background-color: #FF5722 !important
+}
+
+.ext-bg-orange {
+    background-color: #FFB800 !important
+}
+
+.ext-bg-green {
+    background-color: #009688 !important
+}
+
+.ext-bg-cyan {
+    background-color: #2F4056 !important
+}
+
+.ext-bg-blue {
+    background-color: #1E9FFF !important
+}
+
+.ext-bg-black {
+    background-color: #393D49 !important
+}
+
+.ext-bg-grey-e {
+    background-color: #eee !important;
+}
+
+.ext-bg-grey-f5 {
+    background-color: #f5f5f5 !important;
+}
+
+
+
+/* padding*/
+.ext-padding-t-20 {
+    padding-top: 1rem !important;
+}
+.ext-padding-t-25 {
+    padding-top: 1.25rem !important;
+}
+.ext-padding-t-30 {
+    padding-top: 1.5rem !important;
+}
+.ext-padding-r-20 {
+    padding-right: 1rem !important;
+}
+.ext-padding-r-25 {
+    padding-right: 1.25rem !important;
+}
+.ext-padding-r-30 {
+    padding-right: 1.5rem !important;
+}
+.ext-padding-b-20 {
+    padding-bottom: 1rem !important;
+}
+.ext-padding-b-25 {
+    padding-bottom: 1.25rem !important;
+}
+.ext-padding-b-30 {
+    padding-bottom: 1.5rem !important;
+}
+.ext-padding-l-20 {
+    padding-left: 1rem !important;
+}
+.ext-padding-l-25 {
+    padding-left: 1.25rem !important;
+}
+.ext-padding-l-30 {
+    padding-left: 1.5rem !important;
+}
+
+/* margin */
+.ext-margin-t-20 {
+    margin-top: 1rem !important;
+}
+.ext-margin-t-25 {
+    margin-top: 1.25rem !important;
+}
+.ext-margin-t-30 {
+    margin-top: 1.5rem !important;
+}
+.ext-margin-r-20 {
+    margin-right: 1rem !important;
+}
+.ext-margin-r-25 {
+    margin-right: 1.25rem !important;
+}
+.ext-margin-r-30 {
+    margin-right: 1.5rem !important;
+}
+.ext-margin-b-20 {
+    margin-bottom: 1rem !important;
+}
+.ext-margin-b-25 {
+    margin-bottom: 1.25rem !important;
+}
+.ext-margin-b-30 {
+    margin-bottom: 1.5rem !important;
+}
+.ext-margin-l-20 {
+    margin-left: 1rem !important;
+}
+.ext-margin-l-25 {
+    margin-left: 1.25rem !important;
+}
+.ext-margin-l-30 {
+    margin-left: 1.5rem !important;
+}
+
+/*flex 对齐方式*/
+
+.ext-flex-start {
+    display: -moz-box;
+    display: -webkit-box;
+    display: -o-box;
+    display: box;
+    align-items: center;
+}
+
+.ext-flex-end {
+    display: -moz-box;
+    display: -webkit-box;
+    display: -o-box;
+    display: box;
+    -moz-box-pack: end;
+    -webkit-box-pack: end;
+    -o-box-pack: end;
+    box-pack: end;
+    align-items: center;
+}
+
+.ext-flex-center {
+    display: -moz-box;
+    display: -webkit-box;
+    display: -o-box;
+    display: box;
+    -moz-box-pack: center;
+    -webkit-box-pack: center;
+    -o-box-pack: center;
+    box-pack: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+
+.ext-flex-justify {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+
+/* 特殊 */
+.ext-list-item-right{
+  min-width:3.5rem;
+  text-align:right;
+}
+.ext-list-item-label{
+  font-size: 0.6rem !important;
+  margin-top: 0.4rem;
+}
+
+.ext-list-item-label .aui-iconfont{
+  font-size: 0.6rem !important;
+}

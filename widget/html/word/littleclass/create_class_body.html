@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+<div class="create-class-box">
+    <div class="app-center" style="background: none">
+        <div class="create-class-danger">
+            <img src="../../../icon/danger.png" alt="">
+            <span>创建小班需要学习达到300词，太奇币2000。</span>
+        </div>
+    </div>
+    <div style="background: #fff;">
+        <div class="app-center" @click="uploadImg">
+            <div class="create-class-head">
+                <span>班级头像</span>
+                <div>
+                    <img  :src="classPicUrl" alt="">
+                </div>
+                <p>
+                    更换头像
+                </p>
+            </div>
+        </div>
+    </div>
+    <!--<div style="background: #fff;margin: 10px 0">-->
+    <!--<div class="app-center">-->
+    <!--<div class="create-class-learn">-->
+    <!--<span>学习词汇</span>-->
+    <!--<input type="text" placeholder="请选择要学习词汇">-->
+    <!--<img src="../../../icon/right.png" alt="">-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div style="background: #fff;">
+        <div class="app-center">
+            <div class="create-class-learn" style="border-bottom: 1px solid #e5e5e5">
+                <span>班级名称</span>
+                <input v-model="className" type="text" placeholder="请输入小班名称">
+            </div>
+            <div class="create-class-learn" style="border-bottom: 1px solid #e5e5e5">
+                <span>班级介绍</span>
+                <textarea name="" id="" placeholder="请输入小班介绍" v-model="classIntro" cols="30" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="create-class-btn jianbian-btn" @click="submitCreateClass">创建</div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.create-class-box',
+        data: {
+            isShowAdd:false,
+            classPic:'',
+            classPicUrl:'',
+            className:'',
+            classIntro:'',
+        },
+        methods:{
+            showAddClass(f){
+                this.isShowAdd = f;
+            },
+            submitCreateClass(){
+                if(!this.classPic){
+                    toast('请上传小班头像')
+                    return;
+                }
+                if(!this.className){
+                    toast('请填写小班名称')
+                    return;
+                }
+                if(!this.classIntro){
+                    toast('请填写小班简介')
+                    return;
+                }
+                var obj = {
+                    classPic:this.classPic,
+                    className:this.className,
+                    classIntro:this.classIntro,
+                }
+                ajaxGet(createLittleClassUrl,obj,function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        toast('创建成功')
+                        setTimeout(function () {
+                            closeWin()
+                        },1500)
+                    }
+                })
+            },
+            uploadImg(){
+                var _this = this;
+                api.getPicture({
+                    sourceType: 'library',
+                    encodingType: 'png',
+                    mediaValue: 'pic',
+                    destinationType: 'base64',
+                    allowEdit: false,
+                    quality: 50,
+                    targetWidth: 100,
+                    targetHeight: 100,
+                    saveToPhotoAlbum: false
+                }, function(ret, err) {
+                    if (ret) {
+                        var base64 = ret.base64Data;
+                        uploadImageToServer(uploadImageUrl,{base64:base64,fileName:'create.jpg'},function (ret,err) {
+                            al(ret)
+                            if(ret && ret.code == 0){
+                                _this.classPic = ret.data.fileId;
+                                _this.classPicUrl = ret.data.filePath;
+                            }
+                        })
+                    } else {
+
+                    }
+                });
+            },
+        },
+    });
+
+    apiready = function () {
+//        app.typeId = api.pageParam.id;
+//        app.getList();
+    };
+</script>
+</html>

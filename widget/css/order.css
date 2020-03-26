@@ -1,0 +1,41 @@
+.orderallbox{
+    width: 94%;
+    overflow: hidden;
+    margin: 10px auto;
+    background: #fff;
+    border-radius: 5px;
+}
+.use-coin{
+    display: block;
+    width: 18px;
+    height: 18px;
+    box-sizing: border-box;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+}
+.orderallbox>p{
+    font-size: 12px;color:#333;
+    padding-left: 25px;
+    background: url("../icon/school.png") no-repeat left 0px;
+    background-size:  20px 18px ;
+    height: 22px;
+    line-height: 22px;
+    margin-left: 10px;margin-top: 10px;
+}
+.allprice{
+    float: right;
+    margin-right: 10px;padding-bottom: 10px;
+}
+.allprice>span{
+    font-size: 14px;color:#666;float: left;
+    margin-right: 10px;
+}
+.allprice>div{
+    colof:#333;
+    font-size: 14px;
+}
+.allprice>div>div{
+    display: inline-block;
+    color:#f7260a;
+    font-weight: bold;
+}

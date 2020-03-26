@@ -1,0 +1,112 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+        .class-c-1{
+            /*padding: 15px 0px !important;*/
+            /*margin: 0 15px !important;*/
+            background: #fff;
+        }
+        .class-list-rank{
+            line-height: 2.1875rem;
+            font-size: 0.75rem;
+            color:#999;
+            margin-right:14px;
+            width:1.125rem;
+            font-style: italic;
+        }
+        .class-list-paiwei>img{
+            height:1.5625rem;
+            width:1.125rem;
+            margin-top: 5px;
+            margin-right: 14px;
+        }
+    </style>
+</head>
+<body >
+    <div class="class-list-el" style="overflow:hidden;">
+        <div class="">
+            <div class="class-c-1">
+                <div class="class-c-2">
+                    <div class="class-c-today">排名</div>
+                    <div class="class-c-num">完成天数</div>
+                    <div class="class-c-time">完成率</div>
+                </div>
+                <div class="class-c-3">
+                    <div class="class-list-paiwei my-level-class">
+                        <div class="class-list-rank">{{myobj.rank}}</div>
+                        <div class="class-c-today">
+                            <img :src="myobj.imageUrl" alt="">
+                            <span>{{myobj.userName}}</span>
+                        </div>
+                        <div class="class-c-num">{{myobj.finishDays}}<span>/{{myobj.taskDays}}</span> </div>
+                        <div class="class-c-time">{{myobj.finishRate}}%</div>
+                    </div>
+                    <div class="class-list-paiwei" v-for="item in users">
+                        <img v-show="item.rank==1" src="../../../icon/rank1.png" alt="">
+                        <img v-show="item.rank==2" src="../../../icon/rank2.png" alt="">
+                        <img v-show="item.rank==3" src="../../../icon/rank3.png" alt="">
+                        <div v-show="item.rank>3" class="class-list-rank">{{item.rank}}</div>
+
+                        <div class="class-c-today">
+                            <img :src="item.imageUrl" alt="">
+                            <span>{{item.userName}}</span>
+                        </div>
+                        <div class="class-c-num">{{item.finishDays}}<span>/{{item.taskDays}}</span> </div>
+                        <div class="class-c-time">{{item.finishRate}}%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            cid:null,
+            users:[],
+            classobj:{},
+            myobj:{
+                learnPlan:{
+                    dailyTask:''
+                },
+            },
+        },
+        methods:{
+            getRankList(){
+                var _this = this;
+                ajaxGet(getClassRankListUrl,{classId:this.cid},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        _this.users = ret.users;
+                        _this.myobj = ret.currentUser;
+                    }
+
+                })
+            },
+        },
+    });
+
+    apiready = function () {
+        app.cid = api.pageParam.id;
+        app.getRankList()
+    };
+</script>
+</html>

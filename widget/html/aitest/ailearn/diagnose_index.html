@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        .dia-index-title{
+            line-height: 44px;
+            color:#333;
+            font-size: 16px;
+            border-bottom: 1px solid #e5e5e5;
+            text-align: center;
+            font-weight: bold;
+        }
+        .dia-index-detail{
+            margin-top: 15px;
+            padding-bottom: 10px;
+
+        }
+        .dia-index-detail div{
+            margin-bottom: 10px;
+            color:#333;
+            font-size: 14px;
+        }
+        .fenxi-box-title{
+            font-size: 16px;color:#666;
+            line-height: 44px;
+            border-top:1px solid #e5e5e5;
+        }
+        .fenxi-daibiao{
+            display: flex;
+            justify-content:flex-start;
+        }
+        .fenxi-daibiao >div{
+            display: flex;
+            justify-content:flex-start;
+            margin-right: 25px;
+        }
+        .fenxi-daibiao > div > div{
+            width:15px;
+            height:15px;
+
+            border-radius: 50%;
+        }
+        .fenxi-daibiao > div > span{
+            font-size: 12px;color:#333;
+            margin-left: 8px;
+            line-height: 15px;
+        }
+        .qusition-dia-mychoose{
+            display: flex;
+            justify-content:flex-start;
+            align-items: center;
+        }
+        .qusition-dia-mychoose img{
+            width:15px;
+            height:15px;
+            margin-left: 10px;
+        }
+        .qusition-list li{
+            margin-bottom: 0px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .answerjiexi>div{
+            width:80%;
+            padding: 20px 10%;
+            background: #fff;
+            position: absolute;
+            top:50px;
+        }
+        .answerjiexi>div>img{
+            max-width: 100%;
+            margin-top: 20px;
+        }
+        .answerjiexi video {
+            max-width: 100%;
+            margin-top: 20px;
+        }
+        .anwser-btns{
+            display: flex;
+            justify-content:flex-start;
+        }
+        .anwser-right{
+            font-size: 14px;color:#333;
+            line-height: 31px;
+        }
+        .anwser-btns>div{
+            margin-left: 10px;
+            border:1px solid #f7260a;
+            color:#f7260a;
+            font-size: 14px;
+            padding: 7px 13px 7px  20px;
+            border-radius: 5px;
+            display: inline-block;
+            background: url("../../../icon/ai/redimg.png") no-repeat 4px 8px;
+            background-size:  13px 13px;
+        }
+        .daanjiexi img{
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body style="background: #f6f6f6">
+    <div id="learn-box" v-cloak>
+        <div style="background: #fff">
+            <div class="app-center">
+                <div class="dia-index-title">根题诊断报告</div>
+                <div class="dia-index-detail">
+                    <div>单元：{{reobj.knowledgeName}}</div>
+                    <div>姓名：{{reobj.userName}}</div>
+                    <div>时间：{{reobj.createTime}}，用{{useTimeText}}</div>
+                    <div>成绩：{{reobj.userScore}} 分，全国平均 {{reobj.avgScore}} 分，领先 {{reobj.userRank}}% 的学员</div>
+                </div>
+                <div class="fenxi-box">
+                    <div class="fenxi-box-title">知识掌握维度分析</div>
+                    <div class="fenxi-daibiao">
+                        <div>
+                            <div style="background: #c23531;"></div>
+                            <span>全国平均</span>
+                        </div>
+                        <div>
+                            <div style="background: #2f4554;"></div>
+                            <span>我</span>
+                        </div>
+                    </div>
+                    <div id="echartsbox" style="width:200px;height:170px;margin:0 auto;">
+
+                    </div>
+                    <div class="dia-index-detail">
+                        <div>概念：该知识概念清晰 </div>
+                        <div>理解：该知识未能理解，不清楚来龙去脉 </div>
+                        <div>运用：该知识还未学会运用</div>
+                    </div>
+                </div>
+<!--                <div class="fenxi-box">-->
+<!--                    <div class="fenxi-box-title">学习建议</div>-->
+<!--                    <div class="dia-index-detail" style="margin-top: 0px;" v-html="learnPlan">-->
+                        <!--<div>扩大与该知识相关知识的学习；加强对该知识理解，知其然还要知其所以然；加强该知识的应用练习。 </div>-->
+                        <!--<div>1．掌握本单元出现的生单词、词组和句型。 </div>-->
+                        <!--<div>2．学会使用like的肯定式、否定式和疑问式来谈论喜欢和不喜欢。</div>-->
+                        <!--<div>3．学习和掌握可数名词和不可数名词的含义和区别。</div>-->
+                        <!--<div>4．学会询问、了解别人的喜好以及表达自己的喜好。</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+        <div style="background: #fff;">
+            <div  style="margin-top: 10px">
+                <div>
+                    <ul class="qusition-list">
+                        <li v-for="(item,index) in testList">
+                            <div class="qusition-index">
+                                <div class="qusition-index-text">题：{{index+1}}</div>
+                                <div class="qusition-dia-mychoose">
+                                    <span>选择:{{chooseList[item.userIndex]}}</span>
+                                    <img v-if="item.userIndex==item.rightIndex" src="../../../icon/testright.png" alt="">
+                                    <img v-else src="../../../icon/wordwrong.png" alt="">
+                                </div>
+                                <div>
+                                    正确答案:{{chooseList[item.rightIndex]}}
+                                </div>
+                                <div>
+                                    题号:{{item.questionId}}
+                                </div>
+                            </div>
+                            <div class="qusition-choose">
+                                <div style="padding: 15px 0 0 0" v-html="item.alQuestions[0].questionStem"></div>
+
+                                <div v-for="(items,indexs) in item.alQuestions[0].alQuestionOption">
+                                    {{chooseList[indexs]}}.
+                                    <span v-show="items.optionName" v-html="items.optionName"></span>
+                                    <img v-show="items.optionImage" :src="items.optionImage"></img>
+                                </div>
+                                <!--<div>B. 大的，很大的，</div>-->
+                                <!--<div>C. 用以表示听清楚对方说的话</div>-->
+                                <!--<div>D. 用以表示听清楚对方说的话</div>-->
+                            </div>
+                            <div style="display: flex;justify-content: flex-end">
+                                <div class="anwser-btns">
+                                    <div @click="showAnswerJiexi(true,index)">
+                                        答案详解
+                                    </div>
+                                    <div  @click="showVideoJiexi1(item)" class="anwser-btns-video">
+                                        视频详解
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div style="height:100px;"></div>
+            </div>
+        </div>
+        <div v-show="answerFlag" class="mask answerjiexi" @click="showAnswerJiexi(false)">
+            <div @click.stop="returnFalse">
+                <div v-html="analysis" class="daanjiexi">
+
+                </div>
+                <!--<img src="../../../icon/ai/videotbg.png" alt="">-->
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/zepto.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script>
+    window.onload = function () {
+
+    }
+
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            answerFlag:false,//答案解析控制锁
+            analysis:'',
+
+            chooseList:['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            kid:null,
+            reobj:{},
+            useTimeText:'',
+            learnPlan:'',//学习建议
+            testList:[] ,
+        },
+        created(){
+
+        },
+        methods:{
+            showVideoJiexi1(data){
+                if(data.videoUrl){
+                    ajaxGet(getVideoUrl,{fileId:data.videoUrl},function (ret,err) {
+                        vivi.openplayer({
+                            x: 0,
+                            y :api.safeArea.top+200,
+                            w : v_Width,
+                            h: 250,
+                            title: '名师讲解 ',
+                            url: ret.m3u8Url,
+                        }, function(ret, err) {
+
+                        });
+                    })
+                }
+            },
+            //显示答案解析方法
+            showAnswerJiexi(f,index){
+                this.answerFlag = f;
+                if(f){
+                    this.analysis = this.testList[index].analysis
+                }
+                if(index>=0){
+                }
+            },
+            getReport(){
+                var _this = this;
+                al(this.kid)
+                ajaxGet(getTestReportUrl,{knowledgeId:this.kid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(ret.data.relation){
+                            if(ret.data.relation.opinion){
+                                _this.learnPlan = ret.data.relation.opinion
+                            }else{
+                                _this.learnPlan =  '暂无学习建议';
+                            }
+                        }else{
+                            _this.learnPlan =  '暂无学习建议';
+                        }
+                        _this.testList = ret.data.alDisgnosisRecords;
+                        for(var i=0;i<_this.testList.length;i++){
+                            var rightAnwser = _this.testList[i].answer;//正确答案ID
+                            var userAnwser = _this.testList[i].userAnswer;//用户答案ID
+                            var testObj = _this.testList[i].alQuestions[0];//题 题干包括选项
+                            for(var n=0;n<testObj.alQuestionOption.length;n++){
+                                //判断正确答案下标
+                                if(testObj.alQuestionOption[n].isRight == 1){
+                                    _this.testList[i].rightIndex = n;
+                                }
+                                //判断用户答案下标
+                                if(userAnwser == testObj.alQuestionOption[n].optionId){
+                                    _this.testList[i].userIndex = n;
+                                }
+                            }
+                        }
+                        _this.reobj = ret.data;
+                        _this.reobj.createTime = formatTimeToDay(_this.reobj.createTime)
+                        //用时转成分秒形式
+                        var mt = Math.floor(_this.reobj.useTime/60) < 10 ? ('0'+Math.floor(_this.reobj.useTime/60)) : Math.floor(_this.reobj.useTime/60);
+                        var st = _this.reobj.useTime%60 < 10 ? '0'+_this.reobj.useTime%60 : _this.reobj.useTime%60
+                        _this.useTimeText = mt+'分'+st+'秒'
+
+                        //组合三个分数为数组 雷达图需要用
+                        var myScore = [_this.reobj.simpleNum,_this.reobj.middleNum,_this.reobj.difficultyNum]
+                    }
+                    _this.$nextTick(function () {
+                        var myChart = echarts.init(document.getElementById('echartsbox'));
+                        var option = {
+                            title: {
+                            },
+                            legend: {
+                            },
+                            radar: {
+                                indicator: [
+                                    { name: '概念',max:100 },
+                                    { name: '理解',max:100 },
+                                    { name: '运用',max:100 },
+                                ],
+                                axisLabel: {
+//                        show: true,
+                                    fontSize: 12,
+                                    color: '#838D9E',
+                                    showMaxLabel: false, //不显示最大值，即外圈不显示数字30
+                                    showMinLabel: false, //显示最小数字，即中心点显示0
+                                },
+                                center: ['50%', '50%'],
+                                radius: 50,
+                                startAngle: 90,
+                                splitNumber: 2,
+                                shape: 'circle',
+                                name: {
+                                    formatter:'{value}',
+                                    textStyle: {
+                                        color:'#72ACD1'
+                                    }
+                                },
+                                splitArea: {
+                                    areaStyle: {
+                                        color: ['rgba(255,255, 255, 0.2)',
+                                            'rgba(245, 245, 245, 1)', 'rgba(114, 172, 209, 0.6)',
+                                            'rgba(114, 172, 209, 0.8)', 'rgba(255, 255, 209, 1)'],
+                                        shadowColor: 'rgba(255, 255, 255, 1)', //中间小圈
+                                        shadowBlur: 1 //外围阴影
+                                    }
+                                },
+                                axisLine: {
+                                    lineStyle: {
+                                        color: 'rgba(47, 69, 87, 1)'
+                                    }
+                                },
+                                splitLine: {
+                                    lineStyle: {
+                                        color: 'rgba(175, 175, 175,1)'
+                                    }
+                                }
+                            }
+                            ,
+                            series: [
+                                {
+                                    name: '雷达图',
+                                    type: 'radar',
+                                    itemStyle: {
+                                        emphasis: {
+                                            // color: 各异,
+                                            lineStyle: {
+                                                width: 4
+                                            }
+                                        }
+                                    },
+                                    data: [
+                                        {
+                                            value: [80,65,45], //全国平均
+                                            areaStyle: {
+                                                normal: {
+                                                    color: 'rgba(255, 255, 255, 0.5)'
+                                                }
+                                            }
+                                        },
+                                        {
+                                            value: myScore, //自己分数
+                                            areaStyle: {
+                                                normal: {
+                                                    color: 'rgba(255, 255, 255, 0.5)'
+                                                }
+                                            }
+                                        },
+                                    ]
+                                },
+
+                            ]
+                        }
+                        if (option && typeof option === "object") {
+                            myChart.setOption(option, true);
+                        }
+                    })
+                })
+            },
+        },
+    })
+
+    var vivi,v_Width;
+
+    apiready = function () {
+        v_Width = api.winWidth;
+        vivi = api.require('advancedPlayer');
+        app.kid = api.pageParam.id;
+        app.getReport();
+    };
+
+
+</script>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/type.css"/>
+    <style>
+        body,html{
+            background: #fff;
+        }
+        .level-ul{
+            padding: 0 15px;
+            background: #fff;
+        }
+        .level-ul li {
+            padding: 15px 0;
+            width:100%;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: flex-start;
+            position: relative;
+        }
+        .level-ul li span{
+            display: block;
+            width:15px;
+            margin-right: 10px;
+            height:16px;
+            background: url("../../../icon/book.png") no-repeat 0px 0px;
+            background-size:100% 100%;
+        }
+        .level-ul li div{
+            font-size: 14px;color:#333;
+        }
+        .level-ul li img{
+            position: absolute !important;
+            height:13px;
+            width:7px;
+            right:0px;
+            top:15px;
+        }
+    </style>
+</head>
+<body >
+   <ul class="level-ul">
+      <li class="level-3-list" v-for="item in allList" @click="openListById(item)">
+          <span></span>
+          <div>{{item.courseName}}</div>
+          <img src="../../../icon/right.png" alt="">
+      </li>
+   </ul>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.level-ul',
+        data: {
+            allList:[],
+            typeId:null,
+        },
+        methods:{
+            openListById(data){
+                var _this = this;
+                var sendData = {
+                    gradeName:banben.gradeName,
+                    gradeId:banben.gradeId,
+                    wordCount:banben.wordCount,
+                    courseId:data.courseId,
+                    courseName:data.courseName,
+                    gradeType:1
+                };
+                //检测之前是否已存在
+                api.execScript({
+                    name:'createplan',
+                    frameName:'createplan_body',
+                    script:'getWordsDetail('+JSON.stringify(sendData)+')'
+                })
+                api.closeToWin({
+                    name:'createplan'
+                })
+            },
+            getList(){
+                ajaxGet(getWordsListUrl,{gradeId:this.typeId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        app.allList = ret.data;
+                    }
+                })
+            },
+        },
+    })
+    var banben;
+    apiready = function () {
+        banben = api.pageParam;
+        app.allList = banben.wordCourses;
+//        app.typeId = api.pageParam.id;//年级ID
+//        app.getList();
+    };
+</script>
+</html>

@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Swiper demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="../css/swiper-3.3.1.min.css">
+
+    <!-- Demo styles -->
+    <style>
+        html, body {
+            position: relative;
+            height: 100%;
+        }
+        .title{
+            color:#333;
+            font-size: 18px;
+            font-weight: bold;text-align: center;
+        }
+        .listtexx p{
+            font-size: 14px;
+            color:#333;
+            line-height: 20px;
+        }
+        .aaaa{
+            font-size: 14px;color:#333;
+        }
+        .aaaa p {
+            margin: 0px;
+        }
+    </style>
+</head>
+<body>
+<div style="background: #fff;">
+    <div style="padding: 10px;">
+        <p class="title">太奇教育入驻协议</p>
+        <div class="listtexx">
+            <p>1、所有入驻机构必须合法经营，所有经营项目应当符合国家法律法规。</p>
+            <p>            2、所有入驻机构必须诚实守信，真实为学员提供本机构情况和课程信息，按在本平台中所填写的内容为学员提供课程和服务。
+            </p>
+            <p>            3、对于学员通过本平台拼团、砍价等得到的优惠学费价格机构应当予以认可，不得拒绝接受。
+            </p>
+            <p>            4、特价课需机构按照本平台统一标价选择其一类价格，课程和服务内容由机构自行填写并提供，不得拒绝接受。
+            </p>
+            <p>            5、机构在点击同意后且入驻材料经本平台审核通过，本协议即生效，双方应承担由此引起的一切法律后果。
+            </p>
+            <p>            6、平台有权在告知入驻方同意的情况下更改平台规则，入驻方有权拒绝更改，将本机构课程下线，否则视为同意更改。平台也有权拒绝继续提供服务。但之前协议形成的对学员承诺不受影响。
+            </p>
+            <p>            7、双方如发生法律争议，起诉至北京海淀区人民法院解决。
+            </p>
+
+        </div>
+        <div class="aaaa">
+            <p>平台方：北京快好多网络科技有限公司</p>
+            <p>入驻方：<span id="ruzhufang"></span></p>
+        </div>
+    </div>
+</div>
+<!-- Swiper JS -->
+
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    apiready = function () {
+        document.getElementById('ruzhufang').innerHTML = api.pageParam.name;
+    }
+</script>
+</body>
+</html>

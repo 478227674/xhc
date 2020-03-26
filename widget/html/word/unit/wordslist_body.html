@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/type.css"/>
+    <style>
+        .unitli{
+            height:34px;
+            padding: 10px 15px 20px 15px;
+            background: #fff;
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-start;
+            position: relative;
+        }
+        .unitli .laba{
+            position: absolute !important;
+            top:19px;
+            right:15px;
+        }
+        .unitli .laba img{
+            width:16px;
+            height:16px;
+        }
+        .english{
+            font-size: 15px;
+            color:#333;
+        }
+        .chinese{
+            color:#666;
+            font-size: 12px;
+        }
+        .soundmark {
+            margin-left: 20px;
+        }
+        .soundmark img{
+            height:12px;
+        }
+    </style>
+</head>
+<body >
+<div class="unitlist">
+    <audio src="" id="audiobox" onended="playEnd()"></audio>
+    <ul>
+        <li class="unitli" v-for="(item,index) in allList">
+            <div>
+                <p class="english">{{item.words}}</p>
+                <span class="chinese">{{item.cnmean}}</span>
+            </div>
+            <div class="soundmark">
+                <img :src="item.soundmark" alt="">
+            </div>
+            <div class="laba" @click="broThisWord(item,index)">
+                <img v-if="activeIndex==index" src="../../../icon/laba-1.png" alt="">
+                <img v-if="activeIndex!=index" src="../../../icon/laba.png" alt="">
+
+            </div>
+        </li>
+    </ul>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.unitlist',
+        data: {
+            allList:[],
+            typeId:null,
+            activeIndex:null,
+            isFnish:true,
+        },
+        methods:{
+            openListById(data){
+                openNewWindow('mtiword','../mtiword/mtiword.html',{name:data.name,id:data.id})
+            },
+            getList(){
+                al(this.typeId)
+                ajaxGet(getWorsListByClassIdUrl,{lessonId:this.typeId},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        app.allList = ret.data;
+                    }
+                })
+
+            },
+
+            broThisWord(data,index){
+                var audio = document.getElementById('audiobox');
+                if(!this.isFnish && index==this.activeIndex){
+                    audio.pause();
+                    this.isFnish = true;
+                    return;
+                }
+                audio.src = this.allList[index].mp3;
+                this.activeIndex = index;
+                this.isFnish = false;
+                audio.play();
+            },
+        },
+    });
+    //监听播放结束后自动切换到下一个
+    function playEnd() {
+        app.isFnish = true;
+        app.activeIndex+=1;
+        if(app.activeIndex==app.allList.length){
+            app.activeIndex = 0;
+        }
+        var audio = document.getElementById('audiobox');
+        audio.src = app.allList[app.activeIndex].mp3;
+        audio.play()
+    }
+    apiready = function () {
+        app.typeId = api.pageParam.id;
+        app.getList();
+    };
+</script>
+</html>

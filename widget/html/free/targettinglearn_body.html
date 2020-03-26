@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/product.css"/>
+    <style>
+        .tlist li {
+            overflow: hidden;
+            background: url("../../icon/ai/t-4.png") no-repeat 0px 0px;
+            background-size:100% 100%;
+            width:90%;
+            padding: 0 5%;
+        }
+        .t-title{
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+        .t-title img{
+            width:25px;
+            height:25px;
+            margin-right: 15px;
+        }
+        .t-title span{
+            font-size: 16px;
+            color:#333;
+            line-height: 25px;
+        }
+        .t-ianjie{
+            margin-top: 15px;
+        }
+        .t-ianjie span{
+            margin-bottom: 7px;
+            display: block;
+            border-left:2px solid #f7260a;
+            font-size: 14px;color:#333;
+            padding-left: 5px;
+
+        }
+        .t-ianjie p {
+            text-indent: 20px;
+            line-height: 18px;
+            font-size: 12px;color:#666;
+        }
+        .t-btns{
+            margin-top: 15px;
+            height: 65px;
+            border-bottom: 1px solid #e5e5e5;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: space-around;
+            align-content: center;
+        }
+        .t-btns span{
+            margin-top: 15px;
+            display: block;
+            width: 100px;
+            height:35px;
+            text-align: center;
+            line-height: 35px;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        .t-btns1{
+            background: #f7260a;
+            color:#fff;
+        }
+        .t-btns2{
+            border:1px solid #f7260a;
+
+            color:#f7260a;
+        }
+        .price-list{
+            position: absolute;
+            top:100px;
+            width: 70%;
+            left: 12%;
+            height: 250px;
+            background: #fff;
+            border-radius: 5px;
+            padding: 0px 3% 20px 3%;
+        }
+        .price-list p {
+            text-align: center;
+            font-size: 17px;
+            color:#333;
+            line-height: 55px;
+        }
+        .price-list li {
+            width: 100%;margin: 0 auto 10px auto;
+            color:#666;
+            border: 1px solid #e5e5e5;
+            text-align: center;
+            font-size: 12px;
+            line-height: 34px;
+            border-radius: 5px;
+        }
+        .price-list li span{
+            font-size: 16px;
+        }
+        .price-list div{
+            display: flex;
+            justify-content: space-between;
+        }
+        .price-list div span{
+            display: block;
+            width: 45%;
+            height:40px;
+            font-size: 14px;
+            color:#666;
+            background: #e5e5e5;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+
+        }
+        .surebtn{
+            background: #f73e3c !important;
+            color:#fff !important;
+        }
+        .active-price{
+            color:#f73e3c !important;
+            border:1px solid #f73e3c !important;
+        }
+        .subjects-btn{
+            padding-left:20px;
+            /*overflow: hidden;*/
+            height: 30px;
+            overflow-x: scroll;
+            overflow-y: hidden;
+        }
+        .subjects-btn div{
+            white-space:nowrap;
+        }
+        .subjects-btn span{
+            display: inline-block;
+            margin-top: 0px;
+        }
+        #live_list {overflow: hidden;width: 100%;position: relative;background: #fff;
+            display: flex;justify-content: space-around}
+        #live_list li{box-sizing:border-box;width:33.33%;height: 20px;line-height: 20px;float: left;text-align: center;color: #333;margin: 10px 0;font-size: 14px;}
+        #live_list li:last-child:after{content: ""}
+        #line{
+            position: absolute;bottom:-10px;left: 0px;height: 2px !important;background: #f73e3c;
+        }
+        .activetab{
+            color:#f73e3c !important;
+
+        }
+    </style>
+</head>
+<body >
+<div class="collectbox" v-cloak>
+    <ul id="live_list">
+        <li  @click="getPackageListBySubjectId(item.alSaleId,index)"  :class="{'activetab':alSaleId == item.alSaleId}" v-for="(item,index) in saleList" >{{item.saleName}}</li>
+    </ul>
+    <ul class="tlist">
+        <li>
+            <div class="t-title">
+                <img src="../../icon/ai/t-1.png" alt="">
+                <span>{{activeObj.saleName}}</span>
+            </div>
+            <div class="t-ianjie">
+                <span>简介</span>
+                <p>
+                    {{activeObj.saleIntro}}
+                </p>
+            </div>
+            <div class="t-btns">
+                <span v-show="activeObj.isVerify != 1" class="t-btns1" @click="buySalePackage(activeObj)">购买(￥{{activeObj.salePrice}})</span>
+                <span v-show="activeObj.isVerify != 1" class="t-btns2" @click="tryTest(activeObj)">试用1天</span>
+                <!--<span class="t-btns1" @click="startTest(item,1)" v-show="item.isVerify == 1">分点训练</span>-->
+                <span class="t-btns1" @click="startTest(activeObj)" v-show="activeObj.isVerify == 1">开始训练</span>
+            </div>
+        </li>
+        <li style="display: none">
+            <div class="t-title">
+                <img src="../../icon/ai/t-3.png" alt="">
+                <span>逻辑</span>
+            </div>
+            <div class="t-ianjie">
+                <span>简介</span>
+                <p>
+                    逻辑（logic）是一个外来词语，指的是思维的规律和规则。狭义上逻辑既指思维的规律，也指研究思维规律的学科即逻辑学。广义上逻辑泛指规律，包括思维规律和客观规律。逻辑包括形式逻辑与辩证逻辑，形式逻辑包括归纳逻辑与演绎逻辑。
+                </p>
+            </div>
+            <div class="t-btns">
+                <span class="t-btns1">购买</span>
+                <span class="t-btns2">试听</span>
+            </div>
+        </li>
+    </ul>
+    <div class="mask" v-show="buyFlag">
+        <div class="price-list">
+            <p>
+                购买价格
+            </p>
+            <ul>
+                <li @click="chooseThisRule(item)" :class="{'active-price':ruleId == item.ruleId}" v-for="item in priceList">
+                    {{item.days}}天 <span>{{item.price}}</span>元
+                </li>
+
+            </ul>
+            <div>
+                <span @click="buyFlag = false">取消</span>
+                <span class="surebtn" @click="buySaleFn">确定</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var wxPay;
+    apiready = function () {
+        wxPay = api.require('wxPay');
+
+        app.getSalePackageList();
+        if(getUserInfo()){
+            app.getUserTestTimes();
+        }
+    };
+
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            count:0,
+            saleList:[],
+            buyFlag:false,
+            priceList:[],
+	        subjectId:null,
+            subList:[],
+	        ruleId:null,
+	        alSaleId:null,
+            activeObj:{},
+        },
+        methods:{
+	        chooseThisRule(data){
+	        	this.ruleId = data.ruleId;
+	        	this.alSaleId = data.alSaleId;
+            },
+	        getPackageListBySubjectId(sid,index){
+		        var _this = this;
+		        this.alSaleId = sid;
+		        // _this.subjectId = subjectId;
+		        this.activeObj = this.saleList[index]
+		        // _this.saleList = [];
+		        // this.getSalePackageList();
+	        },
+            //获取销售包列表
+            getSalePackageList(){
+                var _this = this;
+                if(getUserInfo()){
+                    ajaxGet(getSalePackageUrl,{},function (ret,err) {
+                        if(ret && ret.code == 0){
+                            _this.saleList = ret.data.list;
+	                        _this.activeObj = ret.data.list[0]
+	                        _this.alSaleId = ret.data.list[0].alSaleId;
+
+
+                        }
+                    })
+                }else{
+                    ajaxGetVistor(getSalePackageUrl,{},function (ret,err) {
+                        if(ret && ret.code == 0){
+                            _this.saleList = ret.data.list;
+	                        _this.activeObj = ret.data.list[0]
+	                        _this.alSaleId = ret.data.list[0].alSaleId;
+                        }
+                    })
+                }
+            },
+            //获取用户试听次数
+            getUserTestTimes(){
+                var _this = this;
+                ajaxGet(getUserTestTimesUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.count = ret.data;
+                    }
+                })
+            },
+            //试听课程
+            tryTest(data){
+                if(!getUserInfo()){
+                    openRegister('login','../login/login.html',{})
+                    return;
+                }
+                // if(this.count>=3){
+                //     toast('您已试用了3次，如需要请购买后继续使用。')
+                //     return;
+                // }
+                openNewWindow('typetwo','./typetwo.html',{sids:data.subjectIds})
+            },
+            //开始做题
+            startTest(data){
+                openNewWindow('typetwo','./typetwo.html',{sids:data.subjectIds})
+            },
+            //购买销售包
+            buySalePackage(data){
+        		var _this = this;
+        		this.priceList = [];
+        		this.ruleId = null;
+        		ajaxGet(getSalePackagePriceUrl,{alSaleId:data.alSaleId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                    	if(ret.data.list.length>0){
+		                    _this.priceList = ret.data.list;
+		                    _this.buyFlag = true;
+                        }else{
+                    		toast('暂无价格')
+                        }
+                    }
+		        })
+
+            },
+            buySaleFn(){
+	        	var _this = this;
+	        	if(!this.ruleId){
+	        		toast('请选择规格')
+                    return;
+                }
+	            ajaxGet(buySalePackageUrl,{alSaleId:this.alSaleId,ruleId:this.ruleId},function (ret, err) {
+		            if(ret && ret.code == 0){
+			            var objp = {
+				            apiKey: ret.data.appid,
+				            orderId: ret.data.prepayid,
+				            mchId: ret.data.partnerid,
+				            nonceStr: ret.data.noncestr,
+				            timeStamp: ret.data.timestamp,
+				            package: ret.data.package,
+				            sign: ret.data.sign
+			            }
+			            wxPay.payOrder(objp, function(ret, err) {
+				            if (ret.status) {
+					            toast('支付成功')
+					            reload();
+					            //支付成功
+				            } else {
+					            if(err.code == -2){
+						            toast('已取消支付')
+					            }
+				            }
+			            });
+		            }
+	            })
+            },
+        },
+    })
+
+
+
+</script>
+</html>

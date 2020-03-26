@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/load.css"/>
+    <style>
+        .search-box{
+            width:92%;
+            height:38px;
+            line-height: 38px;
+            border: 1px solid #f7260a;
+            border-radius: 30px;
+            margin: 10px auto;
+            position: relative;
+        }
+        .search-box img{
+            width: 20px;
+            height:22px;
+            position: absolute;top:8px;
+            right:15px;
+        }
+        .search-box input{
+            width:60%;
+            margin-left: 5%;
+        }
+        input::-webkit-input-placeholder {  	/* WebKit browsers */
+            color: #999;
+            font-size: 12px;
+        }
+        input:-moz-placeholder {            	/* Mozilla Firefox 4 to 18 */
+            color: #999;
+            font-size: 12px;
+        }
+        input::-moz-placeholder {           	/* Mozilla Firefox 19+ */
+            color: #999;
+            font-size: 12px;
+        }
+        input:-ms-input-placeholder {       	/* Internet Explorer 10+ */
+            color: #999;
+            font-size: 12px;
+        }
+        #live_list {overflow: hidden;width: 100%;position: relative;background: #fff;
+            display: flex;justify-content: space-around}
+        #live_list li{box-sizing:border-box;width:33.33%;height: 20px;line-height: 20px;float: left;text-align: center;color: #333;margin: 10px 0;font-size: 14px;}
+        #live_list li:last-child:after{content: ""}
+        #line{
+            position: absolute;bottom:-10px;left: 0px;height: 2px !important;background: #f73e3c;
+        }
+        .activetab{
+            color:#f73e3c !important;
+
+        }
+    </style>
+</head>
+<body >
+<div class="collectbox" v-cloak style="overflow: hidden"s>
+    <div class="search-box" >
+        <input v-model="words" placeholder="请输入您要下载的资料" type="text">
+        <img src="../../icon/ai/redsearch.png" alt="" @click="searchFiles">
+    </div>
+    <ul id="live_list">
+        <li :class="{'activetab':typeId == item.typeId}" v-for="(item,index) in typeList" @click="chooseThisType(item,index)">{{item.typeName}}</li>
+        <!--<li id="line" :style="{'width':lineWidth}"></li>-->
+    </ul>
+    <div>
+        <ul class="loadlist">
+            <li v-for="(item,index) in fileList">
+                <img src="../../icon/ai/downloadicon.png" alt="">
+                <p>{{item.datumName}}</p>
+                <a href="javascript:;" v-show="item.isDownload==0" @click="downloadFile(item,index)">立即下载 ></a>
+                <a href="javascript:;" v-show="item.isDownload==1" @click="openFile(item,index)">打开文件 ></a>
+            </li>
+        </ul>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var pdfReader,fs;
+    apiready = function () {
+        pdfReader = api.require('pdfReader');
+        fs = api.require('fs');
+        app.getFileTypeList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getFileListByTypeId();
+            }
+        });
+    };
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            words:'',
+            typeList:[],
+            lineWidth:'',
+
+            typeId:null,
+            activeIndex:0,
+
+            fileList:[],
+            pagenum:1,
+            isMore:true,
+
+        },
+        methods:{
+            //如果已下载 直接打开
+            openFile(data,index){
+                var _this = this;
+                fs.exist({
+                    path: 'fs://taiqi/pdf/'+ data.datumUrl.split('/')[5],
+                }, function(ret, err) {
+                    if (ret.exist) {
+                        //存在打开
+                        pdfReader.open({
+                            path:'fs://taiqi/pdf/'+ data.datumUrl.split('/')[5],
+                            hidden:{
+                                print: true,
+                                export: true,
+                                bookmark: true,
+                                email: true
+                            }
+                        },function (ret, err) {
+                        });
+                    } else {
+                        //不存在 提示重新下载
+                        api.confirm({
+                            title: '温馨提示',
+                            msg: '当前文件可能已丢失，是否重新下载',
+                            buttons: ['重新下载', '取消']
+                        }, function(ret, err) {
+                            var clickindex = ret.buttonIndex;
+                            if(clickindex==1){
+                                _this.downloadFile(data,index)
+                            }
+                        });
+                    }
+                });
+            },
+            //下载方法
+            downloadFile(data,index){
+                var _this = this;
+
+                api.download({
+                    url:data.datumUrl,
+                    savePath: 'fs://taiqi/pdf/' + data.datumUrl.split('/')[5],
+                    report: true,
+                    cache: true,
+                    allowResume: true
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        ajaxGet(saveLoadFileStatusUrl,{datumId:data.datumId},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.fileList[index].isDownload = 1;
+                            }
+                        })
+                        toast('下载成功')
+//                        _this.loadList[index].isinput=1;
+                        //下载成功
+                    } else {
+
+                    }
+                });
+            },
+            //选择类型
+            chooseThisType(data,index){
+                this.activeIndex = index;
+                this.typeId = data.typeId;
+                this.pagenum = 1;
+                this.isMore = true;
+                this.fileList = [];
+                this.getFileListByTypeId();
+            },
+            //获取所有的资料类型
+            getFileTypeList(){
+                var _this = this;
+                ajaxGet(getFileTypeListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.typeList = ret.data;
+                        _this.typeId = ret.data[0].typeId;
+                        _this.getFileListByTypeId();
+                    }
+
+                })
+            },
+            //根据类型获取资料列表
+            getFileListByTypeId(){
+                var _this = this;
+                ajaxGet(getFileListBySearchUrl,{pageNum:this.pagenum,pageSize:5,typeId:this.typeId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret)
+                        if(_this.pagenum==1 && ret.data.list.length==0){
+                            toast('暂无数据哦~')
+                            return;
+                        }
+                        if(ret.data.list.length<5){
+                            _this.fileList = [..._this.fileList,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.fileList = [..._this.fileList,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+
+                })
+            },
+            //搜搜
+            searchFiles(){
+                openRegister('filesearch','./filesearch.html',{words:this.words})
+            },
+        },
+    })
+
+
+
+</script>
+</html>

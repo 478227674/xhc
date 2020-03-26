@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+        .gettop{
+            background: #bbf4f3;
+            font-size: 14px;
+            color:#1bb1af;
+            text-align: center;
+            line-height: 50px;
+        }
+        .app-center{
+            margin-top: 15px;
+        }
+        .getcenter{
+            width: 90%;
+            margin:  0 auto;
+        }
+        .getcenter>span{
+            color:#333;font-size: 14px;
+            margin-top: 25px;
+            margin-bottom: 35px;
+        }
+        .getnum{
+            display: flex;
+            justify-content: flex-start;
+            padding-bottom: 20px;border-bottom: 1px solid #333;
+        }
+        .getnum>span{
+            font-size: 30px;font-weight: bold;
+        }
+        .getnum>input{
+            font-size: 30px;
+        }
+        .canget{
+            color:#999;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        .canget>span{
+            color:#f73e3c;
+        }
+        .bottom-btn{
+            background: #dddddd;
+            margin: 25px auto;
+        }
+        .cangetbtn{
+            background: #f73e3c !important;
+        }
+        .userw span{
+            color: #333;
+            font-size: 14px;
+            line-height: 40px;
+        }
+        .userw input{
+            line-height: 40px;
+        }
+        input::-webkit-input-placeholder{
+            color:#585c89;
+            font-size: 14px;
+        }
+        input::-moz-placeholder{   /* Mozilla Firefox 19+ */
+            color:#585c89;
+            font-size: 14px;
+        }
+        input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
+            color:#585c89;
+            font-size: 14px;
+        }
+        input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: #585c89;
+            font-size: 14px;
+        }
+        .userw{
+            position: relative;
+        }
+        .userw a {
+            color:#f73e3c;
+            font-size: 12px;
+            position: absolute;
+            right:10px;
+            top:14px;
+        }
+    </style>
+</head>
+<body >
+    <div class="app-center">
+        <div class="getcenter">
+            <span>提现金额</span>
+            <div class="getnum">
+                <span>￥</span>
+                <input type="number" v-model="money" placeholder="输入金额">
+            </div>
+            <div class="canget">
+                当前可用金额{{havemoney}}元，<span @click="getAllMoney">全部提现</span>
+            </div>
+            <div style="margin-top: 10px;" class="userw">
+                <span>手机号码:</span>
+                <input v-model="phone" type="text" placeholder="请输入手机号码">
+                <a href="javascript:;" @click="getCodeFn">{{sendText}}</a>
+            </div>
+            <div class="userw">
+                <span>验证码:</span>
+                <input v-model="code" type="text" placeholder="请输入验证码">
+            </div>
+            <div class="userw">
+                <span>提现账户:</span>
+                <input v-model="acount" type="text" placeholder="请输入提现账户">
+            </div>
+            <div @click="getMoneyNow" class="bottom-btn cangetbtn">
+                提现
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.app-center',
+        data: {
+            phone:'',
+            code:'',
+            acount:'',
+            money:'',
+            havemoney:0,
+            gettype:null,
+            sendText:'获取验证码',
+            sendFlag:true,
+            setInval:undefined,
+            setTime:60,
+        },
+        methods:{
+            getAllMoney(){
+                this.money = this.havemoney;
+            },
+            getCodeFn(){
+                if(!this.sendFlag){
+                    toast('请稍后再获取')
+                    return;
+                }
+                if(!this.phone){
+                    toast('请先输入手机号')
+                    return;
+                }
+                if(!checkPhone(this.phone)){
+                    toast('请输入正确的手机号码')
+                    return;
+                }
+                let _this = this;
+                ajaxGetVistor(getCodeUrl,{userPhone:this.phone,type:7},function (ret,err) {
+                    if(ret){
+                        _this.sendFlag = false;
+                        _this.setIntval = setInterval(function () {
+                            if(_this.setTime>0){
+                                _this.setTime -= 1;
+                                _this.sendText = _this.setTime + 's后获取';
+                            }else{
+                                _this.sendFlag = true;
+                                _this.sendText = '获取验证码'
+                                _this.setTime = 60;
+                                clearInterval(_this.setIntval)
+                            }
+                        },1000)
+                    }else{
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+            getMoneyNow(){
+                if(!this.money){
+                    toast('请填写提现金额')
+                    return;
+                }
+                if(!this.phone){
+                    toast('请填写手机号码')
+                    return;
+                }
+                if(!this.code){
+                    toast('请填写验证码')
+                    return;
+                }
+                if(!this.acount){
+                    toast('请填写提现账户')
+                    return;
+                }
+//     "userId":4,
+//     "userPhone":13661250406,
+//     "code":139103,
+//     "applyAmount":5.21,
+//     "applyType":1,
+//     "applyAccount":13661250406
+                var obj = {
+                    userPhone:this.phone,
+                    code:this.code,
+                    applyAmount:this.money,
+                    applyType:this.gettype,
+                    applyAccount:this.acount,
+                }
+                ajaxGet(getMoneyUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('已申请提现，请耐心等待')
+                    }
+                })
+            },
+        },
+    })
+
+    apiready = function () {
+        app.gettype = api.pageParam.type;
+        ajaxGet(getMainDetailUrl,{},function (ret,err) {
+            if(ret && ret.code == 0){
+                al(ret)
+            }
+        })
+    };
+
+
+</script>
+</html>

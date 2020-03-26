@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <div class="app-center leran_items">
+            <div class="active-btns">
+                {{fname}} > {{tname}}
+            </div>
+        </div>
+        <div class="learn-list">
+            <ul>
+                <li v-for="item in testList" @click="openTestDetail(item)">
+                    <img class="learn-list-icon" src="../../../icon/ai/llisticon.png" alt="">
+                    <div>{{item.knowledgeName}}</div>
+                    <span v-show="item.isInput==1">已测评</span>
+                    <span v-show="item.isInput==0" class="candia">可诊断</span>
+                    <img class="learn-list-right" src="../../../icon/right.png" alt="">
+                </li>
+            </ul>
+            <div class="nomore" v-show="!isMore">暂无更多数据~</div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    apiready = function () {
+        app.knowledgeId = api.pageParam.id;
+        app.fname = api.pageParam.firstName;
+        app.tname = api.pageParam.name;
+
+
+        app.getKnowledgeList();
+    };
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            fname:'',
+            tname:'',
+            knowledgeId:null,
+            testList:[],
+            isMore:true,
+            pagenum:1,
+        },
+        methods:{
+            //选择有一个知识点进行测评
+            openTestDetail(data){
+                if(data.isInput==0 || !data.isInput){
+                    openNewWindow('ai_learn_detail','./ai_learn_detail.html',{id:data.knowledgeId,name:data.knowledgeName})
+                }else if(data.isInput==1){
+                    api.confirm({
+                        title: '温馨提示',
+                        msg: '您已测评此知识点，是否重新测评？',
+                        buttons:['去测评','查看报告'],
+                    }, function(ret, err) {
+                        var index = ret.buttonIndex;
+                        if(index==1){
+                            openNewWindow('ai_learn_detail','./ai_learn_detail.html',{id:data.knowledgeId,name:data.knowledgeName})
+                        }else if(index==2){
+                            openNewWindow('ai_learn_diagnose','./ai_learn_diagnose.html',{id:data.knowledgeId,name:data.knowledgeName})
+                        }
+                    });
+                }
+            },
+            //获取学科列表
+            getKnowledgeList(){
+                var _this=this;
+                al(this.knowledgeId)
+                ajaxGet(getKnowledgeListUrl,{level:3,parentId:this.knowledgeId},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        _this.testList = ret.data.list;
+                    }
+                })
+            },
+        },
+    })
+
+
+
+</script>
+</html>

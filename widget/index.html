@@ -1,0 +1,562 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/commonWindow.css"/>
+
+    <style type="text/css">
+        body {
+            background-color: #fafafa;
+        }
+        header {
+            width: 100%;
+            height: 44px;
+            position: relative;
+            -webkit-box-shadow: 0 0 10px 1px #ccc;
+            -moz-box-shadow: 0 0 10px 1px #CCCCCC;;
+            box-shadow: 0 0 10px 1px #CCCCCC;
+            border-radius: 1px;
+        }
+        .address img{height: 5px;margin-top: 18px;}
+        .userBtn img {
+            width: 14px;
+        }
+
+        .lunBo img {
+            width: 100%;
+            height: 150px;
+        }
+
+
+        .two-item img {
+            height: 36px;
+        }
+
+        .left-box span {
+            line-height: 24px;
+        }
+
+
+        .dd-right p {
+            line-height: 24px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .dd-right p span {
+            margin-left: 10px;
+        }
+
+
+        .ddBox img {
+            width: 24px;
+        }
+        /**========底部菜单（开始）=====**/
+        #nav{
+            background-color: #fafafa;
+            /*border-top: 1px solid #DADDE0;*/
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left:0;
+            font-size: 10px;
+            height:50px;
+        }
+
+        #nav ul {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-flex-direction: row;
+            flex-direction: row;
+        }
+        #nav ul li {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+        #nav li a {
+            -webkit-background-size:20px 23px !important;
+            background-size: 20px 23px !important;
+            color: #777;
+            display: block;
+            padding-top: 34px;
+            line-height: 14px;
+            font-size: 12px;
+        }
+
+        #nav li.active a, #nav a.active {
+            color: #f73e3c;
+        }
+
+        #nav .home {
+            background: url("./icon/home-1.png") no-repeat center 10px;
+            -webkit-background-size: 20px 20px !important;
+            background-size: 20px 19px !important;;
+        }
+
+        #nav .home.active, #nav li.active .home {
+            background: url("./icon/home.png") no-repeat center 10px;
+        }
+
+        #nav .organ  {
+            background: url(./icon/ai-1.png) no-repeat center 10px;
+            background-size:20px 18px  !important;;
+
+        }
+
+        #nav .organ .active, #nav li.active .organ  {
+            background: url(./icon/ai.png) no-repeat center 10px;
+        }
+
+        #nav .message  {
+            background: url(./icon/news-1.png) no-repeat center 10px;
+            background-size:20px 19px  !important;;
+
+        }
+
+        #nav .message .active, #nav li.active .message  {
+            background: url(./icon/news.png) no-repeat center 10px;
+        }
+
+        #nav .product  {
+            background: url(./icon/class-1.png) no-repeat center 10px;
+            background-size:20px 19px  !important;;
+
+        }
+
+        #nav .productproduct .active, #nav li.active .product  {
+            background: url(./icon/class.png) no-repeat center 10px;
+        }
+
+        #nav .main {
+            background: url(./icon/msg-1.png) no-repeat center 10px;
+            background-size:20px 20px  !important;;
+
+        }
+
+        #nav .main.active, #nav li.active .main {
+            background: url(./icon/msg.png) no-repeat center 10px;
+        }
+        #header .header {
+            display: none;
+            position: relative;
+            text-align: center;
+            line-height: 48px;
+            border-bottom:1px solid #fafafa;
+        }
+        #header .active {
+            display:block;
+            align-items: center;
+            -webkit-align-items: center;
+        }
+        /**========头部标签（开始）=====**/
+        #header{
+            width: 100%;
+            height:44px;
+            color: #666;
+            font-size: 14px;
+        }
+        /**========底部菜单（结束）=====**/
+        html,body{
+            background: #fafafa;
+        }
+        .top_box{
+            width: 92%;padding: 0 0%;height: 44px;
+            display: flex;
+            margin: 0 auto;
+            justify-content: space-around;
+        }
+
+        .little_box{
+
+        }
+        .little_box>img{
+            float: left;
+            width: 18px;height: 22px;
+            margin-top: 10px;
+        }
+        .little_box>span{
+            line-height: 44px;
+            float: left;
+            font-size: 14px;
+            color:#fff;
+            margin-left: 5px;
+            padding-right: 15px;
+            background: url("./icon/down.png") no-repeat right 18px;
+            background-size: 12px 7px;
+        }
+        /*.top_box>div{*/
+            /*float: left;*/
+        /*}*/
+        .itemsone{
+            float: left;
+        }
+        .itemsthree{
+            float: right;
+            color:#fff;
+            font-size: 14px;
+        }
+        .logoindex{
+            height: 22px;
+            display: inline-block;
+            margin: 11px auto;
+        }
+        #header2{
+
+        }
+        .searchbtns{
+            position: absolute;
+            right: 0px;
+            top:0px;
+            height:40px;
+            width:40px;
+            z-index:20;
+        }
+    </style>
+</head>
+<body>
+<div id="header">
+    <div id="header2" class="jianbian-btn">
+        <div class="top_box header active home" id="top_box">
+            <div style="float: left;font-size: 20px;color:#fff;line-height: 45px;">太奇教育</div>
+            <img id="vipimage" onclick="showVip()" style="display: none;float: right;width: 20px;height: 22px;margin-top: 13px;margin-left: 5px" src="" alt="">
+            <div style="float: right;position: relative">
+                <span onclick="searchWords()" class="searchbtns"></span>
+                <input id="searchtext" type="text" style="padding:0px 10px;line-height:30px;height: 30px;border-radius: 20px;background: #fff url('./icon/ai/se.png') no-repeat right 10px top 5px;background-size: 20px 20px" placeholder="请输入内容进行搜索">
+            </div>
+        </div>
+        <!--<div class="organ header">-->
+            <!--<span style="font-size: 18px !important;color:#fff;">机构</span>-->
+        <!--</div>-->
+        <div class="product header">
+            <span style="font-size: 18px !important;color:#fff;">课程中心</span>
+        </div>
+        <!--<div class="message header">-->
+            <!--<span style="font-size: 18px !important;color:#FFF;">消息中心</span>-->
+        <!--</div>-->
+        <div class="main header">
+            <span style="font-size: 18px !important;color:#fff;">个人中心</span>
+        </div>
+    </div>
+    <div id="nav">
+        <ul>
+            <li>
+                <a class="home active" tapmode="active" onclick="openTab('home')">首页</a>
+            </li>
+            <li>
+                <a class="organ " tapmode="active" onclick="openAiWords()">AI记词</a>
+            </li>
+            <li>
+                <a class="product " tapmode="active" onclick="openTab('product')">课程</a>
+            </li>
+            <li>
+                <a class="message " tapmode="active" onclick="openNewsList()">资讯</a>
+            </li>
+            <li>
+                <a class="main" tapmode="active" onclick="openMain()">我的</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+</body>
+<script type="text/javascript" src="./script/api.js"></script>
+<script type="text/javascript" src="./script/user.js"></script>
+<script type="text/javascript" src="./script/apiCloud.js"></script>
+<script type="text/javascript" src="./script/init.js"></script>
+<script type="text/javascript" src="./script/public.js"></script>
+<script type="text/javascript" src="./script/echo.min.js"></script>
+<script type="text/javascript">
+    var user;
+    function getImageSrc (arr){
+	    var activeIndex = 0;
+	    for(var i=0;i<arr.length;i++){
+		    if(arr[i].memberId == 2){ //plus
+			    activeIndex = 2;
+		    }
+	    }
+	    if(activeIndex == 2){
+		    return 2
+	    }
+
+	    for(var i=0;i<arr.length;i++){
+		    if(arr[i].memberId == 1){ //plus
+			    activeIndex = 1;
+		    }
+	    }
+	    if(activeIndex == 1){
+		    return 1
+	    }
+
+	    for(var i=0;i<arr.length;i++){
+		    if(arr[i].memberId == 4){ //plus
+			    activeIndex = 4;
+		    }
+	    }
+	    if(activeIndex == 4){
+		    return 4
+	    }
+    }
+    apiready = function(){
+    	if(getUserInfo()){
+		    if(getUserInfo().memberLevels){
+		    	var arr = getUserInfo().memberLevels;
+			    document.getElementById('vipimage').style.display = 'inline';
+			    //4普通 2会员PLUS 1会员
+			    document.getElementById('vipimage').src = './icon/vip-'+getImageSrc(arr)+'.png';
+		    }
+        }
+
+        //设置状态栏样式
+        api.setStatusBarStyle({
+            style: 'light'
+        });
+        //监听安卓手机连续两次点击返回退出app
+        api.addEventListener({
+            name: 'keyback'
+        }, function (ret, err) {
+            closeOnKeyBack()
+        });
+//        systemInit();
+        user = getUserInfo() || {};
+        //兼容刘海屏
+        var paddingTop = api.safeArea.top;
+        document.getElementById('header2').style.paddingTop = api.safeArea.top + 'px';
+        document.getElementById('nav').style.paddingBottom = api.safeArea.bottom + 'px';
+        window_width = api.winWidth;
+        var Y = api.safeArea.top + 44;
+        var wH = api.winHeight - api.safeArea.top - 44 - 50- api.safeArea.bottom;
+        //配置tab选项卡 各个页面
+        tabs= {
+            home: {
+                isGroup: false,
+                frame: {
+                    name: 'home',
+                    url: './html/home.html',
+                    pageParam: {},
+                    rect: {
+                        x: 0,
+                        y: Y,
+                        w: 'auto',
+                        h: wH
+                    },
+                    bounces: false,
+                    opaque: false,
+                    bgColor: '#fff',
+                    allowEdit: true,
+                    vScrollBarEnabled: true,
+                    showProgress: false,
+                    hScrollBarEnabled: false,
+                    reload: false
+                }
+            },
+            organ: {
+                isGroup: false,
+                frame: {
+                    name: 'organ',
+                    url: './html/organ.html',
+                    pageParam: {},
+                    rect: {
+                        x: 0,
+                        y: Y,
+                        w: 'auto',
+                        h: wH
+                    },
+                    bounces: true,
+                    opaque: false,
+                    //bgColor:'#EDEDED',
+                    bgColor: '#fff',
+                    allowEdit: true,
+                    vScrollBarEnabled: true,
+                    showProgress: false,
+                    hScrollBarEnabled: false,
+                    reload: false
+                }
+            },
+            product: {
+                isGroup: false,
+                frame: {
+                    name: 'product',
+                    url: './html/product.html',
+                    pageParam: {},
+                    rect: {
+                        x: 0,
+                        y: Y,
+                        w: 'auto',
+                        h: wH
+                    },
+                    bounces: true,
+                    opaque: false,
+                    //bgColor:'#EDEDED',
+                    bgColor: '#fff',
+                    allowEdit: true,
+                    vScrollBarEnabled: true,
+                    showProgress: false,
+                    hScrollBarEnabled: false,
+                    reload: false
+                }
+            },
+            message: {
+                isGroup: false,
+                frame: {
+                    name: 'message',
+                    url: './html/message.html',
+                    pageParam: {},
+                    rect: {
+                        x: 0,
+                        y: Y,
+                        w: 'auto',
+                        h: wH
+                    },
+                    bounces: true,
+                    opaque: false,
+                    //bgColor:'#EDEDED',
+                    bgColor: '#fff',
+                    allowEdit: true,
+                    vScrollBarEnabled: true,
+                    showProgress: false,
+                    hScrollBarEnabled: false,
+                    reload: false
+                }
+            },
+            main: {
+                isGroup: false,
+                frame: {
+                    name: 'main',
+                    url: './html/main.html',
+                    pageParam: {},
+                    rect: {
+                        x: 0,
+                        y: Y,
+                        w: 'auto',
+                        h: wH
+                    },
+                    bounces: true,
+                    opaque: false,
+                    //bgColor:'#EDEDED',
+                    bgColor: '#fff',
+                    allowEdit: true,
+                    vScrollBarEnabled: true,
+                    showProgress: false,
+                    hScrollBarEnabled: false,
+                    reload: true
+                }
+            }
+        };
+        var bMap = api.require('bMap');
+        bMap.getLocation({
+            accuracy: '100m',
+            autoStop: true,
+            filter: 1
+        }, function(ret, err) {
+            if (ret.status) {
+                localStorage.setItem('lon',ret.lon)
+                localStorage.setItem('lat',ret.lat)
+                bMap.getNameFromCoords({
+                    lon: ret.lon,
+                    lat: ret.lat
+                }, function(ret, err) {
+                    if (ret.status) {
+
+                        localStorage.setItem('cityName',ret.city)
+                        localStorage.setItem('provinceName',ret.province)
+//                        localStorage.setItem('cityName','北京市')
+                    }
+                });
+            } else {
+
+            }
+        });
+        openTab('home');
+    };
+    function changeLocati(name) {
+        document.getElementById('locationname').innerHTML = name;
+    }
+    function openJoinUs() {
+        openRegister('applyjoin','./html/applyjoin.html',{})
+    }
+    function openSearch() {
+        var user = getUserInfo();
+        if(user){
+            openRegister('search','./html/search.html',{})
+        }else{
+            toast('请登录')
+            return;
+        }
+    }
+    function openAiWords() {
+        if(getUserInfo()){
+            openNewWindow('word_index','./html/word/word_index.html',{})
+        }else {
+            openRegister('login','./html/login/login.html',{})
+        }
+    }
+    function openNewsList() {
+        openRegister('message','./html/message/message.html',{})
+
+    }
+    function searchWords() {
+        var ss = document.getElementById('searchtext').value;
+        if(!ss){
+            toast('请输入关键字查询')
+            return;
+        }
+        openRegister('searchresult','./html/searchresult.html',{key:ss})
+    }
+    function openPositionPage() {
+        var user = getUserInfo();
+        if(user){
+            openRegister('positionindex','./html/positionindex.html',{name:document.getElementById('locationname').innerHTML})
+        }else{
+            openRegister('login','./html/login/login.html',{})
+        }
+
+    }
+    function logoout() {
+        openTab('home');
+    }
+    function switchFrameGroupIndex(index){
+        _index = index
+        api.setFrameGroupIndex({
+            name : "order",
+            index : _index,
+            scroll : true
+        });
+
+    }
+    function openIndex(){
+        openTab('home');
+
+    };
+    function openProductList() {
+        openTab('product');
+    }
+    function openMain(){
+        openTab('main');
+        api.execScript({
+            name:rootWindowName,
+            frameName:"main",
+            script:"apiready()"
+        })
+    }
+
+    function showVip() {
+        api.execScript({
+	        name:"root",
+	        frameName:"home",
+            script:"showVipFlag()"
+        })
+    }
+</script>
+</html>

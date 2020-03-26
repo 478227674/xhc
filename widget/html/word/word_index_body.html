@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/words.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/product.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+<div class="wordsall">
+    <div class="app-center">
+        <ul class="menu-list">
+            <li @click="chooseLesson">
+                <img src="../../icon/w1.png" alt="">
+                <span>选单元</span>
+            </li>
+            <li onclick="openNewWindow('picremember','./picremember/picremember.html',{name:'闪形记',id:null})">
+                <img src="../../icon/w2.png" alt="">
+                <span>闪形记</span>
+            </li>
+            <li onclick="openNewWindow('fullr','./fullremember/fullr.html',{name:'全脑记',id:null})">
+                <img src="../../icon/w3.png" alt="">
+                <span>全脑记</span>
+            </li>
+            <li  onclick="openNewWindow('syntest_index','./syntest/syntest_index.html',{name:'同步考',id:null})">
+                <img src="../../icon/w4.png" alt="">
+                <span>同步考</span>
+            </li>
+            <li onclick="openNewWindow('wrongword','./wrongword/wrongword.html',{name:'错词本',id:null})">
+                <img src="../../icon/w5.png" alt="">
+                <span>错词本</span>
+            </li>
+        </ul>
+
+    </div>
+    <div class="app-center" style="background: #f6f6f6;margin-top: 0">
+
+        <div class="twoitems">
+            <div @click="showBg(true)">
+                <img src="../../icon/w6.png" alt="">
+            </div>
+            <div @click="changeClass">
+                <img src="../../icon/w7.png" alt="">
+            </div>
+            <div>
+                <img src="../../icon/w111.png" alt="">
+            </div>
+        </div>
+    </div>
+    <div class="app-center " style="padding: 10px 30px;">
+        <div>
+             <!--<span class="createplan"  onclick="openNewWindow('createplan','./littleclass/createplan.html',{})">-->
+                <!--制定计划-->
+            <!--</span>-->
+            <span class="createplan"   onclick="openNewWindow('createplan','./littleclass/createplan.html',{})">
+                选词汇版本
+            </span>
+        </div>
+        <div class="rmbwords">
+            <div>
+                <span>剩余</span>
+                <div>
+                    {{planObj.surplusDays}}<span>天</span>
+                </div>
+            </div>
+
+            <div>
+                <span>今日单词</span>
+                <div>
+                    {{planObj.dailyTask}}<span>个</span>
+                </div>
+            </div>
+        </div>
+        <div class="learn-progress">
+            <div class="learn-progress-top">
+                <div style="width:100%;">
+                    <div style="display: flex;justify-content: space-between"><span>{{planObj.gradeName}}</span><span>{{planObj.wordLesson.name}}</span></div>
+                    <div class="learnnum"  style="display: flex;justify-content: space-between">
+                        <div>已学完<span>{{planObj.finishWordCount}}</span>/{{planObj.wordCount}}</div>
+                        <div>已熟:{{planObj.wordLesson.memoryCount}} | 未熟:{{planObj.wordLesson.noMemoryCount}} | 未记:{{planObj.wordLesson.noRead}}</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="progress-box">
+                <div :style="{'width':prograss}"></div>
+            </div>
+        </div>
+        <div class="start-word" onclick="openNewWindow('fullr','./fullremember/fullr.html',{name:'全脑记',id:null})">
+            开始背单词吧
+        </div>
+    </div>
+    <div class="app-center item-two-words" onclick="openNewWindow('class_index','./littleclass/class_index.html',{})">
+        <img src="../../icon/littleclass.png" alt="">
+        <div>速记小班</div>
+        <p>和好朋友一起学英语</p>
+    </div>
+    <div style="display: none" class="app-center item-two-words">
+        <img src="../../icon/wordpc.png" alt="">
+        <div>单词 PK</div>
+        <p>比比谁的单词记得牢靠</p>
+    </div>
+    <!--全脑记 上次记词-->
+    <div  class="app-center">
+        <div class="all-tab-box">
+            <div class="tab-title">
+                <span>全脑记-上次记词</span>
+            </div>
+            <ul class="tab-ullist">
+                <li >
+                    <div class="unit-title">{{wordsHistoryList.courseName}}</div>
+                    <div class="tab-grade">
+                        <span class="grade-1">{{wordsHistoryList.lessonName}} 已熟:{{wordsHistoryList.wordLesson.memoryCount}} | 未熟:{{wordsHistoryList.wordLesson.noMemoryCount}} | 未记:{{wordsHistoryList.wordLesson.noRead}}</span>
+                    </div>
+                    <div class="remeberwords"  onclick="openNewWindow('fullr','./fullremember/fullr.html',{name:'全脑记',id:null})">继续记词</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--同步考记录-->
+    <div class="app-center">
+        <div class="all-tab-box">
+            <div class="tab-title">
+                <span>同步考记录</span>
+                <p style="font-size: 12px;" onclick="openNewWindow('syntest_history','./syntest/syntest_history.html',{})">更多记录>></p>
+            </div>
+            <ul class="tab-ullist">
+                <li v-for="(item,index) in synList" v-show="index<3" @click="openL(item.id,item.testType)">
+                    <div class="unit-title">{{item.lessonName}}</div>
+                    <div class="tab-grade">
+                        <span class="grade-1" v-show="item.testType==1">英译中</span>
+                        <span class="grade-1" v-show="item.testType==2">中译英</span>
+                        <span class="grade-1" v-show="item.testType==3">品读写</span>
+                        <span class="grade-2">{{item.testGrade}}分</span>
+                        <span class="grade-3">{{item.createTime}}</span>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <!--错词本-->
+    <div  class="app-center">
+        <div class="all-tab-box">
+            <div class="tab-title">
+                <span>错词本</span>
+            </div>
+            <ul class="tab-ullist">
+                <li style="padding-bottom: 0px;">
+                    <div style="line-height: 40px;"  class="unit-title">共有{{wrongCount}}个错词</div>
+                    <div class="remeberwords" onclick="openNewWindow('wrongword','./wrongword/wrongword.html',{name:'错词本',id:null})">学习错词</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="buynowbox" v-show="showBgFlag">
+        <div class="bg-top">
+            <div class="sharetitle">
+                分享至
+            </div>
+            <div class="shareitem">
+                <ul>
+                    <li  @click="shareToWx('session')">
+                        <img src="../../icon/wx1.png" alt="">
+                        <span>微信</span>
+                    </li>
+                    <li @click="shareToWx('timeline')">
+                        <img src="../../icon/timeline2.png" alt="">
+                        <span>朋友圈</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="sharerule" >
+                邀请好友注册成功后，个人获得100太奇币奖励。
+            </div>
+            <div class="cancle_share" @click="showBg(false)">取消</div>
+        </div>
+    </div>
+
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    var wx;
+
+    var app = new Vue({
+        el: '.wordsall',
+        data: {
+            showBgFlag:false,
+            allList:[],
+            typeId:null,
+            synList:[],
+            wrongCount:0,
+            wordsHistoryList:{
+                wordLesson:{},
+            },
+            canChooseLesson:false,//是否可直接选择单元
+            planObj:{
+                wordLesson:{},
+            },
+            prograss:'0%'
+
+        },
+        methods:{
+            //选择但愿方法*
+            chooseLesson(){
+                if(this.canChooseLesson){
+                    if(this.planObj.gradeId==102 || this.planObj.gradeId==103 || this.planObj.gradeId==104 || this.planObj.gradeId==105 ){
+                        localStorage.setItem('WORD_TYPE_ID',this.planObj.gradeId)
+                        localStorage.setItem('WORD_TYPE_NAME',this.planObj.gradeName)
+                        openNewWindow('mtiword-4','./mtiword/mtiword-4.html',{name:this.planObj.gradeName,id:this.planObj.gradeId,planId:this.planObj.planId})
+                    }else{
+                        openNewWindow('mtiword','./mtiword/mtiword.html',{name:this.planObj.gradeName,id:this.planObj.courseId,planId:this.planObj.planId,gradeid:this.planObj.gradeId})
+                    }
+                }else{
+                    toast('请先选择词汇')
+                    return;
+                }
+            },
+            //获取当前学习计划数据
+            getLearnPlan(){
+                var _this = this;
+                ajaxGet(getWordLearnPlanUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.planObj = ret.data;
+                        if(ret.data.planId){
+                            _this.canChooseLesson = true;
+                        }
+                        _this.prograss = (ret.data.finishWordCount/ret.data.wordCount)*100 + '%'
+                    }
+
+                })
+            },
+            //兑换学习天数
+            changeClass(){
+                api.confirm({
+                    title: '太奇币换课',
+                    msg: '确定要使用5000太奇币兑换30天速记单词吗？',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index==1){
+                        ajaxGet(changeClassByCoinUrl,{},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                toast('兑换成功，速记单词使用时长增加30天')
+                            }
+                        })
+                    }
+                });
+            },
+            showBg(f){
+                this.showBgFlag = f;
+            },
+            //
+            openListById(data){
+                openNewWindow('mtiword','../mtiword/mtiword.html',{name:data.name,id:data.id})
+            },
+            openL(id,type){
+                if(type==1){
+                    openNewWindow('syntest_result','./syntest/syntest_result.html',{id:id})
+                }else{
+                    openNewWindow('syntestctoe_result','./syntest/syntestctoe_result.html',{id:id})
+                }
+            },
+            getList(){
+                ajaxGet(getSynTestHistoryListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDate(ret.data.list[i].createTime)
+                        }
+                        app.synList = ret.data.list;
+                    }
+                });
+//                ajaxGet(getWordStartDateUrl,{},function (ret,err) {
+//                    if(ret && ret.code == 0){
+//                        al(ret)
+//                        var createTime = ret.data.createTime;
+//                        var endTime = ret.data.endTime;
+//                        var nowTime = new Date().getTime();
+//                        var residueDay = parseInt(((endTime-createTime) - (nowTime-createTime))/(24*60*60*1000));
+//                        alert('本单词长久免费，学习过程可以获取太奇币，太奇币换取更多学习时间！还剩余'+residueDay+'天')
+//                    }
+//                });
+                ajaxGet(getWrongWordsCountUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        app.wrongCount = ret.data;
+                    }
+                })
+                ajaxGet(getMyWordsListHistoryUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        app.wordsHistoryList = ret.data;
+                    }
+                })
+
+            },
+            shareToWx(type){
+                var user = getUserInfo();
+                var shareUrl1 = shareUrl + 'login/signup.html?inviteCode='+user.inviteCode + '&'
+                wx.shareWebpage({
+                    apiKey: '',
+                    scene: type,
+                    title: '欢迎注册太奇教育',
+                    description: '记单词就用速记词免费又好用，再也不用担心记不住了！',
+                    thumb: 'widget://icon/icontest.png',
+                    contentUrl: shareUrl1
+                }, function(ret, err){
+                    if (ret.status) {
+                        toast('分享成功')
+                    } else {
+                        toast('分享失败')
+                    }
+                });
+            },
+        },
+    })
+
+    apiready = function () {
+        app.getList();
+        app.getLearnPlan();
+        wx = api.require('wx');
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#ff5000',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+    };
+</script>
+</html>

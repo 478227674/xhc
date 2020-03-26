@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/classlist.css"/>
+    <style>
+        .special-bg{
+            width: 100%;
+            position: absolute;
+            top:0px;
+        }
+        .special-banner {
+            width: 90%;
+            margin: 10px auto;
+            display: block;
+            position: relative;
+            z-index: 2;
+        }
+        .special-list{
+            width: 90%;
+            margin: 0px auto;
+        }
+        .special-list ul{
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .special-list ul li {
+            background: #fff;
+            width: 49%;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            padding-bottom: 15px;
+        }
+        .product_img{
+            width: 100%;
+        }
+        .product_img > img{
+            width: 100%;height: 100%;
+        }
+        .product_detail p{
+            margin: 10px 10px 0px 10px;
+            font-size: 14px;
+            color:#333;
+            overflow: hidden;
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        .product_teach{
+            margin: 0 10px 15px 10px;
+            font-size: 12px;
+            color:#666;
+            overflow: hidden;
+            text-overflow: -o-ellipsis-lastline;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+        .class-num{
+            padding: 0 10px;
+            margin-top: 0px;
+        }
+        .nospecial img{
+
+            width: 70%;
+            margin: 15px auto;
+            display: block;
+        }
+        .nospecial span{
+            font-size: 12px;
+            color:#666;text-align: center;
+            margin: 5px auto;
+            display: block;
+            text-align: center;
+        }
+
+        .getmoney-rule{
+            color:#fff;
+            font-size: 14px;
+            position: absolute;
+            top:115px;
+            right:6%;
+            z-index:100;
+        }
+        .rulelist{
+            width:80%;
+            position: absolute;
+            left:10%;
+            top:100px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 10px;
+
+        }
+        .rulelist p{
+            margin-bottom: 10px;
+            font-size: 14px;
+            color:#333;
+            line-height: 25px;
+
+        }
+    </style>
+</head>
+<body >
+   <div class="specialbox" v-cloak>
+       <img class="special-bg" src="../icon/indextopbg.png" alt="">
+       <img class="special-banner" src="../icon/specialbanner.png" alt="">
+       <span class="getmoney-rule" @click="showRule(true)">返佣规则</span>
+       <div class="special-list">
+           <ul>
+               <li v-for="item in productList" @click="openProductDetaul(item.productId)">
+                   <div class="product_img"  :style="{height:domh}">
+                       <img :src="item.imageUrl" alt="">
+                   </div>
+                   <div class="product_detail">
+                       <p>{{item.productName}}</p>
+                       <div class="class-num">
+                           <div class="class-price">
+                               <a href="javascript:;">￥</a>
+                               <span>{{item.productPrice}}</span>
+                               <div style="clear: both"></div>
+                           </div>
+                           <div class="class-person">
+                               报名<span>{{item.purchaseNum}}</span>人
+                           </div>
+                           <div style="clear: both"></div>
+                       </div>
+                       <div class="list-vip-free" v-show="item.memberLevels">
+                           <span v-for="(vitem,vindex) in item.memberLevels">{{vitem.memberName}}<a href="javascript:;" v-show="vindex!=item.memberLevels.length-1">/</a></span>免费
+                       </div>
+                   </div>
+               </li>
+           </ul>
+           <div class="nospecial" v-if="!isMore || productList.length==0">
+               <img src="../icon/nospecial.png" alt="">
+               <span style="padding-bottom: 10px;">暂无更多数据</span>
+           </div>
+       </div>
+       <div class="mask" v-show="showrule" @click="showRule(false)">
+           <div class="rulelist">
+               <p>1、精品特价课学员及消费两千元以上其他学员均享有推荐返佣权。</p>
+               <p>2、拥有推荐权学员推荐其他人报名精品特价课可获被推荐人50%学费的推荐佣金；报名其他课程是否返佣及返佣比例看每个课程后的设定。</p>
+               <p>3、推荐返佣与拼团、砍价可同时享受，返佣金额以拼团、砍价优惠后的实际成交金额提取。</p>
+           </div>
+       </div>
+   </div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript" src="../script/user.js"></script>
+<script type="text/javascript" src="../script/vue.js"></script>
+<script type="text/javascript" src="../script/data.js"></script>
+<script type="text/javascript" src="../script/apiCloud.js"></script>
+<script type="text/javascript" src="../script/public.js"></script>
+<script type="text/javascript" src="../script/echo.min.js"></script>
+<script>
+    apiready = function () {
+        app.domh = api.winWidth*0.9*0.49+'px';
+        if(api.pageParam.orgId){
+            app.orgId = api.pageParam.orgId;
+        }
+        app.getProductSpeList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore){
+                app.getProductSpeList();
+            }
+        });
+        api.setRefreshHeaderInfo({
+            loadingImg: 'widget://image/refresh.png',
+            bgColor: '#f73e3c',
+            textColor: '#fff',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...'
+        }, function(ret, err) {
+            reload();
+            api.refreshHeaderLoadDone();
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+        });
+    }
+    var app = new Vue({
+        el: '.specialbox',
+        data: {
+            domh:'135px',
+            lastPage:null,
+            pageNum:1,
+            isMore:true,
+	        productList:[],
+            // productList:[{"pageNum":1,"pageSize":10,"imageUrl":"http://qk.taiqiedu.com/2020/202003/a_02ebe855dd9943c0ad1c053de5defec1.jpg","createTime":1583588517000,"cTimeStr":"2020-03-07 21:41:57","orgId":4,"productId":21,"productName":"十年数学真题精讲","alClassId":0,"orgName":"太奇教育","orgProvinceId":110000,"orgCityId":110100,"orgAreaId":110108,"firstSortId":1,"secondSortId":2,"sortId":4,"sortList":"[1,2,4]","alSaleId":0,"imageType":5,"productIntro":"十年数学真题精讲","productPrice":199,"className":"线上","teachName":"线上教育","startTime":1583712000000,"endTime":1609372800000,"browseNum":783,"purchaseNum":754,"isTry":0,"onLine":1,"onLive":0,"isCut":0,"isGroup":0,"cutFloorPrice":0,"cutNum":0,"isCoin":0,"coinLimit":0,"isCoupon":0,"isCommission":1,"commissionRebate":199,"imageId":1089,"imageName":"a.jpg","isShelves":1,"isRecom":0,"isDelete":0},{"pageNum":1,"pageSize":10,"imageUrl":"http://qk.taiqiedu.com/2020/202003/a_6fe66ef003f3400995c5abac7e55a48a.jpg","createTime":1583589944000,"cTimeStr":"2020-03-07 22:05:44","orgId":4,"productId":24,"productName":"十年写作真题精讲","alClassId":0,"orgName":"太奇教育","orgProvinceId":110000,"orgCityId":110100,"orgAreaId":110108,"firstSortId":1,"secondSortId":2,"sortId":4,"sortList":"[1,2,4]","alSaleId":0,"imageType":5,"productIntro":"十年写作真题精讲","productPrice":199,"className":"线上","teachName":"线上教育","startTime":1583625600000,"endTime":1609372800000,"browseNum":701,"purchaseNum":687,"isTry":0,"onLine":1,"onLive":0,"isCut":0,"isGroup":0,"cutFloorPrice":0,"cutNum":0,"isCoin":0,"coinLimit":0,"isCoupon":0,"isCommission":1,"commissionRebate":199,"imageId":1095,"imageName":"a.jpg","isShelves":1,"isRecom":0,"isDelete":0},{"pageNum":1,"pageSize":10,"imageUrl":"http://qk.taiqiedu.com/2020/202003/a_e8179f95ccf84009af7bfe2da36da460.jpg","createTime":1583589316000,"cTimeStr":"2020-03-07 21:55:16","orgId":4,"productId":23,"productName":"十年逻辑真题精讲","alClassId":0,"orgName":"太奇教育","orgProvinceId":110000,"orgCityId":110100,"orgAreaId":110108,"firstSortId":1,"secondSortId":2,"sortId":4,"sortList":"[1,2,4]","alSaleId":0,"imageType":5,"productIntro":"十年逻辑真题精讲","productPrice":199,"className":"线上","teachName":"线上教育","startTime":1583625600000,"endTime":1609372800000,"browseNum":896,"purchaseNum":865,"isTry":0,"onLine":1,"onLive":0,"isCut":0,"isGroup":0,"cutFloorPrice":0,"cutNum":0,"isCoin":0,"coinLimit":0,"isCoupon":0,"isCommission":1,"commissionRebate":199,"imageId":1093,"imageName":"a.jpg","isShelves":1,"isRecom":0,"isDelete":0},{"pageNum":1,"pageSize":10,"imageUrl":"http://qk.taiqiedu.com/2020/202003/a_5bd45c851b4b4158a294ffeafef1d6bb.jpg","createTime":1583589189000,"cTimeStr":"2020-03-07 21:53:09","orgId":4,"productId":22,"productName":"十年英语真题精讲","alClassId":0,"orgName":"太奇教育","orgProvinceId":110000,"orgCityId":110100,"orgAreaId":110108,"firstSortId":1,"secondSortId":2,"sortId":4,"sortList":"[1,2,4]","alSaleId":0,"imageType":5,"productIntro":"十年英语真题精讲","productPrice":199,"className":"线上","teachName":"线上教育","startTime":1583625600000,"endTime":1609372800000,"browseNum":692,"purchaseNum":686,"isTry":0,"onLine":1,"onLive":0,"isCut":0,"isGroup":0,"cutFloorPrice":0,"cutNum":0,"isCoin":0,"coinLimit":0,"isCoupon":0,"isCommission":1,"commissionRebate":199,"imageId":1091,"imageName":"a.jpg","isShelves":1,"isRecom":0,"isDelete":0},{"pageNum":1,"pageSize":10,"imageUrl":"http://qk.taiqiedu.com/2020/202003/a_05cb07dae581419f9fbb8b94ebb2c38b.jpg","createTime":1584427390000,"cTimeStr":"2020-03-17 14:43:10","orgId":4,"productId":25,"productName":"7天词汇速记营","alClassId":0,"orgName":"太奇教育","orgProvinceId":110000,"orgCityId":110100,"orgAreaId":110108,"firstSortId":1,"secondSortId":2,"sortId":4,"sortList":"[1,2,4]","alSaleId":0,"imageType":5,"productIntro":"7天词汇速记营","productPrice":499,"className":"线上","teachName":"线上教育","startTime":1584489600000,"endTime":1609372800000,"browseNum":743,"purchaseNum":699,"isTry":0,"onLine":1,"onLive":0,"isCut":0,"isGroup":0,"cutFloorPrice":0,"cutNum":0,"isCoin":0,"coinLimit":0,"isCoupon":0,"isCommission":1,"commissionRebate":499,"imageId":1227,"imageName":"a.jpg","isShelves":1,"isRecom":0,"isDelete":0},{"pageNum":1,"pageSize":10,"imageUrl":"http://qk.taiqiedu.com/2020/202003/a_0ea48c5cf7294610b0bea4c9f3ce9c51.jpg","createTime":1584427601000,"cTimeStr":"2020-03-17 14:46:41","orgId":4,"productId":26,"productName":"MBA阅读精讲班","alClassId":0,"orgName":"太奇教育","orgProvinceId":110000,"orgCityId":110100,"orgAreaId":110108,"firstSortId":1,"secondSortId":2,"sortId":4,"sortList":"[1,2,4]","alSaleId":0,"imageType":5,"productIntro":"MBA阅读精讲班","productPrice":699,"className":"线上","teachName":"线上教育","startTime":1584489600000,"endTime":1609372800000,"browseNum":0,"purchaseNum":0,"isTry":0,"onLine":1,"onLive":0,"isCut":0,"isGroup":0,"cutFloorPrice":0,"cutNum":0,"isCoin":0,"coinLimit":0,"isCoupon":0,"isCommission":1,"commissionRebate":699,"imageId":1229,"imageName":"a.jpg","isShelves":1,"isRecom":0,"isDelete":0}] ,
+            pageSize:10,
+            orgId:null,
+            showrule:false,
+        },
+        methods:{
+            showRule(f){
+                this.showrule = f;
+            },
+            openProductDetaul(id){
+                openRegister('productspe_detail','./productspe_detail.html',{id:id})
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+            getProductSpeList(){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pageNum,pagesize:this.pageSize
+                }
+                if(this.orgId){
+                    obj.orgId = this.orgId;
+                }
+                ajaxGetVistor(getCommissionListUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.lastPage = ret.data.lastPage;
+                        if(_this.pageNum >= _this.lastPage){
+                            _this.productList = [..._this.productList,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.productList = [..._this.productList,...ret.data.list]
+                            _this.pageNum++;
+                        }
+                    }
+                })
+            },
+        },
+    })
+
+</script>
+</html>

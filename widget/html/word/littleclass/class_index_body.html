@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+        .myclass{
+            margin-top: -30px;
+            position: relative;
+            z-index:2;
+            padding: 15px 10px;
+        }
+        .myclass-title{
+            font-size: 14px;
+            color:#333;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .nomyclass{
+            font-size: 12px;
+            color:#666666;
+            padding: 15px 0px;
+        }
+        .myclass-btns{
+            display: flex;
+            justify-content: space-between;
+        }
+        .myclass-btns>div{
+            padding-left: 5%;
+            width:38%;
+            height: 35px;
+            color:#fff;
+            font-size: 14px;
+            text-align: center;
+            line-height: 35px;
+            border-radius: 30px;
+            background:#ff7f00 url("../../../icon/addclasspng.png") no-repeat 20px 7px;
+            background-size:20px 20px;
+        }
+        .createclass-box{
+            background:#ff7f00 url("../../../icon/createclass.png") no-repeat 20px 7px !important;
+            background-size:20px 20px !important;
+        }
+        .class-list-box{
+            padding: 15px 10px;
+            margin-top: 10px;
+        }
+        .class-list-box .tj-class {
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .class-list-box .tj-class span{
+            font-size: 14px;color:#333;
+        }
+        .class-list-box .tj-class div{
+            padding-left: 20px;
+            background: url("../../../icon/reload.png") no-repeat left 1px;
+            background-size: 14px 12px;
+            font-size: 12px;
+            color:#f73e3c;
+        }
+
+
+        .join-class{
+            width: 100%;
+            height:100%;
+            background: rgba(0,0,0,0.5);
+            position: fixed;
+            top:0px;
+            left:0px;
+            z-index:5;
+            text-align: center;
+        }
+        .join-class>div{
+            height:10rem;
+            background: #fff;
+            padding: 15px
+        }
+        .join-class p {
+            text-align: center;
+            font-size: 16px;color:#333;
+        }
+        .join-class input{
+            height:2.4rem;line-height: 2.4rem;
+            width:100%;
+            border:1px solid #e5e5e5;
+            border-radius: 30px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .join-class>div>div{
+            width:100%;
+            height:2.5rem;
+            line-height: 2.5rem;
+            color:#fff;
+            margin-top: 15px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body >
+<div class="class-list-el">
+    <div>
+        <img src="../../../icon/littleclassbanner.png" style="width:100%;" alt="">
+    </div>
+    <div class="myclass app-center">
+        <div class="myclass-title">
+            我的小班
+        </div>
+        <p class="nomyclass" v-show="myclass.length<1">你还没有加入任何小班，赶紧找到组织吧~</p>
+        <!--如果当前进入的是系统班 有一个进入学习按钮-->
+        <div class="my-class-list" style="border-bottom: none;" v-for="item in myclass" @click="openClassDetail(item)">
+            <div class="my-class-img">
+                <img :src="item.classImage" alt="">
+            </div>
+            <div class="my-class-detail">
+                <span :class="{'my-class-name-guanfang':item.isOfficial==1}" class="my-class-name ">
+                    {{item.className}}
+                </span>
+                <div class="my-class-num">
+                    人数：{{item.userCount}}
+                </div>
+                <p class="my-class-content">
+                    {{item.classIntro}}
+                </p>
+            </div>
+            <div class="my-class-join">
+                进入学习
+            </div>
+        </div>
+
+        <div class="myclass-btns">
+            <div @click="showAddClass(true)">
+                加入小班
+            </div>
+            <div class="createclass-box" onclick="openNewWindow('create_class','./create_class.html',{})">
+                创建小班
+            </div>
+        </div>
+    </div>
+    <div class="app-center class-list-box" v-show="recomClass.length>0">
+        <div class="tj-class">
+            <span>推荐小班</span>
+            <div @click="getRecomClass">换一批</div>
+        </div>
+        <div class="classlist">
+            <div v-for="item in recomClass" class="my-class-list">
+                <div class="my-class-img">
+                    <img :src="item.classImage" alt="">
+                </div>
+                <div class="my-class-detail">
+                        <span :class="{'my-class-name-guanfang':item.isOfficial==1}" >
+                            {{item.className}}
+                        </span>
+                    <div class="my-class-num">
+                        人数：{{item.userCount}}
+                    </div>
+                    <p class="my-class-content">
+                        {{item.classIntro}}
+                    </p>
+                </div>
+                <div class="my-class-join" @click="joinThisClass(item.classId)">
+                    加入
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="join-class" v-show="isShowAdd" @click="showAddClass(false)">
+        <div @click.stop="zus">
+            <p>
+                小班邀请码
+            </p>
+            <input v-model="inviteCode" placeholder="请输入邀请码" type="text">
+            <div class="jianbian-btn" @click.stop="submitJoinClass">
+                加入
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            isShowAdd:false,
+            inviteCode:'',
+            myclass:[],//我的班
+            recomClass:[],//推荐的小班
+        },
+        methods:{
+            showAddClass(f){
+                this.isShowAdd = f;
+            },
+            //加入按钮进入小班
+            joinThisClass(id){
+                ajaxGet(joinClassUrl,{classId:id},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('已加入小班')
+                    }
+                })
+            },
+            //邀请码进入小班
+            submitJoinClass(){
+                var _this = this;
+                if(!this.inviteCode){
+                    toast('请输入小班邀请码')
+                    return;
+                }
+                ajaxGet(joinClassUrl,{inviteCode:this.inviteCode},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        toast('已加入小班')
+                        _this.isShowAdd = false;
+
+                    }
+
+                })
+            },
+            //打开我的小班rank
+            openClassDetail(data){
+                openNewWindow('myclass_todayrank','./myclass_todayrank.html',{id:data.classId,name:data.className})
+            },
+            //阻止冒泡
+            zus(){
+                return false;
+            },
+            //获取推荐列表
+            getRecomClass(){
+                var _this = this;
+                ajaxGet(getRecomClassUrl,{},function (ret,err) {
+	                al(err)
+	                al(ret)
+                    if(ret && ret.code == 0){
+                        _this.recomClass = ret.data;
+                    }
+
+                })
+            },
+            //获取我的小班
+            getMyClass(){
+                var _this = this;
+                ajaxGet(getMyClassUrl,{},function (ret,err) {
+	                // al(err)
+	                // al(ret)
+
+                    if(ret && ret.code == 0){
+                        _this.myclass = ret.data;
+                    }
+                })
+            },
+        },
+    });
+
+    apiready = function () {
+        app.getMyClass();
+        app.getRecomClass();
+    };
+</script>
+</html>

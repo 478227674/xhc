@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+    <div id="learn-box">
+        <div>
+            <ul class="qusition-list">
+                <li v-for="(item,index) in testList">
+                    <div class="qusition-index">
+                        <div class="qusition-index-text">题：{{index+1}}</div>
+                    </div>
+                    <div class="qusition-choose">
+                        <span v-html="item.questionStem"></span>
+                        <div v-for="(items,indexs) in item.alQuestionOption">
+                            {{chooseList[indexs]}}.
+                            <span v-show="items.optionName" v-html="items.optionName"></span>
+                            <img v-show="items.optionImage" :src="items.optionImage"></img>
+                        </div>
+                        <!--<div>B. 大的，很大的，</div>-->
+                        <!--<div>C. 用以表示听清楚对方说的话</div>-->
+                        <!--<div>D. 用以表示听清楚对方说的话</div>-->
+                    </div>
+                    <div class="qusition-choosed">
+                        <div v-for="(items,indexs) in item.alQuestionOption" @click="chooseThisAnwser(index,indexs)">
+                            <div :class="{'qusition-choosethis':items.optionId==item.userAnwser}"><a href="javascript:;"></a></div>
+                            <span>{{chooseList[indexs]}}</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div style="height:80px"></div>
+        <div class="submit-anwser">
+            <div @click="submitTest">
+                 提交
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var questionArrIds = [];
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            kid:null,//知识点ID
+            testList:[],
+            chooseList:['A','B','C','D','E','F','G','H','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'],
+            inTime:null,
+        },
+        methods:{
+
+            submitTest(){
+                var submitTime = new Date().getTime();
+
+                var _this = this;
+                var arr = [];
+                for(var i=0;i<this.testList.length;i++){
+                    if(!this.testList[i].userAnwser){
+	                    alert('还有被漏掉的题哦~');
+                        return;
+                    }
+                    var rightId = null,isRight = null;
+                    //根据每个选择里的isRight字段是否等于1 判断哪个选项为正确答案
+                    for(var n=0;n<this.testList[i].alQuestionOption.length;n++){
+                        if(this.testList[i].alQuestionOption[n].isRight == 1){
+                            rightId = this.testList[i].alQuestionOption[n].optionId;
+                            if(rightId == this.testList[i].userAnwser){
+                                isRight = 1;
+                            }else{
+                                isRight = 0;
+                            }
+                        }
+                    }
+                    var obj = {
+                        userAnswer:this.testList[i].userAnwser,//用户选择
+                        questionId:this.testList[i].questionId,//题ID
+                    };
+                    obj.answer = rightId;
+                    obj.isRight = isRight;
+                    arr.push(obj)
+                }
+	            if((submitTime - inTime)/1000 <= 30){
+		            alert('你不是神，请30秒后提交')
+		            return;
+	            }
+                let endTime = new Date().getTime();
+
+                var submitObj = {
+                    records:arr,
+                    knowledgeId:this.kid,
+                    useTime:Math.floor((endTime-this.inTime)/1000)
+                };
+
+                ajaxGet(submitTestUrl,submitObj,function (ret, err) {
+                    if(ret && ret.code == 0){
+                        openNewWindow('ai_learn_diagnose','./ai_learn_diagnose.html',{id:_this.kid,ids:questionArrIds})
+                    }
+                })
+
+            },
+            //选择其中题的一个答案
+            chooseThisAnwser(index,index2){
+                //设置当前用户所选答案ID
+                this.testList[index].userAnwser = this.testList[index].alQuestionOption[index2].optionId;
+                this.$set(this.testList,index,this.testList[index])
+            },
+
+            //根据知识点ID获取题列表
+            getTestListByKid(){
+                var _this = this;
+                ajaxGet(getAiTestListUrl,{knowledgeMain:this.kid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        questionArrIds = ret.questionIds;
+                        _this.testList = ret.data;
+                    }
+                    if(ret.code == 3){
+                        toast('暂无测评题库，请更换知识点后进行测评')
+                        return;
+                    }
+                })
+            },
+        },
+    })
+    var inTime = new Date().getTime();
+    apiready = function () {
+        app.kid = api.pageParam.id;
+        app.getTestListByKid();
+        app.inTime = new Date().getTime();
+    };
+
+
+</script>
+</html>

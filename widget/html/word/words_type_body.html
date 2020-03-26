@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <style>
+        .typelistall{
+            width:90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .typelistall div{
+            margin-top: 10px;
+            width:48%;
+        }
+        .typelistall div img{
+            width:100%;
+        }
+    </style>
+</head>
+<body >
+<div class="typelistall">
+    <!--<div @click="openWordsById4(102,'考研词汇')">-->
+    <!--<img src="../../icon/leveltype/type102.png" alt="">-->
+    <!--</div>-->
+    <!--<div @click="openWordsById4(103,'高考词汇')">-->
+    <!--<img src="../../icon/leveltype/type103.png" alt="">-->
+    <!--</div>-->
+    <!--<div @click="openWordsById4(104,'中考词汇')">-->
+    <!--<img src="../../icon/leveltype/type104.png" alt="">-->
+    <!--</div>-->
+    <!--<div @click="openWordsById4(105,'小学词汇')">-->
+    <!--<img src="../../icon/leveltype/type105.png" alt="">-->
+    <!--</div>-->
+    <div v-for="item in allList" @click="openWordsById(item)">
+        <img :src="returnImgUrl(item)" alt="">
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.typelistall',
+        data: {
+            allList:[],
+        },
+        methods:{
+            returnImgUrl(data){
+                return '../../icon/leveltype/type'+data.gradeId+'.png'
+            },
+            openWordsById(data){
+                //如果是考研等没有版本的直接提示是否加入计划
+                if(data.gradeId==102 || data.gradeId==103 || data.gradeId==104 || data.gradeId==105 ){
+                    localStorage.setItem('WORD_TYPE_ID',data.gradeId)
+                    localStorage.setItem('WORD_TYPE_NAME',data.gradeName)
+                    openNewWindow('mtiword-4','./mtiword/mtiword-4.html',{name:data.gradeName,id:data.gradeId})
+
+                }else{
+                    //不是考研且有版本的需要先展示版本列表 点击版本再提示
+                    localStorage.setItem('WORD_TYPE_ID',data.gradeId)
+                    localStorage.setItem('WORD_TYPE_NAME',data.gradeName)
+                    openNewWindow('index','./threelevelwords/index.html',{name:data.gradeName,id:data.gradeId})
+                }
+            },
+            openWordsById4(id,name){
+
+            },
+            getAllLevelList(){
+
+                ajaxGet(getAllLevelListUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        app.allList = ret.data;
+                    }
+                })
+
+            },
+
+        },
+    })
+
+    apiready = function () {
+        app.getAllLevelList();
+    };
+</script>
+</html>

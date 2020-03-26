@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <style>
+        #live_list {overflow: hidden;width: 100%;position: relative;background: #fff}
+        #live_list li{box-sizing:border-box;width:50%;height: 20px;line-height: 20px;float: left;text-align: center;color: #333;margin: 10px 0;font-size: 14px;}
+        #live_list li:last-child:after{content: ""}
+        #line{
+            position: absolute;bottom:-10px;left: 0px;height: 2px !important;width: 25%;background: #f73e3c;
+        }
+    </style>
+</head>
+<body >
+<div id="learn-box">
+    <ul id="live_list">
+        <li style="color: #f73e3c;" onclick="switchFrameGroupIndex(0)" >未支付</li>
+        <li onclick="switchFrameGroupIndex(1)">已支付</li>
+        <li id="line"></li>
+    </ul>
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    apiready = function () {
+	    api.openFrameGroup ({
+		    name: 'orderlist',
+		    background:'#fff',
+//            scrollEnabled:true,
+		    rect : {
+			    x : 0,
+			    y : 44+41+api.safeArea.top,
+			    w : 'auto',
+			    h : api.winHeight - 44 -api.safeArea.top
+		    },
+		    index:0,
+		    preload:0,
+		    frames: [
+			    {
+				    name: 'order_nopay',
+				    url: 'order_nopay.html',
+				    bgColor :'rgba(246,246,246,1)',
+				    pageParam:api.pageParam
+			    },
+			    {
+			    name: 'order_pay',
+			    url: 'order_pay.html',
+			    bgColor :'rgba(246,246,246,1)',
+			    pageParam:api.pageParam
+		    }]
+	    }, function(ret, err){
+		    switchFrameCallback(ret.index);
+	    });
+    }
+    function switchFrameGroupIndex(index){
+	    var lineLeft = ((index)*0.5)*100 + "%";
+	    $("#line").animate({
+		    'left':lineLeft
+	    },200)
+	    _index = index
+	    api.setFrameGroupIndex({
+		    name : "orderlist",
+		    index : _index,
+		    scroll : true
+	    });
+	    var lis=document.querySelector("#live_list").querySelectorAll("li");
+	    for(var i=0;i<lis.length;i++){
+		    if(i==index){
+			    lis[i].style.color="#f73e3c";
+		    }else{
+			    lis[i].style.color="#333";
+		    }
+	    }
+    }
+    function switchFrameCallback(index){
+	    var lineLeft = ((index)*0.5)*100 + "%";
+	    $("#line").animate({
+		    'left':lineLeft
+	    },200)
+	    api.setFrameGroupIndex({
+		    name : "orderlist",
+		    index : index,
+		    scroll : true
+	    });
+	    var lis=document.querySelector("#live_list").querySelectorAll("li");
+	    for(var i=0;i<lis.length;i++){
+		    if(i==index){
+			    lis[i].style.color="#f73e3c";
+		    }else{
+			    lis[i].style.color="#333";
+		    }
+	    }
+    }
+
+</script>
+</html>

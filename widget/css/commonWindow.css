@@ -1,0 +1,444 @@
+@charset "UTF-8";
+/** {*/
+    /*-webkit-touch-callout:none;*/
+    /*-webkit-user-select:none;*/
+    /*-khtml-user-select:none;*/
+    /*-moz-user-select:none;*/
+    /*-ms-user-select:none;*/
+    /*user-select:none;*/
+/*}*/
+/** {*/
+    /*-webkit-touch-callout:none;*/
+    /*-webkit-user-select:none;*/
+    /*-khtml-user-select:none;*/
+    /*-moz-user-select:none;*/
+    /*-ms-user-select:none;*/
+    /*user-select:none;*/
+    /*-webkit-tap-highlight-color: rgba(0,0,0,0);*/
+    /*-webkit-tap-highlight-color:transparent;*/
+/*}*/
+/* 咨询聊天调用示例 css */
+.consult{
+    display: none;
+    position: fixed;
+    right: 0.5rem;
+    top:4rem;
+    width: 3rem;
+    height: 3rem;
+    line-height: 3rem;
+    color:#fff;
+    background-color: #1E9FFF;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 0.7rem;
+    z-index: 99999;
+}
+.organ-class,.organ-y{
+    color:#666666;
+    font-size: 12px;
+    width: 100%;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+[v-cloak] {
+    display: none;
+}
+.nomore{
+    font-size: 12px;
+    text-align: center;
+    color:#e0e0e0;
+    padding: 10px 0;
+}
+input{
+    -webkit-appearance: none;
+}
+textarea{
+    -webkit-appearance: none;
+}
+html{
+	height: 100%;
+	width: 100%;
+
+}
+
+ul,li{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+input {
+    outline: none;
+}
+body {
+	background: #f6f6f6;
+	height: 100%;
+	width: 100%;
+    margin:0;
+    padding: 0;
+    font-family:黑体;
+}
+.app-center{
+    border-radius: 5px;
+    overflow: hidden;
+    background: #fff;
+    margin-right: 3%;
+    margin-left: 3%;
+}
+.bottom-btn{
+    width: 90%;
+    border-radius: 5px;
+    margin:0 auto;
+    line-height: 44px;
+    background: #1bb1af;
+    font-size: 16px;color:#fff;
+    text-align: center;
+}
+.fixed-bottom-btn{
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+    line-height: 44px;
+    position: fixed;
+    background: #f73e3c;
+    font-size: 16px;color:#fff;
+    text-align: center;
+}
+.boxshadow{
+    box-shadow:0px 1px 7px -4px #1bb1af;
+    width: 100%;
+    height: 140px;
+}
+.back{
+    position: absolute;left:10px;top:22px;background: url("../icon/shape.png") no-repeat 0px 0px;width:30px;height:30px;
+    background-size: 100%;
+}
+
+
+.changeCode{
+    float: right;font-size: 12px;margin-top:10px;
+}
+.buttonB{
+    border-top:1px solid #eee;
+    position: absolute;bottom: 0px;
+    width: 100%;left: 0%;
+}
+.buttonB>button{
+    width: 50%;height: 40px;float: left;
+    display: block;
+}
+.line{
+    border-left: 1px solid #eee;
+    position: absolute;left:50%;top:0;width: 1px;height: 100%;
+}
+.b_center{
+    width:90%;margin: 0 auto;
+}
+html,body {-webkit-user-select:none; user-select: none; }
+.mask{
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.5);
+    position: fixed;
+    top:0px;
+    left:0px;
+    z-index:1000;
+}
+#topbar {
+    background: -webkit-linear-gradient(to right,#f73e3c,#e62116);
+    background: -o-linear-gradient(to right,#f73e3c,#e62116);
+    background: -moz-linear-gradient(to right,#f73e3c,#e62116);
+    background: linear-gradient(to right,#f73e3c,#e62116);
+    height : 44px;
+    line-height : 44px;
+    color: #fff;
+    font-size: 16px;
+    position: relative;
+    text-align: center;
+}
+
+#leftButton{
+    position: absolute;
+    text-align: center;
+    width: 50px;
+    height: 44px;
+    z-index: 10;
+}
+#leftButton img{
+	width: 10px;
+    margin-top: 12px;
+}
+
+.btn_bottom{
+    width: 90%;height: 44px;line-height: 44px;text-align: center;background: #ff7f00;color:#fff;border-radius: 6px;
+    margin: 15px auto;
+}
+#title{
+    /*width: 100%;*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin:0 60px;
+    text-align: center;
+    height: 43px;
+}
+.left_title{
+	
+}
+.jianbian-btn{
+    background: -webkit-linear-gradient(to right,#f73e3c,#e62116);
+    background: -o-linear-gradient(to right,#f73e3c,#e62116);
+    background: -moz-linear-gradient(to right,#f73e3c,#e62116);
+    background: linear-gradient(to right,#f73e3c,#e62116);
+}
+.right_img1{
+	width: 20px;position: absolute;right: 3%;    top: 50%;
+}
+.right_img2{
+	width: 20px;position: absolute;right: 13%;    top: 50%;
+}
+.right_img3{
+	width: 20px;position: absolute;right: 23%;    top: 50%;
+}
+#rightButton{
+    position: absolute;top:30px;  right: 20px;
+    line-height: 14px;
+    font-size: 14px;
+    color: #fff;
+}
+#rightButton1{
+    height:20px;padding:5px;position: absolute;top: 6px;  right: 10px;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #6BBDFA;
+
+    color: #FFF;
+    /*box-shadow: 0 0 2px 2px #DADDE0;*/
+    border-radius: 5px;
+    /*color: #6BBDFA;*/
+    max-width: 50px;
+    overflow: hidden;
+}
+#rightButton2{
+    height:20px;padding:5px;position: absolute;top: 6px;  right: 65px;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #6BBDFA;
+
+    color: #FFF;
+    /*box-shadow: 0 0 2px 2px #DADDE0;*/
+    border-radius: 5px;
+    /*color: #6BBDFA;*/
+}
+
+#rightImgButton{
+    position: absolute;top: 13px;  right: 13px;
+    width: 17px;
+    height: 17px;
+}
+
+#rightImgButton2{
+    position: absolute;top: 13px;  right: 50px;
+    width: 19px;
+    height: 17px;
+}
+
+
+
+#rightButton3{
+    position: absolute;
+    /*top:0;
+    left: 0;
+    padding: 13px 10px 7px 5px ;
+    line-height: 0;*/
+    margin-top: 8px;
+    right: 0;
+    top: 0;
+    width: 45px;
+    height: 33px;
+    z-index: 10;
+}
+.endtimebox{
+    padding-left: 20px;
+    background: url("../icon/time1.png") no-repeat left 2px;
+    background-size: 15px 15px;
+    color: #ff9100;
+    font-size: 12px;
+
+}
+#rightButton3 img{
+    width: 25px;
+    height: 25px;
+}
+.swiper-pagination-bullet-active{
+    background: #fff !important;
+}
+.swiper-pagination-bullet{
+    background: none;
+    border:1px solid #fff;
+    opacity: 1;
+}
+
+.tap {background: #DADDE0;}
+button{outline: none}
+
+.bottom_btn{
+    width: 90%;height: 40px;line-height: 40px;
+    color:#fff;
+    background: -webkit-linear-gradient(to right,#f73e3c,#e62116);
+    background: -o-linear-gradient(to right,#f73e3c,#e62116);
+    background: -moz-linear-gradient(to right,#f73e3c,#e62116);
+    background: linear-gradient(to right,#f73e3c,#e62116);
+    border-radius: 5px;
+    text-align: center;
+    margin: 20px auto;
+}
+.bottom_btn ul{
+    height: 100%;float: left;width: 48%;
+}
+.bottom_btn ul li{
+    border-right: 1px solid #bfbfbf;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 33.33%;
+    height: 100%;float: left;background: #eee;
+}
+.bottom_btn ul li img{
+    height: 25px;
+    display: block;margin: 12px auto 0 auto;
+}
+.bottom_btn ul li span{
+    font-size: 10px;color:#b8b8b8;text-align: center;
+    display: block;margin-top: 6px;
+}
+
+
+
+
+.coupontab{
+    line-height: 44px;
+    height: 44px;
+    background: #fff;
+    color:#666
+}
+.coupontab span{
+    display: block;
+    width: 50%;
+    text-align: center;
+    height: 44px;
+    line-height: 44px;
+    font-size: 14px;
+    float: left;
+    position: relative;
+}
+.coupontab span a {
+    display: block;
+    width: 60px;
+    position: absolute;
+    bottom: 0px;
+    border-bottom: 3px solid #1bb1af;
+    left: 50%;
+    margin-left: -30px;
+}
+.tabcaa{
+    color:#1bb1af !important;
+}
+.coupon-bottom{
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+}
+.errortext{
+    padding: 13px 0;
+    font-size: 12px;color:#666666;
+    background-size:18px 18px;
+}
+.couponlist{
+    overflow: auto;
+}
+.couponlist li {
+    display: flex;
+    margin-bottom: 10px;
+    justify-content: flex-start;
+    background: #fff;
+}
+.couponlist li .coupon-left{
+    height: 90px;
+    width: 90px;
+    background: url("../icon/couponbg.png") no-repeat 0px 0px;
+    background-size:100% 100%;
+    line-height: 90px;
+    color:#fff;
+    font-size: 14px;
+    text-align: center;
+}
+.couponlist li .coupon-left1{
+    height: 90px;
+    width: 90px;
+    background: url("../icon/yiguoqi.png") no-repeat 0px 0px;
+    background-size:100% 100%;
+    line-height: 90px;
+    color:#fff;
+    font-size: 14px;
+    text-align: center;
+}
+.couponlist li .coupon-left span,.couponlist li .coupon-left1 span{
+    font-size: 30px;
+}
+.coupon-center{
+    flex: 1;
+    background: #fff;
+
+}
+.coupon-center span{
+    margin: 25px 0 15px 15px;
+    font-size: 16px;color:#333;
+}
+.coupon-center p {
+    color:#999999;
+    margin-left: 15px;
+    font-size: 12px;
+}
+.coupon-right{
+    color:#f73e3c;
+    font-size: 12px;
+    padding: 18px 10px;
+    width: 20px;
+    border-left: 1px solid #e5e5e5;
+    text-align: center;
+    background: #fff;
+}
+.yig{
+    color:#666 !important;
+    padding: 22px 10px !important;
+}
+.top-title{
+    width: 100%;
+    height: 45px;line-height: 45px;
+    text-align: center;
+    font-size: 16px;color:#333;background: #fff;
+    position: relative;
+}
+.top-title img{
+    position: absolute;
+    width: 11px;
+    height: 11px;
+    top:17px;
+    right: 15px;
+}
+.couponboxall{
+    position: fixed;
+    top:300px;
+    width: 100%;
+    background: #f6f6f6;
+}
+.manjian1{
+    line-height: 20px;margin-top:20px;
+}
+.manjian2{
+    line-height: 20px;margin-top: 10px;
+}

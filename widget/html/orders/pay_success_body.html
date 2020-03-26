@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order.css"/>
+
+    <style>
+        body,html{
+            background: #f6f6f6;
+            overflow: hidden;
+        }
+        .paysuccess{
+        }
+        .paysuccess-icon{
+            width: 75px;
+            display: block;
+            margin: 25px auto;
+        }
+        .pay-top{
+            border-radius: 5px;
+            padding-bottom: 15px;
+            margin: 10px;background: #fff;
+            overflow: hidden;
+
+        }
+        .pay-top>p{
+            font-size: 17px;color:#333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .order-price{
+            text-align: center;
+            font-size: 14px;color:#333;
+        }
+        .order-price span{
+            color:#f7260a;
+        }
+        .btn-pay {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .btn-pay p {
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+        .safetext{
+            background: #fff;
+            border-radius: 5px;
+            margin: 0px 10px 10px 10px;
+            padding-bottom: 15px;
+            overflow: hidden;
+        }
+        .safetext p{
+            margin: 15px 10px;
+            color:#f73e3c;
+            font-size: 14px;
+        }
+        .safetext div{
+            color:#333;
+            font-size: 12px;
+            margin: 0 10px;
+            line-height: 18px;
+        }
+        .safetext div span{
+            display: inline !important;
+            color:#f73e3c;
+        }
+    </style>
+</head>
+<body >
+    <div class="paysuccess">
+        <div class="pay-top">
+            <img class="paysuccess-icon" src="../../icon/paysuccess.png" alt="">
+            <p>订单支付成功</p>
+            <div class="order-price">订单金额：<span id="payprice">￥999.00</span></div>
+            <div class="btn-pay">
+                <p onclick="openOrderDetail()">订单详情</p>
+                <p onclick="openMyClass()">进入课程</p>
+                <p onclick="closeToHome()">返回首页</p>
+            </div>
+        </div>
+        <div class="safetext">
+            <p>安全提醒</p>
+            <div>
+                付款成功后，太奇教育不会以付款异常、卡单、系统升级为由联系您。<span>请勿泄露银行卡号、手机验证码。否则会造成钱款损失。谨防电话诈骗！</span>
+            </div>
+        </div>
+        <!--<div class="safetext">-->
+            <!--<p>特别说明</p>-->
+            <!--<div>-->
+                <!--开课一周内请登录平台确认，上课良好，学费转付机构或者不满意，退还所有学费。-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.paysuccess',
+        data: {
+            orderId:null,
+            orderObj:{},
+            payPrice:0,
+            phone:'',
+            isCoin:0,
+            useCoin:false,
+            myCoin:0,
+            canUse:0,
+            productCanUse:0,
+            couponObj:{},
+
+        },
+        created(){
+            var _this = this;
+//            _this.canUse = _this.myCoin - (this.myCoin%1000);
+        },
+        methods:{
+            openChooseCoupon(){
+                openNewWindow('choosecoupon','../main/choosecoupon.html',{id:this.orderObj.orgId,name:this.orderObj.orgName,price:this.orderObj.orderPrice})
+            },
+            handleMoney(){
+                if(this.myCoin>=1000){
+                    this.useCoin = !this.useCoin
+                    if(this.useCoin){ //如果选择状态
+                        if(this.canUse>this.productCanUse){ //判断自己可使用的是否大于限制 如果大于 可使用的就等于限制 然后计算价格
+                            toast('此产品最多可使用' + this.productCanUse + '个太奇币')
+                            this.canUse = this.productCanUse;
+//                            if(this.payPrice - this.canUse/1000 < 0){
+//                                this.payPrice = 0
+//                            }else{
+//                                this.payPrice = this.payPrice - this.canUse/1000
+//                            }
+                            this.payPrice = this.payPrice - this.canUse/1000
+                            return;
+                        }
+                        //如果小于限制 直接计算
+                        this.payPrice = this.payPrice - this.canUse/1000
+                    }else{ //未选择状态
+                        this.payPrice = this.payPrice + this.canUse/1000
+                    }
+                }else{
+                    toast('太奇币数量不足1000，不可抵扣。')
+                }
+
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+            getOrderDetail(){
+                var _this = this;
+                ajaxGet(getOrderDetailUrl,{orderId:this.orderId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        ret.data.startTime = formatTimeToDay(ret.data.startTime)
+                        ret.data.createTime = formatTimeToDate(ret.data.createTime)
+                        _this.orderObj = ret.data;
+                        _this.myCoin = ret.data.coinNum;
+                        _this.productCanUse = ret.data.coinLimit
+                        _this.payPrice = Number(ret.data.orderPrice);
+                        _this.canUse = Number(_this.myCoin) - Number((_this.myCoin%1000));
+                        _this.isCoin = ret.data.isCoin;
+                        if(_this.myCoin > 1000){
+                            _this.handleMoney();
+                        }
+
+                    }
+
+                })
+            },
+            openChangePhone(){
+                openNewWindow('changephone','../system/changephone.html',{})
+            },
+            payNow(){
+                var obj = {orderId:this.orderId};
+                if(this.useCoin){
+                    obj.coinNum = this.canUse;
+                }
+                if(this.couponObj){
+                    obj.couponId = this.couponObj.couponId;
+                }
+                ajaxGet(payOrderUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        var obj = {
+                            apiKey: ret.data.appid,
+                            orderId: ret.data.prepayid,
+                            mchId: ret.data.partnerid,
+                            nonceStr: ret.data.noncestr,
+                            timeStamp: ret.data.timestamp,
+                            package: ret.data.package,
+                            sign: ret.data.sign
+                        }
+                        wxPay.payOrder(obj, function(ret, err) {
+                            if (ret.status) {
+                                toast('支付成功')
+                                api.execScript({
+                                    name:'myclass',
+                                    frameName:"myclass_body",
+                                    script:"reloadClassList()"
+                                })
+                                api.execScript({
+                                    name:'classdetail',
+                                    frameName:"classdetail_body",
+                                    script:"reloadClassDetail()"
+                                })
+                                setTimeout(function () {
+                                    closeWin()
+                                },1500)
+                                //支付成功
+                            } else {
+                                if(err.code == -2){
+                                    toast('已取消支付')
+                                }
+                            }
+                        });
+                    }
+                })
+            },
+        },
+    })
+
+    function getCouponObj(obj) {
+
+        if(obj){
+            if(app.couponObj.couponId){
+                app.payPrice+=app.couponObj.usedAmount
+            }
+            app.couponObj = obj;
+            if(app.payPrice-obj.usedAmount>=0){
+                app.payPrice= (app.payPrice*1000 - obj.usedAmount*1000)/1000;
+                al(app.payPrice)
+            }else{
+                app.payPrice = 0;
+            }
+        }
+    }
+    var wxPay;
+    var orderId,price;
+
+    apiready = function () {
+        orderId = api.pageParam.id;
+        price = api.pageParam.price;
+        document.getElementById('payprice').innerHTML = '￥' + price;
+    };
+    function openOrderDetail() {
+        openNewWindow('classdetail','../main/classdetail.html',{id:orderId})
+    }
+    function closeToHome() {
+        api.closeToWin({
+            name:'root'
+        })
+    }
+    function openMyClass() {
+	    openNewWindow('new_myclass','../myclass/new_myclass.html',{id:orderId})
+    }
+
+</script>
+</html>

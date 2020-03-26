@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/words.css"/>
+    <style>
+
+    </style>
+</head>
+<body >
+    <div class="testindex-box" style="background: #fff;">
+        <div class="app-center" style="margin-top:0px;padding-top: 10px;">
+            <div class="all-tab-box">
+                <div class="tab-title">
+                    <span>同步考记录</span>
+                </div>
+                <ul class="tab-ullist">
+                    <li @click="openL(item.id,item.testType)" v-for="(item,index) in synList" >
+                        <div class="unit-title">{{item.lessonName}}</div>
+                        <div class="tab-grade">
+                            <span class="grade-1" v-show="item.testType==1">英译中</span>
+                            <span class="grade-1" v-show="item.testType==2">中译英</span>
+                            <span class="grade-1" v-show="item.testType==3">品读写</span>
+                            <span class="grade-2">{{item.testGrade}}分</span>
+                            <span class="grade-3">{{item.createTime}}</span>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.testindex-box',
+        data: {
+            name:null,
+            id:null,
+            synList:[],
+        },
+        created(){
+        },
+        mounted(){
+
+        },
+        methods:{
+            getList(){
+                ajaxGet(getSynTestHistoryListUrl,{},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDate(ret.data.list[i].createTime)
+                        }
+                        app.synList = ret.data.list;
+                    }
+                });
+            },
+            openL(id,type){
+                if(type==1){
+                    openNewWindow('syntest_result','./syntest_result.html',{id:id})
+
+                }else{
+                    openNewWindow('syntestetoc_result','./syntestetoc_result.html',{id:id})
+                }
+            },
+        },
+        watch:{
+
+        },
+    });
+
+    var id,name,alltype,allpagenum;
+    apiready = function () {
+        app.getList()
+//        app.id = api.pageParam.id;
+//        app.name = api.pageParam.name;
+//        if(api.pageParam.type){
+//            alltype = api.pageParam.type;
+//            allpagenum = api.pageParam.pagenum
+//        }
+    };
+
+</script>
+</html>

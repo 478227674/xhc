@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/littleclass.css"/>
+    <style>
+        .item-class-items{
+            width:90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: flex-start;
+            height:5rem;
+        }
+        .item-class-left{
+            line-height: 5rem;
+            display: flex;
+            justify-content: flex-start;
+            position: relative;
+            width:5rem;
+            z-index:1;
+            border-right: 1px solid #f73e3c;
+        }
+        .item-class-left .item-class-circle{
+            position: absolute;
+            right:-5px;
+            top:2.1875rem;
+            display: block;
+            height:8px;
+            width:8px;
+            border: 1px solid #f73e3c;
+            border-radius: 50%;
+            background: #f6f6f6;
+            z-index:2;
+        }
+        .item-class-left>img{
+            margin-top:1.9rem;
+            width:1.125rem;
+            margin-right: 5px;
+            height:1.125rem;
+        }
+        .item-class-right{
+            display: flex;
+            padding-left: 1rem;
+            justify-content: flex-start;
+        }
+        .item-class-head{
+        }
+        .item-class-head img{
+            width:2.1875rem;
+            margin: 1rem auto 5px auto;
+            height:2.1875rem;
+            display: block;
+            border-radius: 50%;
+        }
+        .item-class-head span{
+            font-size: 0.875rem;
+            color:#333;
+        }
+        .jianchi{
+            margin-left: 1rem;
+            height:1.95rem;
+            width:50%;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+            margin-top:1.2rem;
+            padding: 0.5rem;
+            font-size: 0.75rem;
+        }
+        .item-class-btns{
+            width:100%;
+            height:49px;
+            position: fixed;
+            bottom: 0px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .item-class-btns div{
+            width:40%;
+            background: #fff;
+        }
+        .item-class-btns div img{
+            display: block;
+            width:18px;
+            height:18px;
+            margin: 7px auto 3px auto;
+        }
+        .item-class-btns div span{
+            display: block;
+            text-align: center;
+        }
+        .item-class-btns p {
+            text-align: center;
+            line-height: 49px;
+            background: #f73e3c;
+            color:#fff;
+            font-size: 1rem;
+            width:60%;
+        }
+    </style>
+</head>
+<body >
+    <div class="class-list-el">
+        <div class="item-class-items" v-for="item in list">
+            <div class="item-class-left">
+                <span class="item-class-circle"></span>
+                <img src="../../../icon/classzzb.png" alt="">
+                <span>x {{item.coinNum}}</span>
+            </div>
+            <div class="item-class-right">
+                <div class="item-class-head">
+                    <img :src="item.imageUrl" alt="">
+                    <span>{{item.userName}}</span>
+                </div>
+                <div class="jianchi">
+                    坚持{{item.finishDays}}天，学习单词{{item.wordCount}}个
+                </div>
+            </div>
+
+        </div>
+        <div class="item-class-items" style="display: none">
+            <div class="item-class-left">
+                <span class="item-class-circle"></span>
+                <img src="../../../icon/classzzb.png" alt="">
+                <span>x 32</span>
+            </div>
+            <div class="item-class-right">
+                <div class="item-class-head">
+                    <img src="../../../icon/testicon2.png" alt="">
+                    <span>老虎无误</span>
+                </div>
+                <div class="jianchi">
+                    坚持36天，学习单词36个
+                </div>
+            </div>
+
+        </div>
+        <div class="item-class-btns">
+            <div onclick="openNewWindow('mycoin','../../main/mycoin.html',{})">
+                <img src="../../../icon/classzzb.png" alt="">
+                <span>我的太奇币</span>
+            </div>
+            <p @click="getCoin">领取太奇币</p>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.class-list-el',
+        data: {
+            list:[] ,
+            cid:3,
+        },
+        methods:{
+            getZzbList(){
+                var _this = this;
+                ajaxGet(getLearnUserCoinUrl,{classId:this.cid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.list = ret.data;
+                    }
+
+                })
+            },
+            getCoin(){
+                ajaxGet(getLearnCointUrl,{},function (ret,err) {
+                    al(ret)
+
+                })
+            },
+        },
+    });
+
+    apiready = function () {
+        app.getZzbList();
+//        app.typeId = api.pageParam.id;
+//        app.getList();
+    };
+</script>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/type.css"/>
+    <style>
+        body{
+            overflow: hidden;
+        }
+        li{list-style: none;text-decoration: none;}
+        .img{height: 50px;width: 50px;float: left;display: flex;align-items: center;}
+        .img img{width: 100%;height: 100%;border-radius: 50%;}
+        .list li{width: 100%;height:50%;float: left;}
+        .list li a{display: block;width: 80px;height: 22px;line-height: 22px; border-radius: 10px;background: #ff7a4d;float: left;
+            margin-left:10px;text-align: center;color: #fff;}
+        .list li span{display: block;float: left;}
+        .border{width: 90%;margin-left: 5%; margin-right:5%;display: flex;align-items: center;justify-content: space-between;height: 100%}
+        .r_icon_u{
+            background: url("../../icon/right.png") no-repeat;background-size: cover;margin-right: 0;
+            float: right;
+            display: block;
+            width: 7px;
+            height: 15px;
+            margin-left: 5px;
+        }
+        .r_icon_0{width: 30px;height:30px;float: right;margin-right: 0;}
+        .mage{line-height:44px;margin-right: auto;text-align: left;float: left;color:#333 !important;}
+        .border_b{border-bottom: none;border-bottom: 1px solid #e5e5e5;}
+        .border_b span{
+            color:#666
+        }
+        input{width: 40%;text-align: right;outline:none;color:#333; }
+        .submitdata{
+            width: 100%;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            height: 44px;
+            line-height: 44px;
+            font-size: 14px;
+            color:#fff;
+            text-align:center;
+            background: #f73e3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="maindetail" style="width: 94%;margin: 10px auto;background: #fff;border-radius: 5px;">
+        <div id="main">
+            <div class="li_60 mp_10 mb_10" style="height: 60px" @click="changePhoto">
+                <div class="border border_b">
+                    <span class="mage" style="line-height: 60px;">修改头像</span>
+                    <div class="img"><img id="icon"  :src="imageUrl"></div>
+                    <i class="r_icon_u"></i>
+                </div>
+            </div>
+            <div class="li_60">
+                <div class="border border_b">
+                    <span class="mage">账号</span>
+                    <span id="phone" data-type="show-inner">{{userPhone}}</span>
+                </div>
+            </div>
+            <div class="li_60" @click="getChangeKey('userName','修改昵称')">
+                <div class="border border_b">
+                    <span class="mage">昵称</span>
+                    <span data-type="show-inner">{{userName}}</span>
+                    <i class="r_icon_u"></i>
+                </div>
+            </div>
+            <div class="li_60" @click="changeSex">
+                <div class="border border_b">
+                    <span class="mage">性别</span>
+                    <span v-if='sex==1' data-type="show-inner">男</span>
+                    <span v-if='sex==2' data-type="show-inner">女</span>
+                    <span v-if='sex==0' data-type="show-inner">点击设置</span>
+                    <i class="r_icon_u"></i>
+                </div>
+            </div>
+            <div class="li_60" id="city" @click="getChangeKey('mail','修改联系邮箱')">
+                <div class="border border_b">
+                    <span class="mage">联系邮箱</span>
+                    <span  data-type="show-inner">{{mail}}</span>
+                    <i class="r_icon_u"></i>
+                </div>
+            </div>
+            <div class="li_60 mp_10"  @click="openChangePass">
+                <div class="border border_b">
+                    <span class="mage">修改密码</span>
+                    <span ></span>
+                    <i class="r_icon_u"></i>
+                </div>
+            </div>
+            <div class="li_60 mp_10">
+                <div class="border ">
+                    <span class="mage">注册时间</span>
+                    <span style="color:#666">{{signTime}}</span>
+
+                </div>
+            </div>
+        </div>
+        <div class="submitdata" @click="submitData">
+            保存修改
+        </div>
+    </div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+
+    var app = new Vue({
+        el: '.maindetail',
+        data: {
+            mainObj:{},
+            imageId:null,
+            imageUrl:'../../icon/signperson.png',
+            userName:'',
+            userPhone:'',
+            sex:'', //1男 2女 0未知
+            mail:'',
+            signTime:''
+        },
+        methods:{
+
+//            var changeMainUrl = serverUrl + '/app/user/queryUserInfo';//修改个人信息 userName imageId sex 1男 2女 mail
+            openChangePass(){
+                openRegister('changepass','./changepass.html',{phone:this.userPhone})
+            },
+            changeSex(){
+                var _this = this;
+                api.actionSheet({
+                    title: '修改性别',
+                    cancelTitle: '取消',
+                    buttons: ['男', '女']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    _this.sex = index;
+                });
+            },
+            changePhoto(){
+                var _this = this;
+                api.getPicture({
+                    sourceType: 'library',
+                    encodingType: 'png',
+                    mediaValue: 'pic',
+                    destinationType: 'base64',
+                    allowEdit: false,
+                    quality: 50,
+                    targetWidth: 100,
+                    targetHeight: 100,
+                    saveToPhotoAlbum: false
+                }, function(ret, err) {
+                    if (ret) {
+                        var base64 = ret.base64Data;
+                        uploadImageToServer(uploadImageUrl,{base64:base64,fileName:'1.jpg'},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.imageUrl = ret.data.filePath;
+                                _this.imageId = ret.data.fileId;
+                            }
+                        })
+                    } else {
+                    }
+                });
+            },
+            submitData(){
+                var _this = this;
+                var obj = {
+                    imageId:this.imageId,
+                    userName:this.userName,
+                    sex:this.sex,
+                    mail:this.mail
+                }
+
+                ajaxGet(changeMainUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        toast('修改信息成功')
+                        api.execScript({
+                            name:'sys_index',
+                            frameName:"sys_index_body",
+                            script:'apiready()'
+                        })
+                        api.execScript({
+                            name:'root',
+                            frameName:"main",
+                            script:'reloadMain()'
+                        })
+//                        _this.imageId = ret.data.imageId;
+//                        _this.userName = ret.data.userName;
+//                        _this.userPhone = ret.data.userPhone;
+//                        _this.sex = ret.data.sex;
+//                        _this.mail = ret.data.mail || '未设置';
+//                        _this.mainObj = ret.data;
+                    }
+                })
+            },
+            getChangeKey(key,title){
+                var _this = this;
+                api.prompt({
+                    title:title,
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    var text = ret.text;
+                    if(index==1){
+                        _this[key] = text;
+                    }
+                });
+            },
+            getMyDetail(){
+                var _this = this;
+                ajaxGet(getMainDetailUrl,{},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.imageUrl = ret.data.imageUrl;
+                        _this.signTime = ret.data.cTimeStr.split(' ')[0];
+                        _this.imageId = ret.data.imageId;
+                        _this.userName = ret.data.userName;
+                        _this.userPhone = ret.data.userPhone;
+                        _this.sex = ret.data.sex;
+                        _this.mail = ret.data.mail;
+                        _this.mainObj = ret.data;
+                    }
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+        },
+    })
+
+    apiready = function () {
+        app.getMyDetail();
+    };
+
+</script>
+</html>

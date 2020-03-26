@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/load.css"/>
+</head>
+<body style="background: #fff">
+    <div class="collectbox" v-cloak style="overflow: hidden">
+        <ul class="loadlist">
+            <li v-for="(item,index) in fileList">
+                <img src="../../icon/ai/downloadicon.png" alt="">
+                <p>{{item.datumName}}</p>
+                <a href="javascript:;" v-show="item.isDownload==0" @click="downloadFile(item,index)">立即下载 ></a>
+                <a href="javascript:;" v-show="item.isDownload==1" @click="openFile(item,index)">打开文件 ></a>
+            </li>
+        </ul>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+
+    </div>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var pdfReader,fs;
+    apiready = function () {
+        pdfReader = api.require('pdfReader');
+        fs = api.require('fs');
+        app.words = api.pageParam.words;
+        app.getFileListByDatumName();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getFileListByDatumName();
+            }
+        });
+    };
+    var app = new Vue({
+        el: '.collectbox',
+        data: {
+            words:'',
+            typeList:[],
+            lineWidth:'',
+
+            typeId:null,
+            activeIndex:0,
+
+            fileList:[],
+            pagenum:1,
+            isMore:true,
+
+        },
+        methods:{
+            //如果已下载 直接打开
+            openFile(data,index){
+                var _this = this;
+                fs.exist({
+                    path: 'fs://taiqi/pdf/'+ data.datumUrl.split('/')[5],
+                }, function(ret, err) {
+                    if (ret.exist) {
+                        //存在打开
+                        pdfReader.open({
+                            path:'fs://taiqi/pdf/'+ data.datumUrl.split('/')[5],
+                            hidden:{
+                                print: true,
+                                export: true,
+                                bookmark: true,
+                                email: true
+                            }
+                        },function (ret, err) {
+                        });
+                    } else {
+                        //不存在 提示重新下载
+                        api.confirm({
+                            title: '温馨提示',
+                            msg: '当前文件可能已丢失，是否重新下载',
+                            buttons: ['重新下载', '取消']
+                        }, function(ret, err) {
+                            var clickindex = ret.buttonIndex;
+                            if(clickindex==1){
+                                _this.downloadFile(data,index)
+                            }
+                        });
+                    }
+                });
+            },
+            //下载方法
+            downloadFile(data,index){
+                var _this = this;
+
+                api.download({
+                    url:data.datumUrl,
+                    savePath: 'fs://taiqi/pdf/' + data.datumUrl.split('/')[5],
+                    report: true,
+                    cache: true,
+                    allowResume: true
+                }, function(ret, err) {
+                    if (ret.state == 1) {
+                        ajaxGet(saveLoadFileStatusUrl,{datumId:data.datumId},function (ret,err) {
+                            if(ret && ret.code == 0){
+                                _this.fileList[index].isDownload = 1;
+                            }
+                        })
+                        toast('下载成功')
+//                        _this.loadList[index].isinput=1;
+                        //下载成功
+                    } else {
+
+                    }
+                });
+            },
+            //根据类型获取资料列表
+            getFileListByDatumName(){
+                var _this = this;
+                ajaxGet(getFileListBySearchUrl,{pageNum:this.pagenum,pageSize:5,datumName:this.words},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        if(_this.pagenum==1 && ret.data.list.length==0){
+                            toast('暂无数据哦~')
+                            return;
+                        }
+                        if(ret.data.list.length<5){
+                            _this.fileList = [..._this.fileList,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.fileList = [..._this.fileList,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+
+                })
+            },
+            //搜搜
+            searchFiles(){
+                openRegister('filesearch','./filesearch.html',{words:this.words})
+            },
+        },
+    })
+
+
+
+
+</script>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/sign.css"/>
+
+</head>
+<body >
+<div id="signin">
+    <div class="signtop">
+        <img class="signbg" src="../../icon/signbg.png" alt="">
+        <img class="signperson" src="../../icon/signperson.png" alt="">
+    </div>
+    <div>
+        <img style="width: 100%" class="signbg" src="../../icon/signbg.png" alt="">
+    </div>
+    <div class="signbox boxshadow">
+        <div class="boxtitle">
+            欢迎登录太奇教育
+        </div>
+        <ul class="inputlist">
+
+            <li style="padding-top: 0px;">
+                <img class="phoneicon" src="../../icon/phoneico.png" alt="">
+                <input v-model="phone" type="tel" placeholder="请输入手机号">
+            </li>
+            <li>
+                <img class="codeicon" src="../../icon/passwordicon.png" alt="">
+                <input v-model="password" type="password" placeholder="请输入密码">
+            </li>
+        </ul>
+        <div class="blue-btn" @click="loginNow" style="margin-bottom: 10px;">
+            登录
+        </div>
+        <div class="agree" @click="openLoginByCode">
+            <p>
+                <a href="javascript:;">用手机验证码登录>></a>
+            </p>
+            <div style="clear: both"></div>
+        </div>
+    </div>
+    <div class="gosingin" @click="openSignUp">没有账号,前往注册 >></div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#signin',
+        data: {
+            phone:'',
+            password:'',
+        },
+        methods:{
+            openSignUp:function (){
+                openRegister('signup','./signup.html',{})
+            },
+            openLoginByCode(){
+                closeWin();
+            },
+            closeThisPage:function () {
+                closeWin()
+            },
+            loginNow(){
+                if(!checkPhone(this.phone)){
+                    toast('请输入正确的手机号码')
+                    return;
+                }
+                if(!this.password){
+                    toast('请输入密码')
+                    return;
+                }
+
+                let _this = this;
+                ajaxGetVistor(loginUrl,{userPhone:this.phone,userPwd:this.password,loginType:1},function (ret,err) {
+                    if(ret){
+                        if(ret.code == 0){
+                            setUserInfo(ret.data)
+                            toast('登录成功')
+                            api.execScript({
+                                name:'root',
+                                frameName:'main',
+                                script:'apiready'
+                            })
+                            setTimeout(function () {
+                                api.closeToWin({name:'root'})
+                            },1000)
+                        }
+                    }else{
+                    }
+                })
+            },
+        },
+    })
+
+
+    apiready = function () {
+    };
+
+
+</script>
+</html>

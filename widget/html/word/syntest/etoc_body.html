@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/test.css"/>
+    <style>
+        .choose-bottom-btns{
+            width:100%;
+            position: fixed;
+            bottom:0px;
+            left:0px;
+            height: 49px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .choose-bottom-btns>div{
+            width:30%;
+            background: #e5e5e5;
+            font-size: 14px;
+            color:#666666;
+            text-align: center;
+            line-height: 49px;
+            box-sizing: border-box;
+        }
+        .choose-bottom-btns>p{
+            width:40%;
+            text-align: center;
+            line-height: 49px;
+            font-size: 14px;
+            color:#fff;
+            background: #e5e5e5;
+        }
+        .active-btns-submit{
+            background: #f73e3c !important;
+        }
+    </style>
+</head>
+<body >
+    <div class="pic-remember-box">
+        <div class="full-box-top">
+            <p>
+                <span>1</span>
+                {{lessonName}}
+            </p>
+            <div>({{activeIndex+1}}/{{allList.length}})</div>
+        </div>
+        <audio src="" id="audiobox"></audio>
+        <div >
+            <div class="words">
+                {{activeObj.currentWord.words}}
+            </div>
+            <div class="chooselist">
+                <ul>
+                    <li v-for="(item,index) in activeObj.chooseList" @click="checkAnwser(item,index,1)">
+                        <span v-show="activeObj.activeAnwserIndex!=index"></span>
+                        <img v-show="activeObj.activeAnwserIndex==index" src="../../../icon/wordchoosed.png" alt="">
+                        <p>{{item.cnmean}}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="choose-bottom-btns" v-show="isLast&& allList[allList.length-1].activeAnwserIndex!=null">
+            <div style="border-right: 1px solid #fff;" @click="prevWords(-1)">上一词</div>
+            <div @click="prevWords(1)">下一词</div>
+            <p @click="submitWrongIds" class="active-btns-submit">提交</p>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.pic-remember-box',
+        data: {
+            activeAnwserIndex:null,
+            typeId:null,
+            activeIndex:0, //当前播放下标
+            activeObj: {"currentWord":{"cnmean":"","picStatu":"","soundmark":"","id":"","lessonId":"","pic":"","mp3Statu":"1","words":"","soundmarkStatu":"","mp3":""},"word3":{"cnmean":"说；讲","picStatu":"1","soundmark":"http://media.huanggao.com/Words/soundmark/say.jpg","id":82221,"lessonId":1351,"pic":"http://media.huanggao.com/Words/pic/say.jpg","mp3Statu":"1","words":"say","soundmarkStatu":"1","mp3":"http://media.huanggao.com/Words/spellwords/say.mp3"},"word2":{"cnmean":"笔记本","picStatu":"1","soundmark":"http://media.huanggao.com/Words/soundmark/notebook.jpg","id":82271,"lessonId":1362,"pic":"http://media.huanggao.com/Words/pic/notebook.jpg","mp3Statu":"1","words":"notebook","soundmarkStatu":"1","mp3":"http://media.huanggao.com/Words/spellwords/notebook.mp3"},"word1":{"cnmean":"帕帕韦斯特雷岛","picStatu":"1","soundmark":"","id":82230,"lessonId":1352,"pic":"http://media.huanggao.com/Words/pic/Papa Westray.jpg","mp3Statu":"1","words":"Papa Westray","soundmarkStatu":"0","mp3":"http://media.huanggao.com/Words/spellwords/Papa Westray.mp3"}}, //当前播放的单词详情
+            allList:[]
+            ,
+            chooseList:[],
+            anwser1:[],
+            wrongList:[],
+            lessonName:'',
+            isLast:false,
+            synchroId:null,//同步考列表ID
+        },
+        created(){
+        },
+        mounted(){
+            this.audioDom = document.getElementById('audiobox');
+        },
+        methods:{
+            //上一词和下一词
+            prevWords(t){
+                var _this = this
+                if(t>0){
+                    if(_this.activeIndex == _this.allList.length-1){
+                        toast('已经是最后一个单词啦！')
+                        return
+                    }else{
+                        _this.activeIndex+=1;
+                    }
+                }else{
+                    if(_this.activeIndex==0){
+                        toast('已经是第一个单词啦！')
+                        return
+                    }
+                    if(_this.activeIndex>0){
+                        _this.activeIndex = _this.activeIndex - 1;
+                    }
+                }
+            },
+            submitWrongIds(){
+                var _this = this;
+                api.confirm({
+                    title: '确定要提交吗',
+                    msg: '建议您提交前先逐词检查一遍！',
+                    buttons: ['提交', '检查']
+                }, function(ret, err) {
+                    var index = ret.buttonIndex;
+                    if(index==1){
+                        openNewWindow('syntest_result','./syntest_result.html',{id:_this.synchroId})
+                    }
+                });
+
+            },
+            //检查选择的答案
+            checkAnwser(data,index,type){
+                var _this = this;
+                this.allList[this.activeIndex].activeAnwserIndex = index;
+                this.$set(this.allList,this.activeIndex,this.allList[this.activeIndex])
+                this.activeObj.activeAnwserIndex =index;
+                var obj = {
+                    synchroId:this.synchroId,
+                    gradeId:WORD_TYPE_ID,
+                    gradeName:WORD_TYPE_NAME,
+                    lessonId:UNIT_TYPE_ID,
+                    lessonName:UNIT_TYPE_NAME,
+                    wordId:this.activeObj.currentWord.id,
+                    wordName:this.activeObj.currentWord.words,
+                    zhWordName:this.activeObj.currentWord.cnmean,
+                    wordName1:this.allList[this.activeIndex].chooseList[0].cnmean,
+                    wordName2:this.allList[this.activeIndex].chooseList[1].cnmean,
+                    wordName3:this.allList[this.activeIndex].chooseList[2].cnmean,
+                    wordName4:this.allList[this.activeIndex].chooseList[3].cnmean,
+                    currentChoice:data.cnmean
+                };
+                if(data.words == this.activeObj.currentWord.words){
+                    obj.isError = 0;
+                }else{
+                    obj.isError = 1;
+                }
+
+                ajaxGet(synTestAnwserSubmitUrl,obj,function (ret,err) {
+                    if(_this.activeIndex >= _this.allList.length-1){
+                        return;
+                    }
+                    _this.activeIndex+=1;
+                },true)
+            },
+            //获取当前单元下的单词列表
+            getList(obj){
+                var _this = this;
+                ajaxGet(getSynTestListUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.lessonName = ret.lessonName;
+                        _this.typeId = ret.lessonId;
+                        _this.synchroId = ret.synchroId;
+                        _this.allList = ret.data;
+                        for(var i=0;i<_this.allList.length;i++){
+                            _this.allList[i].chooseList = [];
+                            _this.allList[i].activeAnwserIndex = null;
+                            _this.allList[i].chooseList.push(_this.allList[i].currentWord)
+                            _this.allList[i].chooseList.push(_this.allList[i].word1)
+                            _this.allList[i].chooseList.push(_this.allList[i].word2)
+                            _this.allList[i].chooseList.push(_this.allList[i].word3)
+                            _this.allList[i].chooseList = shuffle(_this.allList[i].chooseList)
+                        }
+                        _this.activeObj = _this.allList[0];
+                    }
+                })
+
+            },
+        },
+        watch:{
+            activeIndex:function () {
+                if(this.activeIndex == this.allList.length-1){
+                    this.isLast  = true;
+                }
+                this.activeObj = this.allList[this.activeIndex];
+            }
+        },
+    });
+    var obj = {};
+    var alltype;
+    apiready = function () {
+        //需要区分是从词汇还是班级进来的 type有值表示从词汇进来
+        app.lessonName = api.pageParam.name || '同步考'
+        app.typeId = api.pageParam.id;
+        if(api.pageParam.type){
+            alltype = api.pageParam.type;
+            obj = {coreId:app.typeId,pageNum:api.pageParam.pagenum}
+        }else{
+            obj = {lessonId:app.typeId}
+        }
+        obj.testType = 1
+        app.getList(obj);
+    };
+
+</script>
+</html>

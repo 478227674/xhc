@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/sign.css"/>
+</head>
+<body >
+    <div id="signup">
+        <div class="signtop">
+            <img class="signbg" src="../../icon/signbg.png" alt="">
+            <img class="signperson" src="../../icon/signperson.png" alt="">
+        </div>
+        <div>
+            <img style="width: 100%" class="signbg" src="../../icon/signbg.png" alt="">
+        </div>
+        <div class="signbox boxshadow">
+            <div class="boxtitle">
+                欢迎注册太奇教育
+            </div>
+            <ul class="inputlist">
+                <li style="padding-top: 0px;">
+                    <img class="shareicon" src="../../icon/sharecodeicon.png" alt="">
+                    <input v-model="inviteCode" type="text" placeholder="请输入邀请码,非必填">
+                </li>
+                <li>
+                    <img class="phoneicon" src="../../icon/phoneico.png" alt="">
+                    <input type="tel" v-model="phone" placeholder="请输入手机号">
+                </li>
+                <li>
+                    <img class="codeicon" src="../../icon/codeicon.png" alt="">
+                    <input type="number" v-model="code" placeholder="请输入验证码">
+                    <span @click="getCodeFn">{{sendText}}</span>
+                </li>
+            </ul>
+            <div class="blue-btn" @click="signNow">
+                立即注册
+            </div>
+            <div class="agree">
+                <img src="../../icon/agree.png" alt="">
+                <p>
+                    我已阅读并同意 <a href="javascript:;">太奇教育注册服务协议</a>
+                </p>
+                <div style="clear: both"></div>
+            </div>
+        </div>
+        <div class="gosingin" @click="closePageThis">已有账号,前往登录>></div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    new Vue({
+        el: '#signup',
+        data: {
+            phone:'',
+            inviteCode:'',
+            code:'',
+            sendFlag:true,
+            sendText:'获取验证码',
+            setIntval:undefined,
+            setTime:60
+        },
+        methods:{
+            closePageThis:function (){
+                closeWin()
+            },
+            getCodeFn(){
+                if(!this.sendFlag){
+                    toast('请稍后再获取')
+                    return;
+                }
+                if(!this.phone){
+                    toast('请先输入手机号')
+                    return;
+                }
+                if(!checkPhone(this.phone)){
+                    toast('请输入正确的手机号码')
+                    return;
+                }
+                let _this = this;
+                ajaxGetVistor(getCodeUrl,{userPhone:this.phone,inviteCode:this.inviteCode,type:1},function (ret,err) {
+                    if(ret){
+                        _this.sendFlag = false;
+                        _this.setIntval = setInterval(function () {
+                            if(_this.setTime>0){
+                                _this.setTime -= 1;
+                                _this.sendText = _this.setTime + 's后获取';
+                            }else{
+                                _this.sendFlag = true;
+                                _this.sendText = '获取验证码'
+                                _this.setTime = 60;
+                                clearInterval(_this.setIntval)
+                            }
+                        },1000)
+                    }else{
+                    }
+                })
+            },
+            signNow(){
+                if(!checkPhone(this.phone)){
+                    toast('请输入正确的手机号码')
+                    return;
+                }
+                if(!this.code){
+                    toast('请输入正确的验证码')
+                    return;
+                }
+                let _this = this;
+                ajaxGetVistor(signUrl,{userPhone:this.phone,inviteCode:this.inviteCode,code:this.code},function (ret,err) {
+                    if(ret){
+                        if(ret.code == 0){
+                            toast('注册成功')
+                            setTimeout(function () {
+                                closeWin()
+                            },1000)
+                        }
+                        al(ret)
+                    }else{
+                    }
+                })
+            },
+        },
+    })
+
+    apiready = function () {
+    };
+
+
+</script>
+</html>

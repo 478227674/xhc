@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/ailearn.css"/>
+    <style>
+        #videobox{
+            width:100%;
+            height:auto;
+        }
+        .videobg img{
+            width:60%;
+            margin: 20px auto;
+            display: block;
+        }
+        .speed-btns{
+            display: flex;
+            padding: 10px 20px;
+            justify-content: flex-start;
+        }
+        .speed-btns{
+            font-size: 14px;
+            line-height: 20px;
+            color:#f7260a;
+        }
+        .speed-btns span{
+            margin-right: 10px;
+            display: block;
+            width:40px;
+            height:20px;
+            text-align: center;
+            line-height: 20px;
+            border: 1px solid #f7260a;
+            color:#f7260a;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body style="background: #f6f6f6">
+<div id="learn-box">
+        <!--<video  poster="../../../icon/ai/videotbg.png" :src="videoUrl" controls="controls" id="videobox"></video>-->
+
+    <div style="height:260px;"></div>
+    <!--<div class="speed-btns">-->
+    <!--<p>播放倍速：</p>-->
+    <!--<span @click="changeVideoSpeed(1)">1.0</span>-->
+    <!--<span @click="changeVideoSpeed(1.5)">1.5</span>-->
+    <!--<span @click="changeVideoSpeed(2)">2.0</span>-->
+    <!--</div>-->
+    <div class="videobg">
+        <img src="../../../icon/ai/videobg.png" alt="">
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/zepto.js"></script>
+<script type="text/javascript" src="../../../script/echarts.min.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            kid:null,
+            vobj:{},
+            videoUrl:'',
+        },
+        methods:{
+            getTeacherVideo(){
+                var _this = this;
+                ajaxGet(getTestTeacherVideoUrl,{knowledgeId:this.kid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        ajaxGet(getVideoUrl,{fileId:ret.data.videoUrl},function (ret,err) {
+                            _this.videoUrl = ret.m3u8Url;
+                            vivi.openplayer({
+                                x: 0,
+                                y :api.safeArea.top+44+40,
+                                w : v_Width,
+                                h: 250,
+                                title: '名师讲解 ',
+                                url: _this.videoUrl,
+                            }, function(ret, err) {
+
+                            });
+                        })
+                    }
+                })
+            },
+            changeVideoSpeed(speed){
+                vivi.setSpeed({speed:speed},function (ret,err) {
+
+                })
+            },
+        },
+    })
+    function hideVivi() {
+        if(vivi){
+            vivi.hiddenVideo();
+        }
+    }
+    function showVivi() {
+        if(vivi){
+            vivi.showVideo();
+        }
+    }
+    function closeFull() {
+//        vivi.closeplayer({back:false})
+        vivi.addBackListener({back:false})
+    }
+    var vivi;
+    apiready = function () {
+        v_Width = api.winWidth;
+        vivi = api.require('advancedPlayer');
+        app.kid = api.pageParam.id;
+        app.getTeacherVideo();
+
+    };
+
+</script>
+</html>

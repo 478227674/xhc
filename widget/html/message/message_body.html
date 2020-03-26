@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <style>
+        .messagelist{
+            width:96%;
+            padding: 0 2%;
+        }
+        .messagelist ul li {
+            border-bottom: 1px solid #e5e5e5;
+            line-height: 42px;
+            display: flex;
+            justify-content: flex-start;
+            ba
+        }
+        .messagelist ul li div{
+            width:12px;
+            height:12px;
+            margin: 15px 7px;
+            background-size:100% 100%;
+        }
+        .prev3{
+            background: url("../../icon/message-fair.png") no-repeat 0px 0px;
+        }
+        .down3{
+            background: url("../../icon/message-f.png") no-repeat 0px 0px;
+
+        }
+        .messagelist ul li p{
+            white-space:nowrap;/*规定段落中的文本不进行换行*/
+            overflow:hidden;/*内容会被修剪，并且其余内容是不可见的。*/
+            text-overflow:ellipsis;/*显示省略号来代表被修剪的文本*/
+            font-size: 13px;
+            color:#333;
+        }
+        .messagelist ul li span{
+            color:#666;
+        }
+    </style>
+</head>
+<body style="background: #fff" >
+    <div class="messagelist">
+        <ul>
+            <li v-for="(item,index) in list" @click="openMessageDetail(item)">
+                <div :class="{'prev3':index<3,'down3':index>2}"></div>
+                <p><span>{{item.createTime}} | </span> {{item.messageTitle}}</p>
+            </li>
+        </ul>
+        <div v-if="!isMore" class="nomore">暂无更多数据~</div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.messagelist',
+        data: {
+            currentIndex:0,
+            list:[],
+            pagenum:1,
+            isMore:true,
+        },
+        methods:{
+            closePageThis:function (){
+                closeWin()
+            },
+            openMessageDetail(data){
+                //打开消息详情
+                if(data.productId){
+                    var obj = data.productList;
+                    obj.productId = data.productId;
+                    if(data.productType==2){
+                        openRegister('product_detail','../product_detail.html',{id:data.productId})
+                    }else if(data.productType == 4){
+                        if(data.productList.isCut == 1 && data.productList.isGroup == 0){
+                            openRegister('productkan_detail','../productkan_detail.html',{id:data.productId})
+                        }else if(data.productList.isGroup == 1 || (data.productList.isGroup == 1 && data.isCut == 1)){
+                            openRegister('productgroup_detail','../productgroup_detail.html',{id:data.productId})
+                        }
+                    }else if(data.productType == 5){
+                        openRegister('productspe_detail','../productspe_detail.html',{id:data.productId})
+                    }
+                }else{
+                    openRegister('message_detail','./message_detail.html',{id:data.messageId})
+                }
+            },
+            getMessageList(id){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pagenum,
+                    pagesize:5
+                }
+                ajaxGetVistor(getNewsListUrl,obj,function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        if(_this.pagenum==1 && ret.data.list.length==0){
+                            toast('暂无数据哦~')
+                            return;
+                        }
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDay(ret.data.list[i].createTime)
+                        }
+                        if(ret.data.list.length<_this.pagesize){
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+                })
+            },
+
+        },
+    })
+
+    apiready = function () {
+        app.getMessageList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore && app.pagenum!=1){
+                app.getMessageList();
+            }
+        });
+    };
+
+
+</script>
+</html>

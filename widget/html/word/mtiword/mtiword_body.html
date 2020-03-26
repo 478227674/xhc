@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../css/type.css"/>
+    <style>
+        .mtiwordsli{
+            height:68px;
+            padding: 0 15px;
+            background: #fff;
+            margin-bottom: 10px;
+        }
+        .mti-index{
+            display: flex;
+            justify-content: flex-start;
+
+        }
+        .mti-index span{
+            display: block;
+            width:18px;
+            height:18px;
+            color:#fff;
+            font-size: 12px;
+            text-align: center;
+            line-height: 18px;
+            background: #bbbbbb;
+            border-radius: 50%;
+            margin-top: 10px;
+        }
+        .mti-index p{
+            color:#333;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        .mtibtns{
+            position: relative;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .mtibtns div{
+            padding: 5px 6px;
+            border:1px solid #bbbbbb;
+            font-size: 12px;
+            color:#666;
+            border-radius: 5px;
+            margin-left: 15px;
+            margin-top: 5px;
+        }
+        .mtibtns>p{
+            position: absolute;
+            left:0px;
+            top:5px;
+            line-height: 20px;
+            font-size: 12px;
+            color:#666;
+        }
+    </style>
+</head>
+<body >
+   <ul class="mouble-unit">
+       <li class="mtiwordsli" v-for="(item,index) in allList">
+           <div class="mti-index">
+               <span>{{index+1}}</span>
+               <p>{{item.name}}</p>
+           </div>
+           <div class="mtibtns">
+               <p>
+                   已熟:{{item.memoryCount}} | 未熟:{{item.noMemoryCount}} | 未记:{{item.noRead}}
+               </p>
+               <!--<div @click.stop="openPicRemember(item)">闪形记</div>-->
+               <!--<div @click.stop="openFullRemember(item)">全脑记</div>-->
+               <!--<div @click.stop="openTestRemember(item)">同步考</div>-->
+               <div @click="openTestRemember(item)">确定</div>
+               <div @click="openWordsListByLinten(item)">预览</div>
+               <!--跳首页 弹框 您已选择单元xxx 使用闪形记或全脑记进行学习 -->
+           </div>
+       </li>
+   </ul>
+</body>
+
+<script type="text/javascript" src="../../../script/api.js"></script>
+<script type="text/javascript" src="../../../script/data.js"></script>
+<script type="text/javascript" src="../../../script/user.js"></script>
+<script type="text/javascript" src="../../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../../script/public.js"></script>
+<script type="text/javascript" src="../../../script/vue.js"></script>
+<script type="text/javascript" src="../../../script/echo.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '.mouble-unit',
+        data: {
+            allList:[{}],
+            typeId:null,
+        },
+        methods:{
+            openWordsListByLinten(data){
+                al(data.id)
+                //点击确定后先记录当前点击的单元ID和计划Id 然后跳首页
+                ajaxGet(setLearnUnitUrl,{lessonId:data.id,planId:planId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        openNewWindow('wordslist','../unit/wordslist.html',{name:data.name,id:data.id})
+                    }
+                })
+            },
+            openPicRemember(data){
+                localStorage.setItem('UNIT_TYPE_ID',data.coreIndex)
+                localStorage.setItem('UNIT_TYPE_NAME',data.coreName)
+                openNewWindow('picremember','../picremember/picremember.html',{name:data.name,id:data.id})
+            },
+            openFullRemember(data){
+                localStorage.setItem('UNIT_TYPE_ID',data.coreIndex)
+                localStorage.setItem('UNIT_TYPE_NAME',data.coreName)
+                openNewWindow('fullr','../fullremember/fullr.html',{name:data.name,id:data.id})
+            },
+            openTestRemember(data){
+                //检测当前计划版本和点击的版本是否为同一个
+                ajaxGet(checkActivePlanUrl,{courseId:app.typeId,gradeId:gradeId},function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        if(ret.data){ //是当前计划下
+                            api.confirm({
+                                title: '温馨提示',
+                                msg: '你选择了'+sName+'词汇'+data.name+'单元 请用首页全脑记或闪形记进行学习',
+                                buttons: ['确定', '取消']
+                            }, function(ret, err) {
+                                var index = ret.buttonIndex;
+                                if(index == 1){
+                                    //点击确定后先记录当前点击的单元ID和计划Id 然后跳首页
+                                    ajaxGet(setLearnUnitUrl,{lessonId:data.id,planId:planId},function (ret,err) {
+                                        if(ret && ret.code == 0){
+                                            api.execScript({
+                                                name:'word_index',
+                                                frameName:'word_index_body',
+                                                script:'apiready()'
+                                            })
+                                            api.closeToWin({name:'word_index'})
+                                        }
+                                    })
+                                }else{
+
+                                }
+                            });
+                        }else{ //不是当前计划
+                            api.confirm({
+                                title: '温馨提示',
+                                msg: '是否使用以前学习计划?',
+                                buttons: ['使用计划', '取消','创建计划']
+                            }, function(ret, err) {
+                                var index = ret.buttonIndex;
+                                if(index == 1){
+//                                    //点击确定后先记录当前点击的单元ID和计划Id 然后跳首页
+                                    ajaxGet(useThisPlanUrl,{courseId:app.typeId,gradeId:gradeId,gradeType:1,lessonId:data.id},function (ret,err) {
+                                        if(ret && ret.code == 0){
+                                            api.execScript({
+                                                name:'word_index',
+                                                frameName:'word_index_body',
+                                                script:'apiready()'
+                                            })
+                                            api.closeToWin({name:'word_index'})
+                                        }
+                                    })
+                                }else if(index == 2){
+
+                                }else if(index == 3){
+                                    openNewWindow('createplan','../littleclass/createplan.html',{})
+
+                                }
+                            });
+                        }
+                    }
+
+                })
+            },
+            getList(){
+                ajaxGet(getListByDanciIdUrl,{courseId:this.typeId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        al(ret.data)
+                        app.allList = ret.data;
+                    }
+                })
+
+            },
+
+        },
+    })
+    var sName = '',planId=null,gradeId;
+
+    apiready = function () {
+        gradeId = api.pageParam.gradeid;
+        planId = api.pageParam.planId;
+        sName = api.pageParam.name;
+        app.typeId = api.pageParam.id;
+        app.getList();
+    };
+</script>
+</html>

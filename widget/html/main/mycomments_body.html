@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/order.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/classlist.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/comments.css"/>
+    <style>
+
+        .c-top{
+            padding: 15px 10px 5px 0px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .commonts-listul li {
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding-bottom: 10px !important;
+            background: #fff;
+        }
+        .commonts-listul{
+            width: 90%;
+            margin: 10px auto;
+        }
+
+
+        .getmoneybox{
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .getmoneybox span{
+            padding-left: 18px;
+            margin-left: 10px;
+            margin-right: 10px;
+            line-height: 14px;
+            color:#f7260a;
+            font-size: 12px;
+            background: url("../../icon/zzbicon.png") no-repeat left 0px;
+            background-size: 14px 14px;
+        }
+        .getmoneybox a{
+            color:#999;font-size: 12px;
+            margin-right: 10px;
+        }
+        .grade-list span{
+            line-height:20px;
+            font-size: 12px;
+            color:#999999;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body >
+<div class="comments_list">
+    <ul class="commonts-listul">
+        <li v-for="(item,index) in list">
+            <div class="c-top">
+                <div class="cer-detail">
+                    <div class="cer-detail-top">
+                        <p>{{item.orgName}}</p>
+                        <span>学习课程：{{item.productName}}</span>
+                    </div>
+                    <div class="cer-detail-bottom">
+                        <!--v-bind:data-score="item.userGrade"-->
+                        <div  v-bind:data-score="item.userGrade" class="function-demo"></div>
+                    </div>
+                    <div class="grade-list">
+                        <span>环境{{item.envGrade}}</span>
+                        <span>师资{{item.effectGrade}}</span>
+                        <span>效果{{item.facultyGrade}}</span>
+                        <span>服务{{item.serviceGrade}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="c-center">
+                {{item.userDesc}}
+            </div>
+            <div class="c-bottom">
+                <div>
+                    <div v-for="(items,indexs) in item.images" @click="seeImgs(index,indexs)" :style="{backgroundImage: 'url(' + items + ')'}"></div>
+                </div>
+            </div>
+            <div class="getmoneybox">
+                <span>
+                    获得200太奇币
+                </span>
+                <a href="javascript:;">{{item.createTime}}</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script type="text/javascript" src="../../script/raty.js"></script>
+<script>
+    var app = new Vue({
+        el: '.comments_list',
+        data: {
+            currentIndex:0,
+            pagenum:1,
+            pagesize:10,
+            list:[],
+            isMore:true,
+        },
+        methods:{
+            getMyCommentsList(){
+                var _this = this;
+                var obj = {
+                    pagenum:this.pagenum,
+                    pagesize:this.pagesize,
+                }
+                ajaxGet(getMyCommentsUrl,obj,function (ret,err) {
+                    al(ret)
+                    if(ret && ret.code == 0){
+                        for(var i=0;i<ret.data.list.length;i++){
+                            ret.data.list[i].createTime = formatTimeToDay(ret.data.list[i].createTime)
+                        }
+
+                        if(ret.data.list.length<_this.pagesize){
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.isMore = false;
+                        }else{
+                            _this.list = [..._this.list,...ret.data.list]
+                            _this.pagenum++;
+                        }
+                    }
+                    _this.$nextTick(function () {
+                        $(function() {
+                            $.fn.raty.defaults.path = '../../icon';
+                            $('.function-demo').raty({
+                                readOnly: true,
+//            , score: 0  ,
+                                number: 5,//多少个星星设置
+//            targetType: 'hint',//类型选择，number是数字值，hint，是设置的数组值
+                                path: '../../icon',
+//            hints: ['差', '一般', '好', '非常好', '全五星'],
+                                cancelOff: 'cancel-off-big.png',
+                                cancelOn: 'cancel-on-big.png',
+                                size: 24,
+                                starHalf: 'star-half-big.png',
+                                starOff: 'star-off-big.png',
+                                starOn: 'star-on-big.png',
+//            target: '#function-hint',
+                                cancel: false,
+                                targetKeep: true,
+                                score: function() {
+                                    return $(this).attr('data-score');
+                                }
+//            targetText: '请选择评分',
+//            click: function (score, evt) {
+//                alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type);
+//            }
+                            });
+                        });
+
+                    })
+                })
+            },
+            closePageThis:function (){
+                closeWin()
+            },
+            seeImgs:function(index,indexs){
+                var _this = this;
+                var arr = _this.list[index].images;
+                previewPhoto(UIPhotoViewer,arr,indexs)
+            },
+
+        },
+    })
+    var UIPhotoViewer;
+    apiready = function () {
+        UIPhotoViewer = api.require('UIPhotoViewer')
+        app.getMyCommentsList();
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:200//设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(app.isMore){
+                app.getMyCommentsList();
+            }
+        });
+    };
+
+
+</script>
+</html>

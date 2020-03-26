@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<!--suppress JSAnnotator -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/product.css"/>
+    <style>
+        #kan-all{
+            padding-bottom: 15px;
+            width: 94%;
+            margin: 10px auto;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .kan-top{
+            padding: 15px 10px;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .kan-cover{
+            /*float: left;*/
+            width: 110px;
+            height: 75px;
+            border-radius: 5px;
+            overflow: auto;
+
+        }
+        .kan-cover img{
+            width: 100%;
+            height: 100%;
+        }
+        .can-detail{
+            margin-left: 10px;
+        }
+        .can-detail>span{
+            font-size: 14px;color:#333;
+        }
+        .can-detail p{
+            padding-left: 22px;
+            background: url("../../icon/time1.png") no-repeat left 2px;
+            background-size: 16px 16px;
+            color:#ff9100;
+            font-size: 12px;height: 22px;
+            margin-top: 10px;
+            line-height: 22px;
+        }
+        .can-detail div{
+            color:#f7260a;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .can-detail div>span{
+            font-size: 18px;
+        }
+        .bolang{
+            width: 90%;
+            display: block;
+            margin: 15px auto;
+        }
+        .progress-title{
+            text-align: center;
+            font-size: 14px;
+            color:#666;
+        }
+        .progress-title>span{
+            color:#f7260a
+        }
+        .progress-box{
+            width: 90%;
+            height: 8px;
+            margin: 10px auto;
+            background: #e5e5e5;
+            border-radius: 20px;
+            position: relative;
+        }
+        .progress-box>div{
+            background: #ff9100;
+            width: 10%;
+            border-radius: 20px;
+            height: 100%;
+            left: 0px;
+            top: 0px;
+        }
+        .can-list{
+            width: 80%;
+            padding: 15px;
+            margin: 0 auto;
+            background: #fff1de;
+        }
+        .can-title{
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .can-title p {
+            width: 50px;
+            border-bottom: 1px solid #f7260a;
+            margin-bottom: 7px;
+        }
+        .can-title span{
+            color:#f7260a;
+            margin: 0 10px;
+            font-size:14px;
+        }
+        .can-ulli ul li {
+            margin-bottom: 15px;
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .can-ulli ul li > img{
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+        .can-ulli ul li > div{
+            margin-left: 10px;
+        }
+        .can-ulli ul li > div span{
+            color:#333;
+            font-size: 12px;
+        }
+        .can-ulli ul li > div p {
+            margin-top: 5px;
+            font-size: 12px;color:#666;
+        }
+        .can-ulli ul li > p{
+            padding-left: 25px;
+            background: url("../../icon/knife.png") no-repeat left 4px;
+            background-size:16px 16px;
+            position: absolute;
+            right: 0px;
+            color:#f7260a;
+            font-size: 12px;
+            height: 20px;line-height: 20px;
+        }
+        .helpbtn{
+            width:94%;
+            margin: 10px auto;
+            background: url("../../icon/btnbg.png") no-repeat 0px 0px;
+            background-size: 100% 100%;
+            height: 45px;text-align: center;
+            line-height: 45px;
+            font-size: 14px;
+            color:#fff;
+        }
+        .share-text{
+            width: 100%;
+            text-align: center;
+            color:red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body >
+    <div id="kan-all" v-cloak>
+        <div class="kan-top">
+            <div class="kan-cover">
+                <img :src="pobj.imageUrl" alt="">
+            </div>
+            <div class="can-detail">
+                <span>{{pobj.productName}}</span>
+                <p>{{timeObj.d}}天{{timeObj.h}}时{{timeObj.m}}分{{timeObj.s}}秒</p>
+                <div>
+                    ￥<span>{{(pobj.orderPrice*1000)/1000}}</span> <s style="color:#333">￥{{pobj.productPrice}}</s>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <img class="bolang" src="../../icon/bolangxian.png" alt="">
+        <div class="progress">
+            <div class="progress-title">恭喜您，已砍 <span>{{yikan}}</span> 元</div>
+            <div class="progress-box">
+                <div :style="{'width':wpx}"></div>
+            </div>
+        </div>
+        <div class="can-list">
+            <div class="can-title">
+                <p></p>
+                <span>砍价详情</span>
+                <p></p>
+            </div>
+            <div class="can-ulli">
+                <ul>
+                    <li v-for="item in cutList">
+                        <img src="../../icon/signperson.png" alt="">
+                        <div>
+                            <span>{{item.userName}}</span>
+                            <p>拔刀相助，在所不辞</p>
+                        </div>
+                        <p>砍掉{{item.cutPrice}}元</p>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+        <div class="helpbtn" @click="showBg(true)">
+            喊好友砍一刀
+        </div>
+        <div class="share-text">
+            2天内分享有效
+        </div>
+        <div class="buynowbox" v-show="showBgFlag">
+            <div class="bg-top">
+                <div class="sharetitle">
+                    分享至
+                </div>
+                <div class="shareitem">
+                    <ul>
+                        <li  @click="shareToWx('session')">
+                            <img src="../../icon/wx1.png" alt="">
+                            <span>微信</span>
+                        </li>
+                        <li @click="shareToWx('timeline')">
+                            <img src="../../icon/timeline2.png" alt="">
+                            <span>朋友圈</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sharerule" >
+                    分享给好友 帮忙砍一刀
+                </div>
+                <div class="cancle_share" @click="showBg(false)">取消</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/echo.min.js"></script>
+<script>
+//    var wxA = wx;
+//    var user = getUserInfo();
+//    var orderUrl = shareUrl + 'productshare.html?id='+ data.orderId+'&mainid='+ user.userId
+//
+//    shareToWx(wxA,'session','太奇教育','能帮我看一下吗，祝您开心每一天！','widget://icon/icontest.png',orderUrl,function (ret) {
+//    })
+    var app = new Vue({
+        el: '#kan-all',
+        data: {
+            showBgFlag:false,
+            cutOrderId:null,
+            orderId:null,
+            pobj:{},
+            activeGuige:{},//
+            cutId:null,
+            cutList:[],
+            shareUserId:null,
+            cutObj:{},
+            cutPrice:0,
+            friIsCut:0,
+
+            yikan:0,
+            wpx:0,
+            timeObj:{},
+        },
+        created(){
+
+        },
+        methods:{
+            shareToWx(type){
+                var wxA = wx;
+                var user = getUserInfo();
+                var orderUrl = shareUrl + 'productshare.html?id='+ this.orderId+'&mainid='+ user.userId + '&'
+                shareToWx(imageFilter,wxA,type,'通过砍价购买课程，请朋友来一刀！','我正在参加太奇教育官方砍价，低价购买'+this.pobj.productName+'课程。',this.pobj.imageUrl,orderUrl,function (ret) {
+
+                })
+            },
+            showBg(f){
+                this.showBgFlag = f;
+            },
+            getCutHistory(){
+                var _this = this;
+                ajaxGet(getCutHistoryUrl,{cutId:this.cutId},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.cutList = ret.data;
+                    }
+                })
+            },
+            getOrdertDetail(){
+                var _this = this;
+                var obj = {
+                    orderId:this.orderId
+                };
+
+                ajaxGet(getOrderDetailUrl,obj,function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.timeObj = MillisecondToDate(ret.data.cutEndTime)
+                        _this.pobj = ret.data;
+                        _this.cutId = ret.data.cutId;
+                        if(ret.cutPrice){
+                            _this.cutPrice = ret.cutPrice;
+                            _this.friIsCut = ret.friIsCut;
+                        }
+                        _this.yikan = ret.data.appOrderCut.cutPrice;
+                        _this.wpx = ret.data.appOrderCut.cutPrice/(ret.data.appOrderCut.cutPrice+ret.data.appOrderCut.surplusPrice)*100+'%';
+
+//                        yikan
+//                        wpx
+                        _this.getCutHistory();
+                    }
+                })
+            },
+        },
+    })
+    var wx,imageFilter;
+    apiready = function () {
+        imageFilter = api.require('imageFilter');
+        wx = api.require('wx')
+        app.orderId = api.pageParam.id;
+        app.getOrdertDetail();
+    };
+
+
+</script>
+</html>

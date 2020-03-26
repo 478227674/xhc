@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../css/commonWindow.css">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/product.css"/>
+    <style>
+        #videobox{
+            width:100%;
+            height:250px;
+        }
+        .videobg img{
+            width:60%;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .class-list{
+            padding:10px 20px 0px 20px;
+            background: #fff;
+            margin-top: 10px;
+        }
+        .class-list>div{
+            font-size: 16px;color:#333;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 10px;
+        }
+        .class-list li{
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .class-list-div-active{
+            color:#f7260a !important;
+        }
+        .seed{
+            line-height: 40px;
+            color:#f73e3c;
+            font-size: 12px;
+        }
+        .class-list li div{
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;color:#333;
+            width: 100% !important;
+            overflow: hidden;
+            line-height: 40px;
+        }
+        .class-list li span{
+            width:70px;
+            display: block;
+            height: 25px;
+            text-align: center;
+            line-height: 25px;
+            color:#f7260a;
+            font-size: 12px;
+            border: 1px solid #f7260a;
+            border-radius: 5px;
+            margin-top: 6px;
+        }
+        .next-videos{
+            color:#f73e3c;
+            border-radius: 2px;
+            border: 1px solid #f73e3c;
+            font-size: 12px;
+            padding: 2px 5px;
+        }
+        .activesee{
+            color:#f73e3c !important;
+
+        }
+    </style>
+</head>
+<body style="background: #f6f6f6">
+<div id="learn-box" v-cloak>
+    <video  poster="../../icon/ai/videotbg.png" :src="vobj.videoUrl" controls="controls" id="videobox"></video>
+    <div class="class-list">
+        <div style="border-bottom: none;display: flex;justify-content: space-between">
+            <div>当前播放: <span style="color:#f73e3c">{{activeName}}</span></div>
+            <a class="next-videos" href="JavaScript:;" @click="nextVideos">下一节</a>
+        </div>
+        <div class="subjects-btn">
+            <span @click="getStageListBySubjectId(item.subjectId)" :class="{'active-btns':subjectId==item.subjectId}" v-for="item in subjectList">{{item.subjectName}}</span>
+            <!--<span>英语</span>-->
+        </div>
+        <div class="class-list" style="padding: 0">
+            <div v-for="(item,index) in stageList">
+                <div class="stagelist" @click="getVideosListByStageId(item.stageId,index)">
+                        <span>
+                            {{item.stageName}}
+                        </span>
+                    <img :class="{'open-active':stageId==item.stageId&&item.flag}" src="../../icon/right.png" alt="">
+                </div>
+                <ul v-show="stageActiveIndex==index&&item.flag">
+                    <li v-for="(items,indexs) in videos"  @click="seeThisVideo(items,indexs)">
+                        <div :class="{'activesee':items.videoId == seeId}">
+                            <p>{{indexs+1}}.{{items.videoName}}</p>
+                            <a v-show="items.isFinish==1" class="seed" href="javascript:;">已观看</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/vue.js"></script>
+<script type="text/javascript" src="../../script/data.js"></script>
+<script type="text/javascript" src="../../script/user.js"></script>
+<script type="text/javascript" src="../../script/apiCloud.js"></script>
+<script type="text/javascript" src="../../script/public.js"></script>
+<script type="text/javascript" src="../../script/zepto.js"></script>
+<script type="text/javascript" src="../../script/echarts.min.js"></script>
+<script>
+
+
+    var app = new Vue({
+        el: '#learn-box',
+        data: {
+            pid:null,
+            seeId:null,
+            imageType:null,
+            vobj:{},
+            videoList:[],
+            stageList:[],
+            subjectList:[],
+            subjectId:null,
+            stageActiveIndex:null,
+            activeName:'',
+            stageId:null,
+            videoIndex:null,
+            videos:[]
+        },
+        methods:{
+        	//下一个
+	        nextVideos(){
+	        	if(this.videos[this.videoIndex+1]){
+	        		this.seeThisVideo(this.videos[this.videoIndex+1],this.videoIndex+1)
+                }else{
+	        		toast('请手动切换其他阶段')
+                }
+            },
+            //点击视频查看
+            seeThisVideo(data,index){
+	        	var _this = this;
+	        	this.videoIndex = index;
+                this.seeId = data.videoId;
+                this.activeName = data.videoName;
+                if(data.onLive == 1){ //1直播 2录播
+                    browser.open({
+                        url: data.videoUrl
+                    });
+                }else{
+                    ajaxGet(getVideoUrl,{fileId:data.lineVideoUrl},function (ret,err) {
+                        if(ret && ret.code == 0){
+                        	ajaxGet(saveVideoIndexUrl,{productType:_this.imageType,productId:_this.pid,videoId:data.videoId},function (ret,err) {
+                        		if(ret && ret.code == 0){
+                        			_this.videos[index].isFinish = 1;
+                                }
+	                        })
+	                        vivi.openplayer({
+		                        x: 0,
+		                        y :api.safeArea.top+44,
+		                        w : v_Width,
+		                        h: 250,
+		                        title: data.videoName,
+		                        url: ret.m3u8Url,
+	                        }, function(ret, err) {
+
+	                        });
+                        }
+
+                    })
+                }
+
+            },
+            //根据阶段ID查看课时列表
+            getVideosListByStageId(stageId,index){
+              this.stageList[index].flag = !this.stageList[index].flag;
+              this.stageActiveIndex = index;
+              // if(!this.stageList[index].flag){
+              //   return;
+              // }
+              if(this.stageList[index].flag){
+                var _this = this;
+                _this.stageId = stageId;
+                _this.stageActiveIndex = index;
+                ajaxGet(getVideosListUrl,{stageId:stageId,productId:_this.pid,productType:_this.imageType,subjectId:_this.subjectId},function (ret,err) {
+                  if(ret && ret.code == 0){
+                    _this.videos = ret.data;
+                  }
+                })
+              }
+            },
+            getStageListBySubjectId(subjectId){
+                var _this = this;
+                _this.subjectId = subjectId;
+                _this.stageList = [];
+                _this.videos = [];
+                ajaxGetVistor(getStageListUrl,{productId:_this.pid,productType:this.imageType,subjectId:_this.subjectId},function (ret,err) {
+                    for(var i=0;i<ret.data.length;i++){
+                        ret.data[i].flag = false;
+                    }
+                    if(ret && ret.code == 0){
+                        _this.stageList = ret.data;
+                    }
+
+                })
+            },
+            //获取课程下的视频列表
+            getTeacherVideo(){
+                var _this = this;
+                //获取学科列表
+                ajaxGetVistor(getSubjectListByProductUrl,{productType:this.imageType,productId:this.pid},function (ret,err) {
+                    if(ret && ret.code == 0){
+                        _this.subjectList = ret.data;
+                        _this.subjectId =  ret.data[0].subjectId;
+                        _this.getStageListBySubjectId(_this.subjectId)
+                    }
+                })
+                ajaxGet(getLastLearnVideoUrl,{productType:this.imageType,productId:this.pid},function (ret,err) {
+                	if(ret && ret.code == 0){
+                		_this.activeName = ret.data.videoName;
+                    }
+
+                })
+//                ajaxGet(getClassVideoListUrl,{productType:this.imageType,productId:this.pid},function (ret,err) {
+//                    al(ret)
+//                    if(ret && ret.code == 0){
+//                        _this.videoList = ret.data;
+//                    }
+//                })
+            },
+        },
+    })
+
+    var browser,vivi,v_Width;
+    apiready = function () {
+        v_Width = api.winWidth;
+        browser = api.require('webBrowser');
+        vivi = api.require('advancedPlayer');
+        app.pid = api.pageParam.id;
+        app.imageType = api.pageParam.imageType;
+        app.getTeacherVideo();
+    };
+
+
+</script>
+</html>
